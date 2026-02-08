@@ -1,9 +1,11 @@
+import Hero from "@/components/hero";
+
 export default function Home() {
 
   // render return
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h2 className="text-3xl font-bold">Form Creator</h2>
+    <div className="w-full flex justify-center items-center">
+      <Hero />
     </div>
   );
 }
