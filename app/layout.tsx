@@ -5,6 +5,9 @@ import "./globals.css";
 // Import theme provider
 import { ThemeProvider } from "next-themes";
 
+// Import components
+import Navbar from '@/components/navbar';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,10 +41,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange>
 
-          {/* main crece para empujar el footer hacia abajo */}
+          {/* navbar */}
+          <Navbar />
+
+          {/* main */}
           <main className="flex-1 w-full flex flex-col mx-auto min-h-[calc(100vh-64px)] px-5 xl:px-0 max-w-7xl">
             {children}
           </main>
+
+          {/* footer */}
 
         </ThemeProvider>
       </body>
