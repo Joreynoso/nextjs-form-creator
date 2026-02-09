@@ -9,6 +9,9 @@ import { ThemeProvider } from "next-themes";
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
+// Import clerk provider
+import { ClerkProvider } from '@clerk/nextjs';
+
 const merriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
@@ -41,31 +44,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning={false}>
+        <body
+          className={`${merriweather.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
 
-      <body
-        suppressHydrationWarning={false}
-        className={`${merriweather.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
+            {/* navbar */}
+            <Navbar />
 
-          {/* navbar */}
-          <Navbar />
+            {/* main */}
+            <main className="flex-1 w-full flex flex-col mx-auto min-h-[calc(100vh-64px)] px-5 xl:px-0 max-w-7xl">
+              {children}
+            </main>
 
-          {/* main */}
-          <main className="flex-1 w-full flex flex-col mx-auto min-h-[calc(100vh-64px)] px-5 xl:px-0 max-w-7xl">
-            {children}
-          </main>
+            {/* footer */}
+            <Footer />
 
-          {/* footer */}
-          <Footer />
-
-        </ThemeProvider>
-      </body>
-    </html >
+          </ThemeProvider>
+        </body>
+      </html >
+    </ClerkProvider>
   );
 }

@@ -27,7 +27,7 @@ export default function Hero() {
             Comenzar <ArrowUpRight className="size-5" />
           </Button>
           <Button
-            className="rounded-full text-base shadow-none"
+            className="rounded-full text-base shadow-none hover:text-primary"
             size="lg"
             variant="outline"
           >
