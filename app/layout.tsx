@@ -11,6 +11,8 @@ import Footer from '@/components/footer';
 
 // Import clerk provider
 import { ClerkProvider } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-theme';
+import { esES } from '@clerk/localizations';
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
@@ -44,7 +46,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={clerkAppearance}
+      localization={esES}>
       <html lang="en" suppressHydrationWarning={false}>
         <body
           className={`${merriweather.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}
