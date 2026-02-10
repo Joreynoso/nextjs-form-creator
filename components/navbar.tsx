@@ -7,6 +7,7 @@ import { Button } from './ui/button'
 
 // react
 import { useState } from 'react'
+import { SignedIn, UserButton } from '@clerk/nextjs'
 
 export default function Navbar() {
 
@@ -38,6 +39,13 @@ export default function Navbar() {
                             {link.name}
                         </Link>
                     ))}
+
+                    {/* user button de clerk */}
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
+
+                    {/* theme toggle */}
                     <ModeToggle />
                 </div>
 

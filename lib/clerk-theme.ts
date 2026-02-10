@@ -1,15 +1,16 @@
-import { dark } from '@clerk/themes';
 
 export const clerkAppearance = {
-    baseTheme: dark,
     variables: {
-        colorPrimary: 'oklch(0.6083 0.0623 44.3588)', // Matches --primary
+        colorPrimary: 'var(--primary)',
         colorBackground: 'var(--background)',
         colorText: 'var(--foreground)',
         colorInputBackground: 'var(--card)',
         colorInputText: 'var(--foreground)',
         borderRadius: '0.5rem',
         fontFamily: 'var(--font-merriweather), sans-serif',
+        colorTextSecondary: 'var(--muted-foreground)',
+        colorSeparator: 'var(--border)',
+        colorTextOnPrimaryBackground: 'var(--primary-foreground)',
     },
     elements: {
         card: "shadow-none border border-border",

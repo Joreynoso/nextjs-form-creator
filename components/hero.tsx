@@ -1,7 +1,7 @@
-import { ArrowRight, CirclePlay, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -42,16 +42,11 @@ export default function Hero() {
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button className="h-12 rounded-full px-8 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5" size="lg">
-            Empezar ahora <ArrowRight className="ml-2 size-4" />
-          </Button>
-          <Button
-            className="h-12 rounded-full px-8 text-base font-medium bg-background hover:bg-secondary/50 border-border/50 transition-all hover:-translate-y-0.5"
-            size="lg"
-            variant="outline"
-          >
-            <CirclePlay className="mr-2 size-4" /> Ver Demo
-          </Button>
+          <Link href={'/dashboard'} >
+            <Button className="h-12 rounded-full px-8 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5" size="lg">
+              Empezar ahora <ArrowRight className="ml-2 size-4" />
+            </Button>
+          </Link> 
         </div>
 
         <div className="mt-16 flex items-center justify-center gap-8 text-muted-foreground grayscale opacity-50 select-none">
