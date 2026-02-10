@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Doctor {
+  id        String   @id @default(cuid())
+  userId    String   @unique // Clerk User ID
+  email     String
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now())
+  
+  forms     Form[]
+  patients  Patient[]
+}
+
+model Form {
+  id          String   @id @default(cuid())
+  doctorId    String
+  name        String
+  description String?
+  fields      Json     // Array de preguntas con todos los tipos
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  doctor      Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patients    Patient[]
+  
+  @@index([doctorId])
+}
+
+model Patient {
+  id              String    @id @default(cuid())
+  token           String    @unique
+  doctorId        String
+  formId          String
+  
+  // Datos del paciente
+  firstName       String?
+  lastName        String?
+  
+  // Respuestas del formulario (soporta todos los tipos)
+  formResponses   Json?
+  
+  // Estado
+  formCompleted   Boolean   @default(false)
+  completedAt     DateTime?
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  linkSentAt      DateTime  @default(now())
+  
+  doctor          Doctor    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  form            Form      @relation(fields: [formId], references: [id])
+  
+  @@index([doctorId])
+  @@index([token])
+  @@index([formCompleted])
+}
