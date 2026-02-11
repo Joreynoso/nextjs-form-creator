@@ -2,6 +2,42 @@
 
 Este documento detalla la estructura, los endpoints y el roadmap para llevar a cabo la idea de un creador de formularios dinámicos para doctores y pacientes.
 
+## Estructura de Archivos (Tree)
+
+A continuación se detallan los archivos y directorios más importantes del proyecto para facilitar la navegación y el desarrollo:
+
+```text
+/
+├── app/                        # Directorio principal de Next.js (App Router)
+│   ├── api/                    # Rutas de API backend
+│   │   ├── forms/              # Gestión de plantillas
+│   │   └── patients/           # Gestión de pacientes y enlaces
+│   ├── dashboard/              # Panel de control privado del doctor
+│   ├── layout.tsx              # Layout raíz (Navbar, Footer, Providers)
+│   ├── page.tsx                # Landing page principal
+│   └── globals.css             # Estilos globales y variables de diseño
+├── components/                 # Componentes de UI reutilizables
+│   ├── Dashboard/              # Componentes para el panel del doctor
+│   ├── FormBuilder/            # Herramientas de creación de formularios
+│   ├── PatientForm/            # Formulario dinámico para el paciente
+│   ├── ui/                     # Componentes base (Botones, Inputs, etc.)
+│   ├── navbar.tsx              # Barra de navegación principal
+│   └── footer.tsx              # Pie de página
+├── lib/                        # Utilidades y configuración compartida
+│   ├── prisma.ts               # Cliente de base de datos
+│   ├── clerk-theme.ts          # Personalización visual de Clerk
+│   └── get-or-create-doctor.ts # Lógica de sincronización de usuario
+├── prisma/                     # Configuración de ORM
+│   └── schema.prisma           # Definición exacta de la base de datos
+├── public/                     # Archivos estáticos
+├── guide.md                    # Esta guía de arquitectura y roadmap
+├── todo.md                     # Listado de tareas pendientes
+├── .env                        # Variables de entorno (tokens, DB URLs)
+└── package.json                # Dependencias del proyecto
+```
+
+---
+
 ## Estructura del Proyecto
 
 ```text
