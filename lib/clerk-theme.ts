@@ -1,5 +1,7 @@
+import { dark } from "@clerk/themes";
 
 export const clerkAppearance = {
+    basetheme: dark,
     variables: {
         colorPrimary: 'var(--primary)',
         colorBackground: 'var(--background)',

@@ -1,7 +1,6 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function ProfilePage() {
-    const session = await auth();
     const user = await currentUser();
     return (
         <div className='w-full py-8 flex flex-col'>
