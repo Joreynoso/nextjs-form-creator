@@ -1,7 +1,9 @@
 'use client'
 
-import { ModeToggle } from "./themetoggle"
 import Link from "next/link"
+
+// import components
+import { ModeToggle } from "./themetoggle"
 import { Menu, X } from "lucide-react"
 import { Button } from './ui/button'
 
@@ -9,12 +11,9 @@ import { Button } from './ui/button'
 import { useState } from 'react'
 
 // clerk auth
-import { SignedIn, SignedOut, SignOutButton, UserButton, useAuth } from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignOutButton, UserButton } from '@clerk/nextjs'
 
 export default function Navbar() {
-
-    // get auth from clerk
-    const { sessionId } = useAuth()
 
     // state to open the navbar
     const [open, setOpen] = useState(false)
@@ -24,6 +23,7 @@ export default function Navbar() {
         { name: 'Acerca de', href: '/about' },
     ]
 
+    // guest links, visibles solo para usuarios no registrados
     const guestLinks = [
         { name: 'Iniciar sesión', href: '/sign-in' },
         { name: 'Registrarse', href: '/sign-up' },
@@ -76,7 +76,9 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <SignOutButton>
-                            <Button variant="ghost" className='p-0 text-sm font-medium hover:text-primary transition-colors font-sans'>Salir</Button>
+                            <button className="text-sm font-medium hover:text-primary transition-colors font-sans">
+                                Salir
+                            </button>
                         </SignOutButton>
                         <UserButton />
                     </SignedIn>
