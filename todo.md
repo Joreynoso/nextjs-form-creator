@@ -5,3 +5,4 @@
 ## 5. AVeriguar la forma de obtener el usuario en componentes del cliente y del servidor usando Clerk auth
 ## 6. Agregar credenciales y tokens de clerk auth desde el navegador a postman para
 poder realizar las consultas.
+## 7. Agregar los breacumbs para la navegacion en el dashboard y en todas las rutas.

@@ -7,30 +7,43 @@ import { Button } from './ui/button'
 
 // react
 import { useState } from 'react'
-import { SignedIn, UserButton } from '@clerk/nextjs'
+
+// clerk auth
+import { SignedIn, SignedOut, SignOutButton, UserButton, useAuth } from '@clerk/nextjs'
 
 export default function Navbar() {
+
+    // get auth from clerk
+    const { sessionId } = useAuth()
 
     // state to open the navbar
     const [open, setOpen] = useState(false)
 
-    // navigation links
-    const links = [
-        { name: 'About', href: '/about' },
-        { name: 'Dashboard', href: '/dashboard' },
+    // navigation links, iniciar sesión y registrarse solo se muestran si no estás logueado
+    const publicLinks = [
+        { name: 'Acerca de', href: '/about' },
+    ]
+
+    const guestLinks = [
         { name: 'Iniciar sesión', href: '/sign-in' },
         { name: 'Registrarse', href: '/sign-up' },
     ]
 
+    // auth links, visibles solo para usuarios registrados
+    const authLinks = [
+        { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Perfil', href: '/profile' },
+    ]
+
     // render return
     return (
-        <nav className="w-full py-4 flex justify-center items-center px-4 sm:px-0">
+        <nav className="w-full py-4 flex justify-center items-center px-4 sm:px-0 border-b border-border">
             <nav className='w-full max-w-7xl mx-auto flex justify-between items-center'>
                 <Link href="/" className="text-xl font-semibold">Form <span className="text-primary italic">Builder</span></Link>
 
                 {/* desktop view */}
-                <div className="hidden md:flex items-center gap-6">
-                    {links.map((link) => (
+                <div className="hidden md:flex items-center gap-4">
+                    {publicLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
@@ -40,8 +53,31 @@ export default function Navbar() {
                         </Link>
                     ))}
 
-                    {/* user button de clerk */}
+                    <SignedOut>
+                        {guestLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="text-sm font-medium hover:text-primary transition-colors font-sans"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                    </SignedOut>
+
                     <SignedIn>
+                        {authLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className="text-sm font-medium hover:text-primary transition-colors font-sans"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                        <SignOutButton>
+                            <Button variant="ghost" className='p-0 text-sm font-medium hover:text-primary transition-colors font-sans'>Salir</Button>
+                        </SignOutButton>
                         <UserButton />
                     </SignedIn>
 
@@ -79,17 +115,45 @@ export default function Navbar() {
                             </div>
 
                             <div className="flex flex-col gap-5">
-                                {links.map((link, idx) => (
+                                {publicLinks.map((link, idx) => (
                                     <Link
                                         key={link.href}
                                         href={link.href}
                                         onClick={() => setOpen(false)}
-                                        className="text-2xl tracking-tight hover:text-primary transition-colors animate-in slide-in-from-left duration-500 fill-mode-both"
-                                        style={{ animationDelay: `${idx * 100}ms` }}
+                                        className="text-2xl tracking-tight hover:text-primary transition-colors"
                                     >
                                         {link.name}
                                     </Link>
                                 ))}
+
+                                <SignedOut>
+                                    {guestLinks.map((link) => (
+                                        <Link
+                                            key={link.href}
+                                            href={link.href}
+                                            onClick={() => setOpen(false)}
+                                            className="text-2xl tracking-tight hover:text-primary transition-colors"
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ))}
+                                </SignedOut>
+
+                                <SignedIn>
+                                    {authLinks.map((link) => (
+                                        <Link
+                                            key={link.href}
+                                            href={link.href}
+                                            onClick={() => setOpen(false)}
+                                            className="text-2xl tracking-tight hover:text-primary transition-colors"
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ))}
+                                    <SignOutButton>
+                                        <Button variant="ghost" className='p-0 text-2xl tracking-tight hover:text-primary transition-colors justify-start font-normal h-auto'>Salir</Button>
+                                    </SignOutButton>
+                                </SignedIn>
                             </div>
 
                             <div className="mt-auto pb-10">

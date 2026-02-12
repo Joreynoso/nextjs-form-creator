@@ -16,9 +16,9 @@ const Footer = () => {
                         <span className="text-muted-foreground">
                             &copy; {new Date().getFullYear()}{" "}
                             <Link href="/" target="_blank">
-                                Created by José Reynoso
+                                Creado y desarrollado por José Reynoso
                             </Link>
-                            . All rights reserved.
+                            . Todos los derechos reservados.
                         </span>
 
                         <div className="flex items-center gap-5 text-muted-foreground">

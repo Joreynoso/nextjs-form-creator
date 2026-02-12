@@ -16,7 +16,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-1000 text-center">
+      <div className="max-w-4xl text-center">
         <Badge
           asChild
           className="rounded-full border-border/50 bg-background/50 backdrop-blur-sm px-4 py-1 hover:bg-background/80 transition-colors"
