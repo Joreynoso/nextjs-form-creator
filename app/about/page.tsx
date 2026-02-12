@@ -20,7 +20,7 @@ export default function AboutPage() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                        <BreadcrumbPage>Acerca de nosotros</BreadcrumbPage>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
