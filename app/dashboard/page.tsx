@@ -8,12 +8,36 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-export default function DashboardPage() {
+// imports
+import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
+import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
+import { prisma } from '@/lib/prisma'
+import FormEmpty from '@/components/Dashboard/FormEmpty'
 
-    // render return
+export default async function DashboardPage() {
+
+    const { userId } = await auth()
+
+    if (!userId) {
+        redirect("/")
+    }
+
+    const doctor = await getOrCreateDoctor()
+
+    // buscar formularios
+    const forms = await prisma.form.findMany({
+        where: {
+            doctorId: doctor.id
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+
     return (
-        <div className="w-full py-8 flex flex-col">
-            <Breadcrumb className='mb-5'>
+        <div className="w-full py-5">
+            <Breadcrumb className="mb-5">
                 <BreadcrumbList>
                     <BreadcrumbItem>
                         <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -25,11 +49,23 @@ export default function DashboardPage() {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className='flex flex-col mb-5'>
-                <p className='text-base text-muted-foreground leading-relaxed'>
+            <div className="w-full mb-5">
+                <p className="text-base text-muted-foreground leading-relaxed">
                     Administra tus formularios y respuestas.
                 </p>
             </div>
+
+            {/* lista de formularios */}
+            { forms.length === 0 ? <FormEmpty /> : 
+            (<div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3'>
+                {forms.map((form) => (
+                    <div key={form.id} className="w-full bg-card p-6 border border-border rounded-lg space-y-2">
+                        <p className='text-primary font-semibold'>{form.name}</p>
+                        <p className='text-foreground text-sm'>{form.description}</p>
+                        <p className='text-xs bg-secondary rounded-full px-2 py-1 max-w-fit'>Creado: {form.createdAt.toLocaleDateString()}</p>
+                    </div>
+                ))}
+            </div>) }
         </div>
     )
 }

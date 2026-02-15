@@ -13,6 +13,8 @@ import Footer from '@/components/footer';
 import { ClerkProvider } from '@clerk/nextjs';
 import { clerkAppearance } from '@/lib/clerk-theme';
 import { esES } from '@clerk/localizations';
+import SizeScreenHelper from '@/components/screensizehelper';
+import { Toaster } from '@/components/ui/sonner';
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
@@ -63,12 +65,21 @@ export default function RootLayout({
             <Navbar />
 
             {/* main */}
-            <main className="flex-1 w-full flex flex-col mx-auto min-h-[calc(100vh-64px)] px-5 xl:px-0 max-w-7xl">
+            <main className="flex-1 w-full flex mx-auto min-h-[calc(100vh-64px)] px-5 xl:px-0 max-w-7xl">
               {children}
             </main>
 
             {/* footer */}
             <Footer />
+
+            {/* toast */}
+            <Toaster
+              position="top-center"
+              expand={true}
+            />
+
+            {/* screen size helper */}
+            <SizeScreenHelper />
 
           </ThemeProvider>
         </body>

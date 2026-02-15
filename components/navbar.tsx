@@ -37,7 +37,7 @@ export default function Navbar() {
 
     // render return
     return (
-        <nav className="w-full py-4 flex justify-center items-center px-4 sm:px-0 border-b border-border">
+        <nav className="w-full py-4 flex justify-center items-center px-4 lg:px-0 border-b border-border">
             <nav className='w-full max-w-7xl mx-auto flex justify-between items-center'>
                 <Link href="/" className="text-xl font-semibold">Form <span className="text-primary italic">Builder</span></Link>
 
@@ -75,12 +75,14 @@ export default function Navbar() {
                                 {link.name}
                             </Link>
                         ))}
+
+                        {/* salir, deberia mostrar un mensaje toast de despedida */}
                         <SignOutButton>
                             <button className="text-sm font-medium hover:text-primary transition-colors font-sans">
                                 Salir
                             </button>
                         </SignOutButton>
-                        <UserButton />
+                        <UserButton />  
                     </SignedIn>
 
                     {/* theme toggle */}
