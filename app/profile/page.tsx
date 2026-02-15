@@ -16,7 +16,7 @@ export default async function ProfilePage() {
 
     // render return
     return (
-        <div className='w-full py-5 flex flex-col'>
+        <div className='"w-full py-5'>
 
             <Breadcrumb className='mb-5'>
                 <BreadcrumbList>
@@ -30,7 +30,7 @@ export default async function ProfilePage() {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className='flex flex-col mb-5'>
+            <div className='flex flex-col'>
                 <p className='text-base text-muted-foreground leading-relaxed'>
                     Administra tu información personal y seguridad.
                 </p>

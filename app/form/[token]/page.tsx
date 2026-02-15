@@ -17,10 +17,6 @@ export default async function FormPage({ params }: { params: Promise<{ token: st
     // get form from token
     const form = await getForm(token)
 
-    // console
-    console.log('token', token)
-    console.log('form', form)
-
     if (!form) {
         notFound()
     }

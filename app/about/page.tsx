@@ -12,7 +12,7 @@ export default function AboutPage() {
 
     // render return
     return (
-        <div className="w-full py-8 flex flex-col">
+        <div className="w-full py-5">
             <Breadcrumb className='mb-5'>
                 <BreadcrumbList>
                     <BreadcrumbItem>

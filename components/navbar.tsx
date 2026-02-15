@@ -37,12 +37,12 @@ export default function Navbar() {
 
     // render return
     return (
-        <nav className="w-full py-4 flex justify-center items-center px-4 lg:px-0 border-b border-border">
+        <nav className="w-full py-5 flex justify-center items-center px-4 lg:px-0 border-b border-border/40">
             <nav className='w-full max-w-7xl mx-auto flex justify-between items-center'>
-                <Link href="/" className="text-xl font-semibold">Form <span className="text-primary italic">Builder</span></Link>
+                <Link href="/" className="text-xl font-medium">Form <span className="text-primary">Builder</span></Link>
 
                 {/* desktop view */}
-                <div className="hidden md:flex items-center gap-4">
+                <div className="hidden md:flex items-center gap-6">
                     {publicLinks.map((link) => (
                         <Link
                             key={link.href}
@@ -82,7 +82,7 @@ export default function Navbar() {
                                 Salir
                             </button>
                         </SignOutButton>
-                        <UserButton />  
+                        <UserButton />
                     </SignedIn>
 
                     {/* theme toggle */}
@@ -105,9 +105,9 @@ export default function Navbar() {
                 {open && (
                     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md md:hidden animate-in fade-in duration-300">
                         <div className="flex flex-col h-full p-4">
-                            <div className="flex justify-between items-center mb-12">
-                                <Link href="/" onClick={() => setOpen(false)} className="text-xl font-semibold">
-                                    Form <span className="text-primary italic">Builder</span>
+                            <div className="flex justify-between items-center mb-16">
+                                <Link href="/" onClick={() => setOpen(false)} className="text-xl font-medium">
+                                    Form <span className="text-primary">Builder</span>
                                 </Link>
                                 <Button
                                     variant="ghost"
@@ -118,7 +118,7 @@ export default function Navbar() {
                                 </Button>
                             </div>
 
-                            <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-8">
                                 {publicLinks.map((link, idx) => (
                                     <Link
                                         key={link.href}

@@ -37,7 +37,7 @@ export default async function DashboardPage() {
 
     return (
         <div className="w-full py-5">
-            <Breadcrumb className="mb-5">
+            <Breadcrumb className='mb-5'>
                 <BreadcrumbList>
                     <BreadcrumbItem>
                         <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -56,18 +56,30 @@ export default async function DashboardPage() {
             </div>
 
             {/* lista de formularios */}
-            { forms.length === 0 ? <FormEmpty /> : 
-            (<div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3'>
-                {forms.map((form) => (
-                    <div key={form.id} className="bg-card/70 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                        <p className='text-primary font-semibold'>{form.name}</p>
-                        <p className='text-foreground text-sm'>{form.description}</p>
-                        <p className='text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-1 max-w-fit'>
-                            Creado: {form.createdAt.toLocaleDateString()}
-                        </p>
-                    </div>
-                ))}
-            </div>) }
+            {forms.length === 0 ? <FormEmpty /> :
+                (<div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6'>
+                    {forms.map((form) => (
+                        <div key={form.id} 
+                        className="group
+                                   border
+                                   rounded-xl
+                                   bg-card
+                                   p-5
+                                   transition-all
+                                   duration-300
+                                   ease-out
+                                   hover:shadow-lg
+                                   hover:-translate-y-1
+                                   hover:border-primary/30
+                                   space-y-2">
+                            <p className='text-foreground font-semibold '>{form.name}</p>
+                            <p className='text-muted-foreground text-sm'>{form.description}</p>
+                            <p className='inline-block text-muted-foreground/70 text-xs bg-secondary/30 border border-secondary/40 rounded-full px-3 py-1'>
+                                Creado: {form.createdAt.toLocaleDateString()}
+                            </p>
+                        </div>
+                    ))}
+                </div>)}
         </div>
     )
 }
