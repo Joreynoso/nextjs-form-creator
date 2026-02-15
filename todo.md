@@ -6,3 +6,4 @@
 ## 6. Agregar credenciales y tokens de clerk auth desde el navegador a postman para
 poder realizar las consultas.
 ## 7. Agregar los breacumbs para la navegacion en el dashboard y en todas las rutas.
+## 8. Implementar el menu desplegable para mis tarjetas de formularios usando shadcn

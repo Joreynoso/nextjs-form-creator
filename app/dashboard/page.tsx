@@ -59,10 +59,12 @@ export default async function DashboardPage() {
             { forms.length === 0 ? <FormEmpty /> : 
             (<div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3'>
                 {forms.map((form) => (
-                    <div key={form.id} className="w-full bg-card p-6 border border-border rounded-lg space-y-2">
+                    <div key={form.id} className="bg-card/70 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-sm hover:shadow-md transition">
                         <p className='text-primary font-semibold'>{form.name}</p>
                         <p className='text-foreground text-sm'>{form.description}</p>
-                        <p className='text-xs bg-secondary rounded-full px-2 py-1 max-w-fit'>Creado: {form.createdAt.toLocaleDateString()}</p>
+                        <p className='text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-1 max-w-fit'>
+                            Creado: {form.createdAt.toLocaleDateString()}
+                        </p>
                     </div>
                 ))}
             </div>) }
