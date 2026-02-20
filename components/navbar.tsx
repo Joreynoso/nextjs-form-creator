@@ -37,7 +37,7 @@ export default function Navbar() {
 
     // render return
     return (
-        <nav className="w-full py-5 flex justify-center items-center px-4 lg:px-0 border-b border-border/40">
+        <nav className="w-full py-5 flex justify-center items-center px-4 xl:px-0 border-b border-border/40">
             <nav className='w-full max-w-7xl mx-auto flex justify-between items-center'>
                 <Link href="/" className="text-xl font-medium">Form <span className="text-primary">Builder</span></Link>
 
