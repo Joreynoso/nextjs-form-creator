@@ -51,15 +51,16 @@ export default function RootLayout({
     <ClerkProvider
       appearance={clerkAppearance}
       localization={esES}>
-      <html lang="en" suppressHydrationWarning={false}>
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${merriweather.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         >
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
-            disableTransitionOnChange>
+            disableTransitionOnChange
+          >
 
             {/* navbar */}
             <Navbar />

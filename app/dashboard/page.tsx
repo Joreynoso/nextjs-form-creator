@@ -13,6 +13,8 @@ import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
 import { prisma } from '@/lib/prisma'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import FormEmpty from '@/components/Dashboard/FormEmpty'
 import FormCard from '@/components/Dashboard/FormCard'
 
@@ -36,6 +38,7 @@ export default async function DashboardPage() {
         }
     })
 
+    // render return
     return (
         <div className="w-full py-5">
             <Breadcrumb className='mb-5'>
@@ -50,17 +53,27 @@ export default async function DashboardPage() {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="w-full mb-5">
+            {/* titulo y crear nuevo formulario */}
+            <div className="w-full mb-5 flex items-center justify-between">
                 <p className="text-base text-muted-foreground leading-relaxed">
                     Administra tus formularios y respuestas.
                 </p>
+
+                <Button className="bg-primary text-primary-foreground px-4 py-2 rounded-md">
+                    <Link href="/dashboard/new">
+                        Crear formulario
+                    </Link>
+                </Button>
             </div>
 
             {/* lista de formularios */}
             {forms.length === 0 ? <FormEmpty /> :
                 (<div className='w-full grid grid-cols-1 md:grid-cols-3 gap-6'>
                     {forms.map((form) => (
-                        <FormCard key={form.id} form={form} />
+                        <>
+                            {/* form */}
+                            <FormCard key={form.id} form={form} />
+                        </>
                     ))}
                 </div>)}
         </div>
