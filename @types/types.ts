@@ -1,15 +1,18 @@
 // Tipos de campos soportados
-export type FieldType = 
-  | 'text'        // Texto corto
-  | 'number'      // Números
-  | 'textarea'    // Texto largo
-  | 'select'      // Dropdown
-  | 'radio'       // Opción única
-  | 'checkbox'    // Múltiples opciones
-  | 'section';    // Separador visual
+export type FieldType =
+  | InteractiveFieldType
+  | 'section'
+
+export type InteractiveFieldType =
+  | 'text'
+  | 'number'
+  | 'textarea'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
 
 // Operadores para lógica condicional
-export type ConditionalOperator = 
+export type ConditionalOperator =
   | 'equals'      // Igual a un valor
   | 'includes'    // Incluye un valor (para checkbox)
   | 'notEmpty';   // Tiene algún valor
@@ -55,5 +58,12 @@ export interface Patient {
 }
 
 export interface FormResponse {
-  [fieldId: string]: string | number | string[]; // string[] para checkbox
+  [fieldId: string]: FieldValue
 }
+
+export type FieldValue =
+  | string
+  | number
+  | string[]
+  | null
+  | undefined

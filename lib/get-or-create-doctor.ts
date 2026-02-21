@@ -12,7 +12,6 @@ export async function getOrCreateDoctor() {
   }
 
   // Buscar doctor existente
-  console.log('-->[DB] search the doctor...');
   let doctor = await prisma.doctor.findUnique({
     where: { userId: user.id }
   });

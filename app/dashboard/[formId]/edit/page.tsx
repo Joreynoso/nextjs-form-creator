@@ -1,4 +1,3 @@
-
 // import breadcrumb components
 import {
     Breadcrumb,
@@ -6,13 +5,41 @@ import {
     BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+    BreadcrumbSeparator
+}
+    from "@/components/ui/breadcrumb";
 
-// import button component
-import { Button } from "@/components/ui/button"
+// import prisma
+import { prisma } from "@/lib/prisma";
 
-export default function NewFormPage() {
+// import getOrCreateDoctor
+import { getOrCreateDoctor } from "@/lib/get-or-create-doctor";
+import { notFound } from 'next/navigation';
+
+interface Props {
+    params: Promise<{ formId: string }>
+}
+
+export default async function EditFormPage({ params }: Props) {
+
+    const { formId } = await params
+
+    const doctor = await getOrCreateDoctor()
+
+    const form = await prisma.form.findUnique({
+        where: { id: formId },
+        include: {
+            submissions: {
+                orderBy: {
+                    createdAt: "desc"
+                }
+            }
+        }
+    })
+
+    if (!form || form.doctorId !== doctor.id) {
+        notFound()
+    }
 
     // render return
     return (
@@ -28,21 +55,17 @@ export default function NewFormPage() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbPage>Nuevo formulario</BreadcrumbPage>
+                        <BreadcrumbPage>{form.name}</BreadcrumbPage>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
 
-            {/* titulo y crear nuevo formulario */}
-            <div className="w-full mb-5 flex items-center justify-between">
+            <div className="w-full mb-5">
                 <p className="text-base text-muted-foreground leading-relaxed">
-                    Crear un nuevo formulario.
+                    Aquí puedes editar tu formulario {form.name}.
                 </p>
-
-                <Button className="bg-primary text-primary-foreground px-4 py-2 rounded-md">
-                    Crear formulario
-                </Button>
             </div>
+
         </div>
     )
 }
