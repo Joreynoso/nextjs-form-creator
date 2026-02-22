@@ -1,17 +1,19 @@
-import { Button } from '../ui/button';
-import { AlertTriangle } from 'lucide-react';
+// import components
+import { Button } from '../ui/button'
+import { AlertTriangle } from 'lucide-react'
 
 type FormDialogDeleteProps = {
     onConfirm: () => Promise<void>
-    open: boolean;
+    open: boolean
     isDeleting?: boolean
     onClose: () => void
 }
 
 export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose }: FormDialogDeleteProps) {
 
-    if (!open) return null;
+    if (!open) return null
 
+    // render return
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-5 animate-in fade-in duration-200'>
             <div className='bg-card border border-border p-8 rounded-2xl shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200'>

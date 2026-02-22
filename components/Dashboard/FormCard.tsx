@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useState } from 'react';
 import FormDialogDelete from './FormDialogDelete';
+import { deleteForm } from '@/actions/forms/forms';
+import { toast } from 'sonner';
 
 // type props
 type FormCardProps = {
@@ -43,13 +45,18 @@ export default function FormCard({ form }: FormCardProps) {
     const handleDeleteForm = async () => {
         setIsDeleting(true)
         try {
-            console.log('eliminando formulario...')
-
             // server action aqui
+            const { success, message } = await deleteForm(form.id)
+            if (!success) {
+                toast.error(message)
+                return
+            }
 
             setOpenDeleteDialog(false)
+            toast.success(message)
         } catch (error) {
             console.log(error)
+            toast.error('Error al eliminar el formulario')
         } finally {
             setIsDeleting(false)
         }

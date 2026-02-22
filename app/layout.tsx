@@ -82,6 +82,12 @@ export default function RootLayout({
             {/* screen size helper */}
             <SizeScreenHelper />
 
+            {/* toast */}
+            <Toaster
+              position="top-center"
+              expand={true}
+            />
+
           </ThemeProvider>
         </body>
       </html >

@@ -5,6 +5,7 @@ import { createEmptyForm } from "@/actions/forms/forms"
 import { useRouter } from "next/navigation"
 import { useTransition } from "react"
 import { Button } from "@/components/ui/button"
+import { toast } from 'sonner'
 
 export default function CreateFormButton() {
 
@@ -13,7 +14,9 @@ export default function CreateFormButton() {
 
   function handleCreate() {
     startTransition(async () => {
-      const id = await createEmptyForm()
+      const { data: id, message } = await createEmptyForm()
+      if (!id) return
+      toast.success(message)
       router.push(`/dashboard/${id}/edit`)
     })
   }
