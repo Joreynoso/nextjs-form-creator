@@ -88,6 +88,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     return (
         <div className="space-y-6">
 
+
             {/* isDirty section */}
             <div className="w-full bg-card border border-border/40 shadow-sm backdrop-blur-sm transition-all hover:shadow-md p-6 rounded-lg flex items-center justify-between mb-4">
                 {isDirty ? (
@@ -108,7 +109,6 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                 >
                     {loading ? "Guardando..." : "Guardar"}
                 </Button>
-
             </div>
 
             {/* nombre y descripcion */}
@@ -136,7 +136,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                 <Button variant="outline" size="sm" onClick={() => addField("select")}>Lista desplegable</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("radio")}>Opción única</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("checkbox")}>Múltiple choice</Button>
-            </div> 
+            </div>
 
             {/* campos */}
             <div>

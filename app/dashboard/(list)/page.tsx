@@ -53,8 +53,8 @@ export default async function DashboardPage() {
             </Breadcrumb>
 
             {/* titulo y crear nuevo formulario */}
-            <div className="w-full mb-5 flex items-center justify-between">
-                <p className="text-base text-muted-foreground leading-relaxed">
+            <div className="w-full mb-5 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                <p className="text-base text-muted-foreground leading-relaxed mb-4 sm:mb-0">
                     Administra tus formularios y respuestas.
                 </p>
 

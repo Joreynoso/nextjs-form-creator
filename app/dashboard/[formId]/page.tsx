@@ -68,7 +68,7 @@ export default async function FormDetailPage({ params }: Props) {
                 </p>
             </div>
 
-            {/* {form.submissions.map(sub => (
+            {form.submissions.map(sub => (
                 <div key={sub.id} className="border rounded-lg p-4">
 
                     {sub.status === "completed" && sub.responses && (
@@ -95,7 +95,7 @@ export default async function FormDetailPage({ params }: Props) {
                     )}
 
                 </div>
-            ))} */}
+            ))}
         </div>
     )
 }
