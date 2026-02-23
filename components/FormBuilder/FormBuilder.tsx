@@ -16,7 +16,10 @@ interface FormBuilderProps {
 
 export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
-    // local states
+    // localt states
+    const [loading, setLoading] = useState(false)
+
+    // form states
     const [name, setName] = useState(form?.name ?? "")
     const [description, setDescription] = useState(form?.description ?? "")
     const [fields, setFields] = useState<FormField[]>(initialFields ?? [])
@@ -33,14 +36,19 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     async function handleSave() {
         if (!form?.id) return
         try {
+            setLoading(true)
             const result = await updateForm(form.id, name, description)
             if (!result.success) {
                 toast.error(result.message)
+                setLoading(false)
                 return
             }
             toast.success(result.message)
+            setLoading(false)
         } catch (error) {
             toast.error("Error al guardar el formulario")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -68,7 +76,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
         <div className="space-y-6">
 
             {/* isDirty section */}
-            <div className="w-full flex items-center justify-between mb-4">
+            <div className="w-full bg-card p-6 rounded-lg flex items-center justify-between mb-4">
 
                 {isDirty ? (
                     <span className="text-sm text-amber-500">
@@ -80,45 +88,43 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                     </span>
                 )}
 
-                <button
-                    disabled={!isDirty}
+                <Button
+                    disabled={!isDirty || loading}
                     onClick={handleSave}
-                    className={`
-        px-4 py-2 rounded-md text-sm font-medium
-        ${isDirty
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground cursor-not-allowed"}
-    `}
+                    variant={isDirty ? "default" : "secondary"}
+                    className="shadow-sm"
                 >
-                    Guardar
-                </button>
+                    {loading ? "Guardando..." : "Guardar"}
+                </Button>
 
             </div>
 
             {/* nombre y descripcion */}
-            <div className="flex flex-col p-5 gap-2 border rounded-xl bg-card shadow-sm">
+            <div className="flex flex-col p-6 gap-3 border border-border/40 rounded-lg bg-card shadow-sm backdrop-blur-sm transition-all hover:shadow-md">
                 <input
-                    className="text-lg w-full outline-none rounded-md"
+                    className="text-2xl font-semibold w-full outline-none bg-transparent text-foreground placeholder:text-muted-foreground/50"
                     value={name}
                     placeholder='Añade un titulo para tu formulario'
                     onChange={(e) => setName(e.target.value)}
                 />
 
-                <input
-                    className="w-full text-sm text-muted-foreground outline-none rounded-md resize-none"
+                <textarea
+                    className="w-full text-base text-muted-foreground outline-none bg-transparent resize-none placeholder:text-muted-foreground/40"
                     placeholder='Añade una descripcion para tu formulario'
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    rows={2}
                 />
             </div>
 
             {/* action buttons  */}
-            <div className="flex gap-2 flex-wrap">
-                <Button className='cursor-pointer' variant="outline" onClick={() => addField("text")}>Texto</Button>
-                <Button className='cursor-pointer' variant="outline" onClick={() => addField("textarea")}>Texto largo</Button>
-                <Button className='cursor-pointer' variant="outline" onClick={() => addField("select")}>Lista desplegable</Button>
-                <Button className='cursor-pointer' variant="outline" onClick={() => addField("radio")}>Opción única</Button>
-                <Button className='cursor-pointer' variant="outline" onClick={() => addField("checkbox")}>Múltiple choice</Button>
+            <div className="flex gap-3 flex-wrap items-center">
+                <span className="text-sm font-medium text-muted-foreground mr-2">Agregar campo:</span>
+                <Button variant="outline" size="sm" onClick={() => addField("text")}>Texto</Button>
+                <Button variant="outline" size="sm" onClick={() => addField("textarea")}>Texto largo</Button>
+                <Button variant="outline" size="sm" onClick={() => addField("select")}>Lista desplegable</Button>
+                <Button variant="outline" size="sm" onClick={() => addField("radio")}>Opción única</Button>
+                <Button variant="outline" size="sm" onClick={() => addField("checkbox")}>Múltiple choice</Button>
             </div>
 
             {/* campos */}

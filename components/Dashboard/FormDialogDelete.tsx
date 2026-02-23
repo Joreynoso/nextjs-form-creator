@@ -42,7 +42,6 @@ export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose 
                     </Button>
 
                     <Button
-                        variant='destructive'
                         onClick={() => onConfirm()}
                         disabled={isDeleting}
                         className='w-full sm:w-auto font-medium'

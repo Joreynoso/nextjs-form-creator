@@ -26,9 +26,9 @@ export default function Hero() {
         <Badge
           asChild
           variant="outline"
-          className="rounded-full border-border/50 bg-background/60 backdrop-blur-sm px-4 py-1 transition-colors hover:bg-background/80"
+          className="rounded-md border-border/50 bg-background/60 backdrop-blur-sm px-4 py-1 transition-colors hover:bg-background/80"
         >
-          <Link href="#" className="flex items-center gap-2 text-xs font-medium">
+          <Link href="#" className="flex items-center gap-2 text-xs font-medium uppercase tracking-tight">
             <Sparkles className="size-3 text-primary" />
             <span>¡Lanzamiento v1.0.0!</span>
             <ArrowRight className="size-3 opacity-50" />
@@ -36,7 +36,7 @@ export default function Hero() {
         </Badge>
 
         {/* Heading */}
-        <h1 className="mt-12 font-serif font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance">
+        <h1 className="mt-12 font-serif font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance text-foreground">
           Crea y Comparte{" "}
           <br className="hidden sm:block" />
           <span className="bg-linear-to-b from-primary to-foreground/60 bg-clip-text text-transparent">
@@ -55,7 +55,7 @@ export default function Hero() {
           <Link href="/dashboard">
             <Button
               size="lg"
-              className="h-12 rounded-full px-8 text-base font-medium transition-all shadow-md shadow-primary/15 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+              className="px-10 text-base font-semibold transition-all shadow-md shadow-primary/10 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5"
             >
               Empezar ahora
               <ArrowRight className="ml-2 size-4" />

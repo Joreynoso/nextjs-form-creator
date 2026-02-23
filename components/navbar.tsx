@@ -47,7 +47,7 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
-                            className="text-sm font-medium hover:text-primary transition-colors font-sans"
+                            className="text-sm font-medium text-foreground hover:text-primary transition-colors tracking-tight"
                         >
                             {link.name}
                         </Link>
@@ -58,7 +58,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-sm font-medium hover:text-primary transition-colors font-sans"
+                                className="text-sm font-medium text-foreground hover:text-primary transition-colors tracking-tight"
                             >
                                 {link.name}
                             </Link>

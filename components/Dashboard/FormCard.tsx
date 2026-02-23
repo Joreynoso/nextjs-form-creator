@@ -62,10 +62,9 @@ export default function FormCard({ form }: FormCardProps) {
         }
     }
 
-    // render return
     return (
         <>
-            <div key={form.id} className="relative flex flex-col justify-between border rounded-xl bg-card p-5 min-h-[160px] shadow-sm">
+            <div key={form.id} className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[180px] shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm">
 
                 {/* dropdown menu */}
                 <div className="space-y-3">
@@ -114,15 +113,14 @@ export default function FormCard({ form }: FormCardProps) {
                     </div>
                 </div>
 
-                {/* footer */}
-                <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-muted-foreground/80 text-[11px]">
-                        <Calendar className="size-3" />
+                <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-muted-foreground/60 text-[11px] font-medium uppercase tracking-tight">
+                        <Calendar className="size-3 opacity-70" />
                         {form.createdAt.toLocaleDateString()}
                     </span>
                     <Link
                         href={`/dashboard/${form.id}`}
-                        className="text-[11px] font-medium text-primary flex items-center gap-1 hover:underline"
+                        className="text-[11px] font-semibold text-primary flex items-center gap-1 hover:text-primary/80 transition-colors uppercase tracking-tight"
                     >
                         Ver Respuestas
                     </Link>
@@ -135,7 +133,7 @@ export default function FormCard({ form }: FormCardProps) {
                 onClose={() => setOpenDeleteDialog(false)}
                 onConfirm={handleDeleteForm}
                 isDeleting={isDeleting}
-                />
-            </>
+            />
+        </>
     )
 }
