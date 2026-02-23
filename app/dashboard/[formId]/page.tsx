@@ -12,6 +12,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import EmptySubmission from "@/components/Submissions/EmptySubmission"
 
 interface Props {
     params: Promise<{ formId: string }>
@@ -68,8 +69,19 @@ export default async function FormDetailPage({ params }: Props) {
                 </p>
             </div>
 
+            {/* verificar si hay o no una submission */}
+            {form.submissions.length > 0 ? (
+                <div className="w-full mb-5">
+                    <p className="text-base text-muted-foreground leading-relaxed">
+                        Aquí puedes ver las respuestas de tu formulario {form.name}.
+                    </p>
+                </div>
+            ) : (
+                <EmptySubmission />
+            )}
+
             {form.submissions.map(sub => (
-                <div key={sub.id} className="border rounded-lg p-4">
+                <div key={sub.id} className="border border-border/40 rounded-lg p-4">
 
                     {sub.status === "completed" && sub.responses && (
                         <table className="w-full text-sm">

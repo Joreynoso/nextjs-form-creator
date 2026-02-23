@@ -36,7 +36,7 @@ export default function Hero() {
         </Badge>
 
         {/* Heading */}
-        <h1 className="mt-12 font-serif font-medium text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance text-foreground">
+        <h1 className="mt-12 font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance text-foreground">
           Crea y Comparte{" "}
           <br className="hidden sm:block" />
           <span className="bg-linear-to-b from-primary to-foreground/60 bg-clip-text text-transparent">

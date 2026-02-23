@@ -5,4 +5,4 @@
 --> Socluionar el color de los componentss de clerk auth, no esta tomando bien las clases gloables o las ignora.
 --> Hay un pequeño movimiento en el logo al cambiar de menu en pantallas pequeñas
 --> isDirty no esta funcionando bien, no cambia el texto a pesar de que se ha guardado los cambios
-
+--> corregir el responsive para dashboar skeleton, no esta funcionando
