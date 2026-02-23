@@ -24,8 +24,8 @@ export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose 
                     </div>
 
                     <div className='space-y-2'>
-                        <h2 className='text-xl font-semibold tracking-tight text-foreground'>¿Eliminar formulario?</h2>
-                        <p className='text-muted-foreground text-sm leading-relaxed'>
+                        <h2 className='text-xl font-serif tracking-tight text-foreground'>¿Eliminar formulario?</h2>
+                        <p className='font-sans text-muted-foreground text-sm leading-relaxed'>
                             Esta acción no se puede deshacer. Se eliminarán permanentemente el formulario y todas sus respuestas asociadas.
                         </p>
                     </div>

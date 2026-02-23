@@ -36,17 +36,17 @@ export default function Hero() {
         </Badge>
 
         {/* Heading */}
-        <h1 className="mt-12 font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance text-foreground">
+        <h1 className="mt-12 font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.05] text-balance text-foreground">
           Crea y Comparte{" "}
           <br className="hidden sm:block" />
-          <span className="bg-linear-to-b from-primary to-foreground/60 bg-clip-text text-transparent">
+          <span className="bg-linear-to-b from-primary to-foreground/60 bg-clip-text text-transparent font-serif italic">
             Formularios
           </span>{" "}
           de Manera Sencilla
         </h1>
 
         {/* Description */}
-        <p className="mx-auto mt-10 max-w-2xl text-muted-foreground/80 text-lg md:text-xl leading-relaxed">
+        <p className="mx-auto mt-10 max-w-2xl font-sans text-muted-foreground/80 text-lg md:text-xl leading-relaxed">
           Diseña interfaces intuitivas sin conocimientos técnicos. Agrega campos, valida datos y personaliza cada detalle en segundos.
         </p>
 

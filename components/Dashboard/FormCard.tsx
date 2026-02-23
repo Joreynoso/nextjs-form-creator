@@ -69,7 +69,7 @@ export default function FormCard({ form }: FormCardProps) {
                 {/* dropdown menu */}
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
-                        <p className='text-foreground font-semibold line-clamp-1'>{form.name}</p>
+                        <p className='text-foreground line-clamp-1 font-serif text-xl'>{form.name}</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant={'ghost'} size="icon-xs" className='absolute top-3 right-3 opacity-70 hover:opacity-100'>

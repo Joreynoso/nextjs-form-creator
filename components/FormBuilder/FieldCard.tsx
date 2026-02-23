@@ -36,9 +36,9 @@ export default function FieldCard({
     >
       {/* Label */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Etiqueta de la pregunta</label>
+        <label className="text-xs font-sans font-medium text-muted-foreground uppercase tracking-wider">Etiqueta de la pregunta</label>
         <input
-          className="w-full font-medium text-lg outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30"
+          className="w-full font-serif text-lg outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30"
           value={field.label}
           onChange={(e) =>
             onChange({ ...field, label: e.target.value })

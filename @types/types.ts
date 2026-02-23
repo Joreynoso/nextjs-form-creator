@@ -17,6 +17,7 @@ export type ConditionalOperator =
   | 'includes'    // Incluye un valor (para checkbox)
   | 'notEmpty';   // Tiene algún valor
 
+
 export interface FormField {
   id: string;
   type: FieldType;
@@ -30,6 +31,10 @@ export interface FormField {
     operator: ConditionalOperator;
     value: string | string[];
   };
+}
+
+export interface FormWithSubmissions extends Form {
+  submissions: FormResponse[];
 }
 
 export interface Form {

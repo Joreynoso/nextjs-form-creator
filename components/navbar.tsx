@@ -39,7 +39,7 @@ export default function Navbar() {
     return (
         <nav className="w-full py-5 flex justify-center items-center px-4 xl:px-0 border-b border-border/40">
             <nav className='w-full max-w-7xl mx-auto flex justify-between items-center'>
-                <Link href="/" className="text-xl font-medium">Form <span className="text-primary">Builder</span></Link>
+                <Link href="/" className="text-xl font-serif">Form <span className="text-primary">Builder</span></Link>
 
                 {/* desktop view */}
                 <div className="hidden md:flex items-center gap-6">
@@ -70,7 +70,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-sm font-medium hover:text-primary transition-colors font-sans"
+                                className="text-sm font-medium hover:text-primary transition-colors"
                             >
                                 {link.name}
                             </Link>
@@ -78,7 +78,7 @@ export default function Navbar() {
 
                         {/* salir, deberia mostrar un mensaje toast de despedida */}
                         <SignOutButton>
-                            <button className="text-sm font-medium hover:text-primary transition-colors font-sans">
+                            <button className="text-sm font-medium hover:text-primary transition-colors">
                                 Salir
                             </button>
                         </SignOutButton>
@@ -106,7 +106,7 @@ export default function Navbar() {
                     <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md md:hidden animate-in fade-in duration-300">
                         <div className="flex flex-col h-full p-4">
                             <div className="flex justify-between items-center mb-16">
-                                <Link href="/" onClick={() => setOpen(false)} className="text-xl font-medium">
+                                <Link href="/" onClick={() => setOpen(false)} className="text-xl font-serif">
                                     Form <span className="text-primary">Builder</span>
                                 </Link>
                                 <Button
@@ -124,7 +124,7 @@ export default function Navbar() {
                                         key={link.href}
                                         href={link.href}
                                         onClick={() => setOpen(false)}
-                                        className="text-2xl tracking-tight hover:text-primary transition-colors"
+                                        className="text-2xl font-serif tracking-tight hover:text-primary transition-colors"
                                     >
                                         {link.name}
                                     </Link>
@@ -136,7 +136,7 @@ export default function Navbar() {
                                             key={link.href}
                                             href={link.href}
                                             onClick={() => setOpen(false)}
-                                            className="text-2xl tracking-tight hover:text-primary transition-colors"
+                                            className="text-2xl font-serif tracking-tight hover:text-primary transition-colors"
                                         >
                                             {link.name}
                                         </Link>
@@ -149,13 +149,13 @@ export default function Navbar() {
                                             key={link.href}
                                             href={link.href}
                                             onClick={() => setOpen(false)}
-                                            className="text-2xl tracking-tight hover:text-primary transition-colors"
+                                            className="text-2xl font-serif tracking-tight hover:text-primary transition-colors"
                                         >
                                             {link.name}
                                         </Link>
                                     ))}
                                     <SignOutButton>
-                                        <Button variant="ghost" className='p-0 text-2xl tracking-tight hover:text-primary transition-colors justify-start font-normal h-auto'>Salir</Button>
+                                        <Button variant="ghost" className='p-0 text-2xl font-serif tracking-tight hover:text-primary transition-colors justify-start font-normal h-auto'>Salir</Button>
                                     </SignOutButton>
                                 </SignedIn>
                             </div>

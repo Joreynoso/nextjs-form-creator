@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Lora, JetBrains_Mono } from "next/font/google";
+import { Source_Serif_4, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 // Import theme provider
@@ -16,19 +16,18 @@ import { esES } from '@clerk/localizations';
 import SizeScreenHelper from '@/components/screensizehelper';
 import { Toaster } from '@/components/ui/sonner';
 
-const fontSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "600", "700"],
+  display: "swap",
 });
 
-const fontSerif = Lora({
-  subsets: ["latin"],
-  variable: "--font-serif",
-});
-
-const fontMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -46,7 +45,7 @@ export default function RootLayout({
       appearance={clerkAppearance}
       localization={esES}>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}>
+        <body className={`${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
