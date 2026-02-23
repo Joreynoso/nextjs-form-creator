@@ -10,7 +10,7 @@ export default function FieldEmpty() {
                 <MessageCircleQuestionMark className="h-10 w-10 text-muted-foreground/70" />
             </div>
             <div className="text-center space-y-3">
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="text-lg font-medium text-foreground">
                     No hay preguntas
                 </h3>
                 <p className='text-sm text-muted-foreground max-w-sm'>

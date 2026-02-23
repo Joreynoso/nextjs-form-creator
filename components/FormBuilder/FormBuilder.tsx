@@ -8,6 +8,7 @@ import { updateForm } from '@/actions/forms/forms'
 import FieldCard from './FieldCard'
 import FieldEmpty from './FieldEmpty'
 import { toast } from 'sonner'
+import { Check, MessageCircleWarning } from 'lucide-react'
 
 interface FormBuilderProps {
     initialFields?: FormField[]
@@ -71,20 +72,31 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
         setActiveFieldId(newField.id)
     }
 
+    const checkSaved = (
+        <div className='w-8 h-8 rounded-full aspect-square flex justify-center items-center bg-secondary'>
+            <Check className="w-4 h-4" />
+        </div>
+    )
+
+    const unsaveAlert = (
+        <span className="w-8 h-8 rounded-full aspect-square flex justify-center items-center bg-secondary">
+            <MessageCircleWarning className="w-4 h-4" />
+        </span>
+    )
+
     // render return
     return (
         <div className="space-y-6">
 
             {/* isDirty section */}
-            <div className="w-full bg-card p-6 rounded-lg flex items-center justify-between mb-4">
-
+            <div className="w-full bg-card border border-border/40 shadow-sm backdrop-blur-sm transition-all hover:shadow-md p-6 rounded-lg flex items-center justify-between mb-4">
                 {isDirty ? (
-                    <span className="text-sm text-amber-500">
-                        Cambios sin guardar
+                    <span className="text-sm text-accent flex items-center gap-2">
+                        {unsaveAlert} Cambios sin guardar
                     </span>
                 ) : (
-                    <span className="text-sm text-muted-foreground">
-                        Guardado
+                    <span className="text-sm text-muted-foreground flex items-center gap-2">
+                        {checkSaved} Guardado
                     </span>
                 )}
 
@@ -100,32 +112,31 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             </div>
 
             {/* nombre y descripcion */}
-            <div className="flex flex-col p-6 gap-3 border border-border/40 rounded-lg bg-card shadow-sm backdrop-blur-sm transition-all hover:shadow-md">
+            <div className="bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg bg-card shadow-sm backdrop-blur-sm transition-all hover:shadow-md">
                 <input
-                    className="text-2xl font-semibold w-full outline-none bg-transparent text-foreground placeholder:text-muted-foreground/50"
+                    className="text-xl font-medium w-full outline-none bg-transparent text- placeholder:text-muted-foreground/50"
                     value={name}
                     placeholder='Añade un titulo para tu formulario'
                     onChange={(e) => setName(e.target.value)}
                 />
 
-                <textarea
-                    className="w-full text-base text-muted-foreground outline-none bg-transparent resize-none placeholder:text-muted-foreground/40"
+                <input
+                    className="w-full text-base text-muted-foreground outline-none bg-transparent placeholder:text-muted-foreground/40"
                     placeholder='Añade una descripcion para tu formulario'
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    rows={2}
                 />
             </div>
 
-            {/* action buttons  */}
-            <div className="flex gap-3 flex-wrap items-center">
+            {/* action buttons   */}
+            <div className="flex gap-2 flex-wrap items-center">
                 <span className="text-sm font-medium text-muted-foreground mr-2">Agregar campo:</span>
                 <Button variant="outline" size="sm" onClick={() => addField("text")}>Texto</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("textarea")}>Texto largo</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("select")}>Lista desplegable</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("radio")}>Opción única</Button>
                 <Button variant="outline" size="sm" onClick={() => addField("checkbox")}>Múltiple choice</Button>
-            </div>
+            </div> 
 
             {/* campos */}
             <div>
