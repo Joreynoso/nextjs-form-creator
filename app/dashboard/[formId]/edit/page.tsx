@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 // import getOrCreateDoctor
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor";
 import { notFound } from 'next/navigation';
+import FormBuilder from '@/components/FormBuilder/FormBuilder';
 
 interface Props {
     params: Promise<{ formId: string }>
@@ -62,8 +63,12 @@ export default async function EditFormPage({ params }: Props) {
 
             <div className="w-full mb-5">
                 <p className="text-base text-muted-foreground leading-relaxed">
-                    Aquí puedes editar tu formulario {form.name}.
+                    Personaliza tu formulario
                 </p>
+            </div>
+
+            <div className="w-full">
+                <FormBuilder form={form}/>
             </div>
 
         </div>

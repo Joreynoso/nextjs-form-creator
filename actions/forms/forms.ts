@@ -85,3 +85,41 @@ export async function deleteForm(id: string) {
     message: "Formulario eliminado correctamente"
   }
 }
+
+export async function updateForm(formId: string,
+  name: string,
+  description: string) {
+
+  const { userId } = await auth()
+
+  if (!userId) {
+    return {
+      success: false,
+      message: "No autorizado"
+    }
+  }
+
+  const form = await prisma.form.update({
+    where: {
+      id: formId
+    },
+    data: {
+      name,
+      description
+    }
+  })
+
+  if (!form) {
+    return {
+      success: false,
+      message: "Error al actualizar el formulario"
+    }
+  }
+
+  revalidatePath("/dashboard")
+
+  return {
+    success: true,
+    message: "Formulario actualizado correctamente"
+  }
+}

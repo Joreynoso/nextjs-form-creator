@@ -84,7 +84,9 @@ export default function FormCard({ form }: FormCardProps) {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
-                                    Editar formulario
+                                    <Link href={`/dashboard/${form.id}/edit`} className="flex items-center gap-2 cursor-pointer">
+                                        Editar formulario
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => setOpenDeleteDialog(true)}
