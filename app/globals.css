@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.cdnfonts.com/css/georgia');
+/* @import url('https://fonts.cdnfonts.com/css/georgia'); */
 
 @custom-variant dark (&:is(.dark *));
 

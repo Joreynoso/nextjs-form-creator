@@ -31,7 +31,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     const [originalDescription, setOriginalDescription] = useState(form?.description ?? "")
 
     // verificar si el formulario tiene cambios "isDirty"
-    const isDirty = name !== originalName || description !== originalDescription
+    const isDirty = name !== originalName || description !== originalDescription 
 
     // handleSave
     async function handleSave() {

@@ -1,5 +1,8 @@
 import { FormField } from '@/@types/types'
 import { Button } from '../ui/button'
+import { Trash2, Asterisk } from 'lucide-react'
+
+const fielCardStyle = "bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg shadow-sm backdrop-blur-sm transition-all duration-300"
 
 interface FieldCardProps {
   field: FormField
@@ -28,18 +31,22 @@ export default function FieldCard({
     onChange({ ...field, options: newOptions })
   }
 
+  // render return
   return (
     <div
       onClick={onSelect}
-      className={`bg-card border p-5 space-y-4 rounded-lg shadow-sm transition-all duration-200 ${isActive ? "border-primary ring-1 ring-primary/20 bg-primary/5" : "border-border/40 hover:shadow-md"
+      className={`${fielCardStyle} ${isActive
+        ? "border-primary/40 ring-1 ring-primary/10 bg-primary/2"
+        : "border-border/40 hover:border-border/80 hover:shadow-md"
         }`}
     >
       {/* Label */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-sans font-medium text-muted-foreground uppercase tracking-wider">Etiqueta de la pregunta</label>
+      <div className="flex flex-col gap-1.5 focus-within:opacity-100 transition-opacity">
+        <label className="text-[10px] font-sans font-semibold text-muted-foreground/60 uppercase tracking-widest">Etiqueta de la pregunta</label>
         <input
-          className="w-full font-serif text-lg outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30"
+          className="w-full font-serif text-lg outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30 selection:bg-primary/20"
           value={field.label}
+          placeholder="Escribe tu pregunta aquí..."
           onChange={(e) =>
             onChange({ ...field, label: e.target.value })
           }
@@ -49,20 +56,15 @@ export default function FieldCard({
       {/* Render según tipo */}
       <div className="pt-2">
         {field.type === "text" && (
-          <input
-            className="w-full bg-secondary/30 border border-border/40 rounded-md p-3 text-sm text-foreground/70"
-            placeholder="Respuesta corta"
-            disabled
-          />
+          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-2.5 px-4 text-sm text-muted-foreground/50 italic">
+            Respuesta corta
+          </div>
         )}
 
         {field.type === "textarea" && (
-          <textarea
-            className="w-full bg-secondary/30 border border-border/40 rounded-md p-3 text-sm text-foreground/70 resize-none"
-            placeholder="Respuesta larga"
-            disabled
-            rows={2}
-          />
+          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-4 px-4 text-sm text-muted-foreground/50 italic min-h-[80px]">
+            Respuesta larga
+          </div>
         )}
 
         {(field.type === "select" ||
@@ -70,10 +72,10 @@ export default function FieldCard({
           field.type === "checkbox") && (
             <div className="space-y-3">
               {field.options?.map((opt, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="size-4 rounded-full border border-border/60 bg-secondary/20" />
+                <div key={i} className="flex items-center gap-3 group/option">
+                  <div className="size-4 rounded-full border border-border/40 bg-secondary/10 group-focus-within/option:border-primary/40 transition-colors" />
                   <input
-                    className="w-full bg-transparent border-b border-border/20 focus:border-primary/50 outline-none p-1 text-sm text-foreground transition-colors"
+                    className="w-full bg-transparent border-b border-border/10 focus:border-primary/30 outline-none p-1 text-sm text-foreground transition-all placeholder:text-muted-foreground/20"
                     value={opt}
                     onChange={(e) => updateOptions(i, e.target.value)}
                   />
@@ -86,7 +88,7 @@ export default function FieldCard({
                   e.stopPropagation()
                   addOption()
                 }}
-                className="mt-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                className="mt-2 text-[11px] font-medium text-primary/70 hover:text-primary transition-colors flex items-center gap-1.5 px-1 underline-offset-4 hover:underline"
               >
                 + Agregar opción
               </button>
@@ -94,40 +96,49 @@ export default function FieldCard({
           )}
 
         {field.type === "section" && (
-          <div className="h-px w-full bg-border/40 my-4" />
+          <div className="h-px w-full bg-linear-to-r from-transparent via-border/40 to-transparent my-4" />
         )}
       </div>
 
       {/* Footer Actions */}
-      <div className="flex items-center justify-between pt-4 mt-2 border-t border-border/20">
-        <div className="flex items-center gap-6">
+      <div className="flex items-center justify-between pt-5 mt-3 border-t border-border/10">
+        <div className="flex items-center gap-1 h-8">
           {field.type !== "section" && (
-            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer group">
-              <input
-                type="checkbox"
-                className="size-4 rounded border-border/40 text-primary focus:ring-primary/20"
-                checked={field.required ?? false}
-                onChange={(e) =>
-                  onChange({ ...field, required: e.target.checked })
-                }
-              />
-              <span className="group-hover:text-foreground transition-colors">Requerido</span>
-            </label>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation()
+                onChange({ ...field, required: !field.required })
+              }}
+              className={`h-8 px-3 text-xs gap-2 transition-all duration-300 ${field.required
+                ? "text-primary bg-primary/10 hover:bg-primary/20 font-medium"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                }`}
+            >
+              <Asterisk className={`size-3 transition-transform duration-300 ${field.required ? "rotate-30 scale-125" : "rotate-0"}`} />
+              Requerido
+            </Button>
           )}
         </div>
 
-        {/* Delete */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation()
-            onDelete()
-          }}
-          className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 px-3"
-        >
-          Eliminar
-        </Button>
+        <div className="flex items-center gap-3 h-8">
+          <div className="w-px h-4 bg-border/30 mx-1" />
+
+          {/* Delete */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            className="text-muted-foreground/60 hover:text-destructive hover:bg-destructive/5 h-8 w-8 p-0 sm:w-auto sm:px-3 gap-2 transition-colors"
+          >
+            <Trash2 className="size-4" />
+            <span className="hidden sm:inline">Eliminar</span>
+          </Button>
+        </div>
       </div>
     </div>
   )
