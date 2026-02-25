@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
 }
 
@@ -20,23 +20,23 @@ model Doctor {
   lastName  String
   createdAt DateTime @default(now())
 
-  forms        Form[]
-  submissions  FormSubmission[]
+  forms       Form[]
+  submissions FormSubmission[]
 }
 
 model Form {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   doctorId    String
   name        String
   description String?
-  fields      Json     // Estructura dinámica del formulario
-  isActive    Boolean  @default(true)
-  version     Int      @default(1)
+  fields      Json // Estructura dinámica del formulario
+  isActive    Boolean @default(true)
+  version     Int     @default(1)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  doctor      Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctor      Doctor           @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   submissions FormSubmission[]
 
   @@index([doctorId])
@@ -44,19 +44,19 @@ model Form {
 }
 
 model FormSubmission {
-  id          String            @id @default(cuid())
-  token       String            @unique
-  doctorId    String
-  formId      String
+  id       String @id @default(cuid())
+  token    String @unique
+  doctorId String
+  formId   String
 
-  responses   Json?             // Respuestas del formulario
-  status      SubmissionStatus  @default(pending)
+  responses Json? // Respuestas del formulario
+  status    SubmissionStatus @default(pending)
 
-  createdAt   DateTime          @default(now())
+  createdAt   DateTime  @default(now())
   completedAt DateTime?
 
-  doctor      Doctor            @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  form        Form              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
 
   @@index([doctorId])
   @@index([formId])

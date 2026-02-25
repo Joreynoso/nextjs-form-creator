@@ -6,7 +6,19 @@ import { FormField, FieldType, Form } from '@/@types/types'
 import { Button } from '../ui/button'
 import { updateForm } from '@/actions/forms/forms'
 import { toast } from 'sonner'
-import { Check, MessageCircleWarning, Pencil } from 'lucide-react'
+import {
+    Check,
+    MessageCircleWarning,
+    Pencil,
+    Type,
+    AlignLeft,
+    ListFilter,
+    CircleDot,
+    CheckSquare,
+    Hash,
+    Minus,
+    Plus
+} from 'lucide-react'
 import FieldCard from './FieldCard'
 import FieldEmpty from './FieldEmpty'
 
@@ -14,6 +26,23 @@ interface FormBuilderProps {
     initialFields?: FormField[]
     form?: Form | null
 }
+
+function FieldAddButton({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick: () => void }) {
+    return (
+        <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClick}
+            className="flex items-center gap-2 h-9 px-3 border border-transparent hover:border-border/40 hover:bg-secondary/40 text-muted-foreground hover:text-foreground transition-all duration-200 rounded-md group"
+        >
+            <div className="text-muted-foreground/60 group-hover:text-primary transition-colors">
+                {icon}
+            </div>
+            <span className="text-xs font-medium whitespace-nowrap">{label}</span>
+        </Button>
+    )
+}
+
 
 export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
@@ -154,15 +183,53 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                 </div>
             </div>
 
-            {/* action buttons   */}
-            <div className="flex gap-2 flex-wrap items-center">
-                <span className="text-sm font-medium text-muted-foreground mr-2">Agregar campo:</span>
-                <Button variant="outline" size="sm" onClick={() => addField("text")}>Texto</Button>
-                <Button variant="outline" size="sm" onClick={() => addField("textarea")}>Texto largo</Button>
-                <Button variant="outline" size="sm" onClick={() => addField("select")}>Lista desplegable</Button>
-                <Button variant="outline" size="sm" onClick={() => addField("radio")}>Opción única</Button>
-                <Button variant="outline" size="sm" onClick={() => addField("checkbox")}>Múltiple choice</Button>
+            {/* minimalist toolbar   */}
+            <div className="flex flex-col gap-3 py-2">
+                <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">Constructor</span>
+                    <div className="h-px flex-1 bg-border/20 mx-4" />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1">
+                    <FieldAddButton
+                        icon={<Type className="size-3.5" />}
+                        label="Texto"
+                        onClick={() => addField("text")}
+                    />
+                    <FieldAddButton
+                        icon={<Hash className="size-3.5" />}
+                        label="Número"
+                        onClick={() => addField("number")}
+                    />
+                    <FieldAddButton
+                        icon={<AlignLeft className="size-3.5" />}
+                        label="Área de texto"
+                        onClick={() => addField("textarea")}
+                    />
+                    <FieldAddButton
+                        icon={<ListFilter className="size-3.5" />}
+                        label="Selección"
+                        onClick={() => addField("select")}
+                    />
+                    <FieldAddButton
+                        icon={<CircleDot className="size-3.5" />}
+                        label="Radio"
+                        onClick={() => addField("radio")}
+                    />
+                    <FieldAddButton
+                        icon={<CheckSquare className="size-3.5" />}
+                        label="Check"
+                        onClick={() => addField("checkbox")}
+                    />
+                    <FieldAddButton
+                        icon={<Minus className="size-3.5" />}
+                        label="Separador"
+                        onClick={() => addField("section")}
+                    />
+                </div>
             </div>
+
+
 
             {/* campos */}
             <div>

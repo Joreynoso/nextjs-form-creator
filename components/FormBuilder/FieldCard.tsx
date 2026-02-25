@@ -2,7 +2,7 @@ import { FormField } from '@/@types/types'
 import { Button } from '../ui/button'
 import { Trash2, Asterisk } from 'lucide-react'
 
-const fielCardStyle = "bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg shadow-sm backdrop-blur-sm transition-all duration-300"
+const fielCardStyle = "bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 duration-500"
 
 interface FieldCardProps {
   field: FormField
@@ -36,8 +36,8 @@ export default function FieldCard({
     <div
       onClick={onSelect}
       className={`${fielCardStyle} ${isActive
-        ? "border-primary/40 ring-1 ring-primary/10 bg-primary/2"
-        : "border-border/40 hover:border-border/80 hover:shadow-md"
+        ? "border-primary/50 bg-primary/1"
+        : "border-border/30 hover:border-border/60 hover:shadow-md"
         }`}
     >
       {/* Label */}
@@ -58,6 +58,12 @@ export default function FieldCard({
         {field.type === "text" && (
           <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-2.5 px-4 text-sm text-muted-foreground/50 italic">
             Respuesta corta
+          </div>
+        )}
+
+        {field.type === "number" && (
+          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-2.5 px-4 text-sm text-muted-foreground/50 italic">
+            Respuesta numérica
           </div>
         )}
 

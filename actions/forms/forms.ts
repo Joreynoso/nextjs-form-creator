@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@prisma/client"
+import { Prisma } from "@/lib/generated/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
@@ -119,7 +119,7 @@ export async function updateForm(formId: string,
     data: {
       name,
       description,
-      fields: fields as Prisma.InputJsonValue
+      fields: fields as unknown as Prisma.InputJsonValue
     }
   })
 
