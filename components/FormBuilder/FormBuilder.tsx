@@ -5,14 +5,14 @@ import { useState } from "react"
 import { FormField, FieldType, Form } from '@/@types/types'
 import { Button } from '../ui/button'
 import { updateForm } from '@/actions/forms/forms'
-import FieldCard from './FieldCard'
-import FieldEmpty from './FieldEmpty'
 import { toast } from 'sonner'
 import { Check, MessageCircleWarning, Pencil } from 'lucide-react'
+import FieldCard from './FieldCard'
+import FieldEmpty from './FieldEmpty'
 
 interface FormBuilderProps {
     initialFields?: FormField[]
-    form?: Form
+    form?: Form | null
 }
 
 export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
@@ -78,12 +78,14 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
         setActiveFieldId(newField.id)
     }
 
+    // icon saved
     const checkSaved = (
         <div className='w-8 h-8 rounded-full aspect-square flex justify-center items-center bg-secondary'>
             <Check className="w-4 h-4" />
         </div>
     )
 
+    // icon unsave
     const unsaveAlert = (
         <span className="w-8 h-8 rounded-full aspect-square flex justify-center items-center bg-secondary">
             <MessageCircleWarning className="w-4 h-4" />
@@ -93,8 +95,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     // render return
     return (
         <div className="space-y-6">
-
-
+            
             {/* isDirty section */}
             <div className="w-full bg-card border border-border/40 shadow-sm backdrop-blur-sm transition-all hover:shadow-md p-6 rounded-lg flex items-center justify-between mb-4">
                 {isDirty ? (

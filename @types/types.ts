@@ -33,9 +33,7 @@ export interface FormField {
   };
 }
 
-export interface FormWithSubmissions extends Form {
-  submissions: FormResponse[];
-}
+
 
 export interface Form {
   id: string;
@@ -46,6 +44,10 @@ export interface Form {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface FormWithSubmissions extends Form {
+  submissions: FormResponse[];
 }
 
 export interface Patient {
