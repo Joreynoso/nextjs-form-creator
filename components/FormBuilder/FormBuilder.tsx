@@ -29,16 +29,23 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     // states para verificar si hubo cambios o no
     const [originalName, setOriginalName] = useState(form?.name ?? "")
     const [originalDescription, setOriginalDescription] = useState(form?.description ?? "")
+    const [originalFields, setOriginalFields] = useState<FormField[]>(
+        structuredClone(initialFields ?? [])
+    )
+
+    // verificar si las preguntas cambiaron
+    const fieldsChanged =
+        JSON.stringify(fields) !== JSON.stringify(originalFields)
 
     // verificar si el formulario tiene cambios "isDirty"
-    const isDirty = name !== originalName || description !== originalDescription 
+    const isDirty = name !== originalName || description !== originalDescription || fieldsChanged
 
     // handleSave
     async function handleSave() {
         if (!form?.id) return
         try {
             setLoading(true)
-            const result = await updateForm(form.id, name, description)
+            const result = await updateForm(form.id, name, description, fields)
             if (!result.success) {
                 toast.error(result.message)
                 setLoading(false)
@@ -46,11 +53,14 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             }
 
             toast.success(result.message)
+            console.log('result', result)
 
             // setear los valores originales nuevos
             setOriginalName(name)
             setOriginalDescription(description)
-            
+            setOriginalFields(structuredClone(fields))
+
+
             setLoading(false)
         } catch (error) {
             toast.error("Error al guardar el formulario")
@@ -95,7 +105,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     // render return
     return (
         <div className="space-y-6">
-            
+
             {/* isDirty section */}
             <div className="w-full bg-card border border-border/40 shadow-sm backdrop-blur-sm transition-all hover:shadow-md p-6 rounded-lg flex items-center justify-between mb-4">
                 {isDirty ? (

@@ -1,11 +1,11 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
-
-
+import { FormField } from '@/@types/types'
 
 /**
  * Crea un formulario con campos vacíos para el doctor autenticado.
@@ -86,9 +86,19 @@ export async function deleteForm(id: string) {
   }
 }
 
+/**
+ * Actualiza un formulario por su ID.
+ * @param formId - ID del formulario a actualizar.
+ * @param name - Nuevo nombre del formulario.
+ * @param description - Nueva descripción del formulario.
+ * @param fields - Nuevos campos del formulario.
+ * @returns {success: true, message: "Formulario actualizado correctamente", form: form} 
+ * Objeto que indica el éxito de la operación y un mensaje descriptivo.
+ */
 export async function updateForm(formId: string,
   name: string,
-  description: string) {
+  description: string,
+  fields: FormField[]) {
 
   const { userId } = await auth()
 
@@ -99,13 +109,17 @@ export async function updateForm(formId: string,
     }
   }
 
+  const doctor = await getOrCreateDoctor()
+
   const form = await prisma.form.update({
     where: {
-      id: formId
+      id: formId,
+      doctorId: doctor.id
     },
     data: {
       name,
-      description
+      description,
+      fields: fields as Prisma.InputJsonValue
     }
   })
 
@@ -120,6 +134,7 @@ export async function updateForm(formId: string,
 
   return {
     success: true,
-    message: "Formulario actualizado correctamente"
+    message: "Formulario actualizado correctamente",
+    form: form
   }
 }
