@@ -33,8 +33,6 @@ export interface FormField {
   };
 }
 
-
-
 export interface Form {
   id: string;
   doctorId: string;
@@ -44,6 +42,8 @@ export interface Form {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  publicToken: string | null;
+  isPublicOpen: boolean;
 }
 
 export interface FormWithSubmissions extends Form {

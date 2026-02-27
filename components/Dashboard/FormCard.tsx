@@ -24,6 +24,9 @@ import FormDialogDelete from './FormDialogDelete';
 import { deleteForm } from '@/actions/forms/forms';
 import { toast } from 'sonner';
 
+// toggle public access
+import { togglePublicAccess } from "@/actions/forms/forms"
+
 // type props
 type FormCardProps = {
     form: {
@@ -32,16 +35,19 @@ type FormCardProps = {
         description: string | null
         isActive: boolean
         createdAt: Date
+        isPublicOpen: boolean
+        publicToken: string | null
     }
 }
 
 export default function FormCard({ form }: FormCardProps) {
 
     // Estado para abrir el dialog de eliminación
+    const [loading, setLoading] = useState(false)
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
-    // Handle delete form (Actual deletion logic)
+    // Handle delete form
     const handleDeleteForm = async () => {
         setIsDeleting(true)
         try {
@@ -60,6 +66,27 @@ export default function FormCard({ form }: FormCardProps) {
         } finally {
             setIsDeleting(false)
         }
+    }
+
+    // Handle toggle public access
+    const handleTogglePublicLink = async () => {
+        setLoading(true)
+        const res = await togglePublicAccess(form.id)
+
+        if (!res?.success) {
+            toast.error("No se pudo activar el link")
+            return
+        }
+
+        if (res.isPublicOpen && res.token) {
+            const link = `${window.location.origin}/form/${res.token}`
+            await navigator.clipboard.writeText(link)
+
+            toast.success("Link copiado al portapapeles")
+        } else {
+            toast("Link desactivado")
+        }
+        setLoading(false)
     }
 
     return (
@@ -106,9 +133,9 @@ export default function FormCard({ form }: FormCardProps) {
                         <Badge variant={form.isActive ? "default" : "secondary"} className="text-[10px] px-2 py-0">
                             {form.isActive ? 'Activo' : 'Inactivo'}
                         </Badge>
-                        <Button variant="ghost" size="xs" className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5">
+                        <Button variant="ghost" size="xs" onClick={handleTogglePublicLink} className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5">
                             <Copy className="size-3" />
-                            Link
+                            {loading ? "Copiando..." : "Copiar link"}
                         </Button>
                     </div>
                 </div>

@@ -14,3 +14,10 @@
 --> Averiguar como verificar en cada cambio que los campos no esten vacios, del lado del front y del backend, usando zod
 para evitar que se envien nombres de pregunta vacios.
 
+## Errores en las actions
+--> Error en ownership, de momento cualquiera puede borar un formulario 
+where: {
+  id: formId,
+  doctorId: doctor.id
+}
+

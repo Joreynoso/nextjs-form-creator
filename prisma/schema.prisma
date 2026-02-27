@@ -33,6 +33,9 @@ model Form {
   isActive    Boolean @default(true)
   version     Int     @default(1)
 
+  publicToken  String? @unique
+isPublicOpen Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

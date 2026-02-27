@@ -5,6 +5,7 @@ import { Prisma } from "@/lib/generated/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
+import { nanoid } from "nanoid"
 import { FormField } from '@/@types/types'
 
 /**
@@ -136,5 +137,60 @@ export async function updateForm(formId: string,
     success: true,
     message: "Formulario actualizado correctamente",
     form: form
+  }
+}
+
+
+export async function togglePublicAccess(formId: string) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return {
+      success: false,
+      message: "No autorizado"
+    }
+  }
+
+  const doctor = await getOrCreateDoctor()
+
+  if (!doctor) {
+    return { success: false, message: "Unauthorized" }
+  }
+
+  const form = await prisma.form.findFirst(
+    {
+      where: {
+        id: formId,
+        doctorId: doctor.id
+      }
+    }
+  )
+
+  if (!form) {
+    return { success: false, message: "Form not found" }
+  }
+
+  let token = form.publicToken
+
+  if (!token) {
+    token = nanoid(16)
+  }
+
+  // cambiar el estado de isPublicOpen a true
+  const updated = await prisma.form.update({
+    where: { id: formId },
+    data: {
+      publicToken: token,
+      isPublicOpen: true
+    }
+  })
+
+  revalidatePath(`/dashboard/${formId}`)
+  revalidatePath(`/dashboard`)
+
+  return {
+    success: true,
+    isPublicOpen: updated.isPublicOpen,
+    token: updated.publicToken
   }
 }

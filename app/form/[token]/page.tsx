@@ -1,45 +1,78 @@
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 
-async function getForm(token: string) {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/public/submissions/${token}`,
-        { cache: "no-store" }
-    )
-    if (!res.ok) return null
-    return res.json()
-}
+export default async function FormPage({ params }: { params: { token: string } }) {
 
-export default async function FormPage({ params }: { params: Promise<{ token: string }> }) {
+    const { token } = params
 
-    // get token from params
-    const { token } = await params
-
-    // get form from token
-    const form = await getForm(token)
+    const form = await prisma.form.findFirst({
+        where: {
+            publicToken: token,
+            isPublicOpen: true
+        }
+    })
 
     if (!form) {
         notFound()
     }
 
-    console.log('formulario obtenido desde el token', form)
+    const fields = form.fields as any[]
 
-    // render return
     return (
-        <main className="w-full min-h-screen flex justify-center items-center">
-            <h1 className="text-2xl font-bold mb-2">{form.name}</h1>
-            <p className="mb-6 text-muted-foreground">
-                {form.description}
-            </p>
+        <div className='"w-full py-5'>
 
-            {/* render form fields Client component */}
-            <div className="w-full max-w-2xl mx-auto">
-                {form.fields.map((field: any) => (
-                    <div key={field.id} className="mb-4">
-                        <label className="block text-sm font-medium mb-2">{field.label}</label>
-                        <input type="text" className="w-full px-3 py-2 border border-border rounded-md" />
+            <Breadcrumb className='mb-5'>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>{form.name}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+
+            <div className='flex flex-col'>
+                <p className='text-base text-muted-foreground leading-relaxed'>
+                    {form.name}
+                </p>
+            </div>
+
+            <form className="space-y-4">
+                {fields.map((field) => (
+                    <div key={field.id} className="space-y-2">
+                        <label className="text-sm font-medium">
+                            {field.label}
+                            {field.required && " *"}
+                        </label>
+
+                        {field.type === "text" && (
+                            <input
+                                type="text"
+                                placeholder={field.placeholder}
+                                className="w-full px-3 py-2 border border-border rounded-md"
+                            />
+                        )}
+
+                        {field.type === "textarea" && (
+                            <textarea
+                                placeholder={field.placeholder}
+                                className="w-full px-3 py-2 border border-border rounded-md"
+                            />
+                        )}
+
+                        {field.type === "number" && (
+                            <input
+                                type="number"
+                                className="w-full px-3 py-2 border border-border rounded-md"
+                            />
+                        )}
                     </div>
                 ))}
-            </div>
-        </main>
+            </form>
+
+        </div>
     )
 }
