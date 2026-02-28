@@ -43,7 +43,6 @@ function FieldAddButton({ icon, label, onClick }: { icon: React.ReactNode, label
     )
 }
 
-
 export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
     // localt states
@@ -228,8 +227,6 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                     />
                 </div>
             </div>
-
-
 
             {/* campos */}
             <div>

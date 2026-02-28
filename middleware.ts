@@ -10,7 +10,6 @@ const isPublicRoute = createRouteMatcher([
 
 // middleware
 export default clerkMiddleware(async (auth, request) => {
-  console.log('-->[CLERK PROXY] Running for:', request.url)
   if (!isPublicRoute(request)) {
     await auth.protect()
   }

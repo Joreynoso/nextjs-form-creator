@@ -124,6 +124,8 @@ export async function updateForm(formId: string,
     }
   })
 
+  console.log('-->[FORM]', form)
+
   if (!form) {
     return {
       success: false,
@@ -131,6 +133,11 @@ export async function updateForm(formId: string,
     }
   }
 
+  // debe revalidarse donde vive el formulario sino
+  // nextjs sigue sirviendo el snapshot viejo
+  // los server components se cachean por ruta
+  revalidatePath(`/dashboard/${formId}`)
+  revalidatePath(`/dashboard/${formId}/edit`)
   revalidatePath("/dashboard")
 
   return {
