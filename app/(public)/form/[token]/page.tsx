@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import FormPlayer from '@/components/FormPlayer/FormPlayer'
+import FormDisabled from '@/components/FormPlayer/FormDisabled'
 
 export default async function FormPage(
     { params }: { params: Promise<{ token: string }> }
@@ -15,6 +16,10 @@ export default async function FormPage(
 
     if (!form) {
         return <div>Formulario no encontrado</div>
+    }
+
+    if (!form.isPublicOpen) {
+        return <FormDisabled />
     }
 
     return (

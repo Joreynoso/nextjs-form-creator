@@ -6,13 +6,9 @@ import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
 import { nanoid } from "nanoid"
-import { FormField } from '@/@types/types'
+import { FormField, PublicAccessResult } from '@/@types/types'
 
-/**
- * Crea un formulario con campos vacíos para el doctor autenticado.
- * @returns {success: true, message: "Formulario creado correctamente", data: form.id } 
- * Objeto que indica el éxito de la operación, un mensaje descriptivo y el ID del formulario creado.
- */
+
 export async function createEmptyForm() {
   const { userId } = await auth()
 
@@ -50,12 +46,6 @@ export async function createEmptyForm() {
   }
 }
 
-/**
- * Elimina un formulario por su ID.
- * @param id - ID del formulario a eliminar.
- * @returns {success: true, message: "Formulario eliminado correctamente"} 
- * Objeto que indica el éxito de la operación y un mensaje descriptivo.
- */
 export async function deleteForm(id: string) {
   const { userId } = await auth()
 
@@ -87,15 +77,6 @@ export async function deleteForm(id: string) {
   }
 }
 
-/**
- * Actualiza un formulario por su ID.
- * @param formId - ID del formulario a actualizar.
- * @param name - Nuevo nombre del formulario.
- * @param description - Nueva descripción del formulario.
- * @param fields - Nuevos campos del formulario.
- * @returns {success: true, message: "Formulario actualizado correctamente", form: form} 
- * Objeto que indica el éxito de la operación y un mensaje descriptivo.
- */
 export async function updateForm(formId: string,
   name: string,
   description: string,
@@ -147,43 +128,28 @@ export async function updateForm(formId: string,
   }
 }
 
-
-export async function togglePublicAccess(formId: string) {
+export async function enablePublicAccess(formId: string): Promise<PublicAccessResult> {
   const { userId } = await auth()
 
   if (!userId) {
-    return {
-      success: false,
-      message: "No autorizado"
-    }
+    return { success: false, message: "No autorizado" }
   }
 
   const doctor = await getOrCreateDoctor()
 
-  if (!doctor) {
-    return { success: false, message: "Unauthorized" }
-  }
-
-  const form = await prisma.form.findFirst(
-    {
-      where: {
-        id: formId,
-        doctorId: doctor.id
-      }
+  const form = await prisma.form.findFirst({
+    where: {
+      id: formId,
+      doctorId: doctor.id
     }
-  )
+  })
 
   if (!form) {
     return { success: false, message: "Form not found" }
   }
 
-  let token = form.publicToken
+  let token = form.publicToken ?? nanoid(16)
 
-  if (!token) {
-    token = nanoid(16)
-  }
-
-  // cambiar el estado de isPublicOpen a true
   const updated = await prisma.form.update({
     where: { id: formId },
     data: {
@@ -192,12 +158,49 @@ export async function togglePublicAccess(formId: string) {
     }
   })
 
-  revalidatePath(`/dashboard/${formId}`)
   revalidatePath(`/dashboard`)
+  revalidatePath(`/dashboard/${formId}`)
 
   return {
     success: true,
     isPublicOpen: updated.isPublicOpen,
     token: updated.publicToken
+  }
+}
+
+export async function disablePublicAccess(formId: string): Promise<PublicAccessResult> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "No autorizado" }
+  }
+
+  const doctor = await getOrCreateDoctor()
+
+  const form = await prisma.form.findFirst({
+    where: {
+      id: formId,
+      doctorId: doctor.id
+    }
+  })
+
+  if (!form) {
+    return { success: false, message: "Form not found" }
+  }
+
+  const updated = await prisma.form.update({
+    where: { id: formId },
+    data: {
+      isPublicOpen: false
+    }
+  })
+
+  revalidatePath(`/dashboard`)
+  revalidatePath(`/dashboard/${formId}`)
+
+  return {
+    success: true,
+    isPublicOpen: updated.isPublicOpen,
+    token: updated.publicToken // 👈 SIEMPRE presente
   }
 }

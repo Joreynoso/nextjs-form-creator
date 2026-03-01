@@ -74,3 +74,11 @@ export type FieldValue =
   | string[]
   | null
   | undefined
+
+
+export type PublicAccessResult = {
+  success: boolean
+  isPublicOpen?: boolean
+  token?: string | null
+  message?: string
+}

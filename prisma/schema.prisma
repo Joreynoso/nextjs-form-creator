@@ -34,7 +34,7 @@ model Form {
   version     Int     @default(1)
 
   publicToken  String? @unique
-isPublicOpen Boolean @default(false)
+  isPublicOpen Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
