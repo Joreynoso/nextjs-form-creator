@@ -1,6 +1,10 @@
-import { CircleAlert, ClipboardType } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 
-export default function FormDisabled() {
+interface FormDisabledProps {
+    message?: string
+}
+
+export default function FormDisabled({ message }: FormDisabledProps) {
     return (
         <div className='w-full 
         flex flex-col items-center justify-center gap-6 py-12 px-4 rounded-lg'>
@@ -12,7 +16,7 @@ export default function FormDisabled() {
                     Formulario Desactivado
                 </h3>
                 <p className='text-sm font-sans text-muted-foreground max-w-sm'>
-                    Este formulario no está activo.
+                    {message || "Este formulario no está activo."}
                 </p>
             </div>
         </div>

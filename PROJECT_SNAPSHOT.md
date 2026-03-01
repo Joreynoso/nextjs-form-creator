@@ -1,6 +1,6 @@
 # 📸 PROJECT SNAPSHOT — nexjs-form-creator
 
-> Generado: 2026-02-27 · Estado: en desarrollo activo
+> Generado: 2026-03-01 · Estado: en desarrollo activo
 
 ---
 
@@ -12,8 +12,9 @@
 1. El doctor se registra / loguea con Clerk.
 2. Se le crea automáticamente un perfil `Doctor` en la base de datos.
 3. Crea formularios con campos dinámicos desde el FormBuilder.
-4. (Pendiente) Envía un link único a un paciente → el paciente completa el formulario.
-5. El doctor ve las respuestas en su dashboard.
+4. El doctor habilita el acceso público → se genera un link único (`publicToken`).
+5. El doctor envía el link al paciente → el paciente completa el formulario (en desarrollo).
+6. El doctor ve las respuestas en su dashboard.
 
 ---
 
@@ -25,67 +26,40 @@ nexjs-form-creator/
 │   └── types.ts                  # Tipos globales TypeScript
 ├── actions/
 │   └── forms/
-│       └── forms.ts              # Server Actions (CRUD de formularios)
+│       └── forms.ts              # Server Actions (CRUD, Public Access)
 ├── app/
-│   ├── api/
-│   │   ├── forms/
-│   │   │   ├── route.ts          # GET /api/forms, POST /api/forms
-│   │   │   └── [formId]/
-│   │   │       └── submissions/  # (pendiente implementar)
-│   │   ├── patients/
-│   │   │   ├── route.ts          # GET/POST /api/patients (stub)
-│   │   │   └── generate-link/
-│   │   │       └── route.ts      # POST /api/patients/generate-link (stub)
-│   │   └── public/
-│   │       └── submissions/
-│   │           └── [token]/      # (pendiente implementar)
-│   ├── dashboard/
+│   ├── (dashboard)/              # Rutas con Navbar y Footer
 │   │   ├── layout.tsx
-│   │   ├── (list)/
-│   │   │   ├── page.tsx          # Lista de formularios del doctor
-│   │   │   └── loading.tsx       # Skeleton screen
-│   │   └── [formId]/
-│   │       ├── page.tsx          # Detalle + respuestas del formulario
-│   │       └── edit/
-│   │           └── page.tsx      # Editor del formulario (FormBuilder)
-│   ├── form/
-│   │   └── [token]/              # (pendiente) Vista pública del formulario para el paciente
-│   ├── sign-in/
-│   ├── sign-up/
-│   ├── about/
-│   ├── profile/
+│   │   ├── dashboard/
+│   │   │   ├── (list)/           # Lista de formularios (page.tsx)
+│   │   │   └── [formId]/         # Detalle y edición
+│   │   ├── about/
+│   │   ├── profile/
+│   │   └── sign-in / sign-up /
+│   ├── (public)/                 # Rutas limpias (sin Navbar/Footer)
+│   │   ├── layout.tsx
+│   │   └── form/[token]/         # Vista pública para el paciente
+│   ├── api/                      # Endpoints (legacy/stubs)
+│   ├── layout.tsx                # Root layout (Providers solamente)
 │   ├── globals.css
-│   ├── layout.tsx
 │   └── page.tsx                  # Landing page (redirige a dashboard)
 ├── components/
-│   ├── Dashboard/
-│   │   ├── FormCard.tsx
-│   │   ├── FormCreate.tsx
-│   │   ├── FormDialogDelete.tsx
-│   │   ├── FormEmpty.tsx
-│   │   ├── PatientTable.tsx
-│   │   └── createFormButton.tsx
-│   ├── FormBuilder/
-│   │   ├── FormBuilder.tsx       # Componente principal del editor
-│   │   ├── FieldCard.tsx
-│   │   ├── FieldEditor.tsx
-│   │   ├── FieldEmpty.tsx
-│   │   └── FieldList.tsx
-│   ├── PatientForm/
-│   ├── Submissions/
-│   ├── hero.tsx
+│   ├── ui/                       # Componentes de Shadcn UI
+│   ├── Dashboard/                # Componentes del panel de control
+│   ├── FormBuilder/              # Editor de formularios (Artesano)
+│   ├── FormPlayer/               # Visualizador de formularios (Paciente)
+│   │   ├── FormPlayer.tsx        # Lógica de pasos y validación
+│   │   ├── FieldRenderer.tsx     # Renderizado dinámico de campos
+│   │   └── FormDisabled.tsx      # Pantalla para formularios cerrados
 │   ├── navbar.tsx
 │   ├── footer.tsx
 │   ├── sidebar.tsx
-│   ├── themeprovider.tsx
-│   └── themetoggle.tsx
+│   └── screensizehelper.tsx      # Utilidad de desarrollo (viewport size)
 ├── lib/
-│   ├── prisma.ts                 # Cliente Prisma (singleton con pg adapter)
-│   ├── get-or-create-doctor.ts   # Utilidad para obtener/crear doctor desde Clerk
-│   ├── clerk-theme.ts
-│   └── generated/prisma/         # Cliente generado por Prisma
+│   ├── prisma.ts                 # Cliente Prisma
+│   └── get-or-create-doctor.ts   # Integración Clerk -> DB
 ├── prisma/
-│   └── schema.prisma
+│   └── schema.prisma             # Modelos PostgreSQL
 └── middleware.ts                  # Protección de rutas con Clerk
 ```
 
@@ -116,11 +90,13 @@ nexjs-form-creator/
 | `description` | `String?` | opcional |
 | `fields` | `Json` | Estructura dinámica (array de `FormField`) |
 | `isActive` | `Boolean` | default true |
+| `publicToken` | `String?` (unique)| Token para acceso público (nanoid) |
+| `isPublicOpen` | `Boolean` | Si el formulario acepta respuestas públicas |
 | `version` | `Int` | default 1 |
 | `createdAt` | `DateTime` | |
 | `updatedAt` | `DateTime` | @updatedAt |
 
-**Índices:** `doctorId`, `isActive`
+**Índices:** `doctorId`, `isActive`, `publicToken`
 
 ### `FormSubmission`
 | Campo | Tipo | Notas |
@@ -165,22 +141,14 @@ enum SubmissionStatus {
 
 Todas usan `"use server"` y verifican autenticación con Clerk.
 
-### `createEmptyForm()`
-- Crea un formulario vacío (`fields: []`, nombre por defecto).
-- Llama a `getOrCreateDoctor()` para asociar al doctor.
-- Llama `revalidatePath("/dashboard")`.
-- **Retorna:** `{ success, message, data: form.id }`
+### CRUD Básico
+- `createEmptyForm()`: Crea form inicial.
+- `updateForm()`: Actualiza meta y campos. Revalida rutas de dashboard y edición.
+- `deleteForm()`: Elimina por ID (⚠️ mejorar seguridad).
 
-### `deleteForm(id: string)`
-- Elimina el formulario por `id` sin verificar ownership (⚠️ gap de seguridad potencial).
-- Llama `revalidatePath("/dashboard")`.
-- **Retorna:** `{ success, message }`
-
-### `updateForm(formId, name, description, fields)`
-- Actualiza nombre, descripción y campos del formulario.
-- Verifica que el `doctorId` del formulario coincida con el doctor autenticado.
-- Llama `revalidatePath("/dashboard")`.
-- **Retorna:** `{ success, message, form }`
+### Public Access
+- `enablePublicAccess(formId)`: Genera un `publicToken` (si no existe) y activa `isPublicOpen`.
+- `disablePublicAccess(formId)`: Desactiva `isPublicOpen`.
 
 ---
 
@@ -194,22 +162,16 @@ interface FormField {
   id: string
   type: FieldType
   label: string
-  placeholder?: string
-  options?: string[]        // select, radio, checkbox
-  allowOther?: boolean      // "Otro: ___"
   required?: boolean
-  showIf?: {                // Lógica condicional (pendiente implementar)
-    fieldId: string
-    operator: 'equals' | 'includes' | 'notEmpty'
-    value: string | string[]
-  }
+  // ... props específicas por tipo
 }
 
-interface Form { id, doctorId, name, description?, fields: FormField[], isActive, createdAt, updatedAt }
-interface FormWithSubmissions extends Form { submissions: FormResponse[] }
-interface Patient { id, token, doctorId, formId, firstName?, lastName?, formResponses?, formCompleted, completedAt?, createdAt, linkSentAt }
-interface FormResponse { [fieldId: string]: FieldValue }
-type FieldValue = string | number | string[] | null | undefined
+interface PublicAccessResult {
+  success: boolean
+  message: string
+  isPublicOpen?: boolean
+  token?: string | null
+}
 ```
 
 ---
@@ -241,27 +203,16 @@ type FieldValue = string | number | string[] | null | undefined
 
 ## 🧩 Componentes Clave
 
-### `FormBuilder` — `components/FormBuilder/FormBuilder.tsx`
-**Client Component** (`'use client'`)
+### `FormBuilder` (Editor)
+- Gestión de estado para `fields` dinámicos.
+- Botones de "Guardar" con detección de cambios (`isDirty`).
+- **Field Toolbar** para añadir nuevos elementos con micro-animaciones.
 
-**Props:** `initialFields?: FormField[]`, `form?: Form | null`
-
-**Estado interno:**
-- `name`, `description` → editables en inputs inline.
-- `fields: FormField[]` → array de campos del formulario.
-- `activeFieldId` → campo actualmente seleccionado para edición.
-- `originalName`, `originalDescription`, `originalFields` → para detectar cambios (`isDirty`).
-
-**Lógica:**
-- `isDirty` → compara estado actual vs. original (evita guardado innecesario).
-- `handleSave()` → llama `updateForm()` Server Action, actualiza originales, usa `sonner` para toasts.
-- `addField(type)` → agrega un `FormField` nuevo con `crypto.randomUUID()`.
-
-**UI:**
-- Barra de estado: "Guardado" / "Cambios sin guardar" + botón Guardar.
-- Inputs de nombre y descripción inline.
-- **Field Toolbar** con botones para: Texto, Número, Área de texto, Selección, Radio, Check, Separador.
-- Lista de `<FieldCard />` por cada campo, o `<FieldEmpty />` si no hay campos.
+### `FormPlayer` (Visualizador)
+- **Modo Pasos:** Renderiza una pregunta a la vez (step-by-step).
+- **Validación:** Verifica `required` antes de avanzar.
+- `FieldRenderer`: Componente recursivo/switch para renderizar el input correcto.
+- Utiliza `FormDisabled` si el formulario no está disponible.
 
 ---
 
@@ -355,20 +306,17 @@ type FieldValue = string | number | string[] | null | undefined
 
 ---
 
-## ⚠️ Estado Actual y Pendientes
+## 🏁 Estado y Pendientes
 
 | Feature | Estado |
 |---|---|
 | Auth con Clerk | ✅ Completo |
-| CRUD de formularios (Server Actions) | ✅ Funcional |
-| FormBuilder (editor de campos) | ✅ Funcional |
-| Dashboard lista de formularios | ✅ Funcional |
-| Ver respuestas de formularios | ⚠️ Parcial (tabla básica) |
-| Eliminar formulario (con dialog) | ✅ Funcional |
-| Vista pública del formulario para pacientes | ❌ Pendiente |
-| Generar link único para paciente | ❌ Pendiente |
-| Enviar respuestas del paciente (submissions) | ❌ Pendiente |
-| Lógica condicional de campos (`showIf`) | ❌ Pendiente (tipos definidos, no implementado) |
-| Perfil del doctor | ❌ Pendiente |
-| `PatientTable` | ❌ Stub vacío |
-| Seguridad en `deleteForm` (verificar ownership) | ⚠️ Gap potencial |
+| CRUD de formularios | ✅ Completo |
+| Editor dinámico (FormBuilder) | ✅ Funcional |
+| Separación de Layouts (Auth vs Public) | ✅ Completo |
+| Gestión de Link Público (Tokens) | ✅ Completo |
+| Vista pública del paciente (`FormPlayer`) | 🏗️ En desarrollo |
+| Envío de respuestas (submissions) | ❌ Pendiente |
+| Lógica condicional (`showIf`) | ❌ Pendiente |
+| Dashboard: Tabla de respuestas real | ⚠️ Stub básico |
+| Seguridad: Validación de dueño en delete | ⚠️ Gap pendiente |

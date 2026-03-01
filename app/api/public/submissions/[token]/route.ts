@@ -17,6 +17,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             )
         }
 
+
         // Buscar formulario asociado
         const form = await prisma.form.findUnique({
             where: { id: submission.formId }
@@ -26,6 +27,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             return NextResponse.json(
                 { error: "Form not found" },
                 { status: 404 }
+            )
+        }
+
+        if (!form.isActive || !form.isPublicOpen) {
+            return NextResponse.json(
+                { error: "Form unavailable" },
+                { status: 403 }
             )
         }
 
@@ -47,18 +55,21 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
     }
 }
 
-export async function POST(request: Request, context: { params: Promise<{ token: string }> }) {
+export async function POST(
+    request: Request,
+    context: { params: Promise<{ token: string }> }
+) {
     try {
 
-        console.log('obtener token')
         const token = (await context.params).token
 
-        console.log('obtener submission', token)
         const submission = await prisma.formSubmission.findUnique({
-            where: { token }
+            where: { token },
+            include: {
+                form: true
+            }
         })
 
-        console.log('submission', submission)
         if (!submission) {
             return NextResponse.json(
                 { error: "Not found" },
@@ -66,7 +77,21 @@ export async function POST(request: Request, context: { params: Promise<{ token:
             )
         }
 
-        console.log('submission status', submission.status)
+        // 🚨 Validaciones de seguridad
+        if (!submission.form.isActive) {
+            return NextResponse.json(
+                { error: "Form disabled" },
+                { status: 403 }
+            )
+        }
+
+        if (!submission.form.isPublicOpen) {
+            return NextResponse.json(
+                { error: "Form closed" },
+                { status: 403 }
+            )
+        }
+
         if (submission.status === "completed") {
             return NextResponse.json(
                 { error: "Form already completed" },
@@ -74,11 +99,16 @@ export async function POST(request: Request, context: { params: Promise<{ token:
             )
         }
 
-        console.log('obtener body')
         const body = await request.json()
         const { responses } = body
 
-        console.log('actualizar submission')
+        if (!responses) {
+            return NextResponse.json(
+                { error: "Missing responses" },
+                { status: 400 }
+            )
+        }
+
         const updatedSubmission = await prisma.formSubmission.update({
             where: { token },
             data: {
@@ -102,4 +132,3 @@ export async function POST(request: Request, context: { params: Promise<{ token:
         )
     }
 }
-

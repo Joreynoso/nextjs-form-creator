@@ -45,9 +45,13 @@ export default async function FormDetailPage({ params }: Props) {
         notFound()
     }
 
+    const completedCount = form.submissions.filter(s => s.status === "completed").length
+
     return (
         <div className="w-full py-5">
-            <Breadcrumb className='mb-5'>
+
+            {/* Breadcrumb */}
+            <Breadcrumb className='mb-6'>
                 <BreadcrumbList>
                     <BreadcrumbItem>
                         <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -63,51 +67,91 @@ export default async function FormDetailPage({ params }: Props) {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="w-full mb-5">
-                <p className="text-base text-muted-foreground leading-relaxed">
-                    Aquí puedes ver las respuestas de tu formulario {form.name}.
-                </p>
+            {/* Header con nombre + contador */}
+            <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
+                <div>
+                    <h1 className="font-serif text-2xl text-foreground">{form.name}</h1>
+                    {form.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{form.description}</p>
+                    )}
+                </div>
+                {form.submissions.length > 0 && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary font-medium">
+                            {completedCount} completada{completedCount !== 1 ? "s" : ""}
+                        </span>
+                        <span>de {form.submissions.length} enviada{form.submissions.length !== 1 ? "s" : ""}</span>
+                    </div>
+                )}
             </div>
 
-            {/* verificar si hay o no una submission */}
-            {form.submissions.length > 0 ? (
-                <div className="w-full mb-5">
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                        Aquí puedes ver las respuestas de tu formulario {form.name}.
-                    </p>
-                </div>
-            ) : (
+            {/* Submissions o estado vacío */}
+            {form.submissions.length === 0 ? (
                 <EmptySubmission />
-            )}
+            ) : (
+                <div className="flex flex-col gap-4">
+                    {form.submissions.map((sub, index) => {
+                        const isCompleted = sub.status === "completed"
+                        const responses = sub.responses as Record<string, any> | null
+                        const date = new Date(sub.createdAt).toLocaleDateString("es-AR", {
+                            day: "2-digit", month: "short", year: "numeric",
+                            hour: "2-digit", minute: "2-digit"
+                        })
 
-            {form.submissions.map(sub => (
-                <div key={sub.id} className="border border-border/40 rounded-lg p-4">
+                        return (
+                            <div
+                                key={sub.id}
+                                className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
+                            >
+                                {/* Card header */}
+                                <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-muted/40">
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-mono text-xs text-muted-foreground">
+                                            #{form.submissions.length - index}
+                                        </span>
+                                        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${isCompleted
+                                                ? "bg-primary/15 text-primary"
+                                                : "bg-muted text-muted-foreground"
+                                            }`}>
+                                            {isCompleted ? "✓ Completado" : "⏳ Pendiente"}
+                                        </span>
+                                    </div>
+                                    <time className="text-xs text-muted-foreground font-sans">{date}</time>
+                                </div>
 
-                    {sub.status === "completed" && sub.responses && (
-                        <table className="w-full text-sm">
-                            <tbody>
-                                {(form.fields as any[]).map(field => {
-                                    const value = (sub.responses as any)[field.id]
+                                {/* Card body */}
+                                {isCompleted && responses ? (
+                                    <dl className="divide-y divide-border/60">
+                                        {(form.fields as any[]).map(field => {
+                                            const value = responses[field.id]
+                                            if (value === undefined || value === null || value === "") return null
 
-                                    if (!value) return null
+                                            const displayValue = Array.isArray(value)
+                                                ? value.join(", ")
+                                                : String(value)
 
-                                    return (
-                                        <tr key={field.id} className="border-t">
-                                            <td className="py-2 pr-4 font-medium text-muted-foreground">
-                                                {field.label}
-                                            </td>
-                                            <td className="py-2">
-                                                {String(value)}
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    )}
-
+                                            return (
+                                                <div key={field.id} className="grid grid-cols-[1fr_2fr] gap-x-6 px-5 py-3 hover:bg-accent/30 transition-colors">
+                                                    <dt className="text-sm text-muted-foreground font-sans self-start pt-px truncate">
+                                                        {field.label}
+                                                    </dt>
+                                                    <dd className="text-sm text-foreground font-sans">
+                                                        {displayValue}
+                                                    </dd>
+                                                </div>
+                                            )
+                                        })}
+                                    </dl>
+                                ) : (
+                                    <p className="px-5 py-4 text-sm text-muted-foreground font-sans italic">
+                                        El paciente aún no ha completado este formulario.
+                                    </p>
+                                )}
+                            </div>
+                        )
+                    })}
                 </div>
-            ))}
+            )}
         </div>
     )
 }

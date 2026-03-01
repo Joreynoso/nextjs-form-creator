@@ -7,15 +7,18 @@ import { FormField } from "@/@types/types"
 
 interface FormPlayerProps {
     fields: FormField[]
+    submissionToken: string
 }
 
-export default function FormPlayer({ fields }: FormPlayerProps) {
+export default function FormPlayer({ fields, submissionToken }: FormPlayerProps) {
+
     const [step, setStep] = useState(0)
     const [answers, setAnswers] = useState<Record<string, any>>({})
     const [error, setError] = useState<string | null>(null)
     const [isFinished, setIsFinished] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    // guards
+    // guard: sin preguntas
     if (!fields || fields.length === 0) {
         return (
             <div className="text-center py-10 text-muted-foreground">
@@ -24,6 +27,7 @@ export default function FormPlayer({ fields }: FormPlayerProps) {
         )
     }
 
+    // guard: terminado
     if (isFinished) {
         return (
             <div className="text-center py-10">
@@ -33,12 +37,10 @@ export default function FormPlayer({ fields }: FormPlayerProps) {
         )
     }
 
-    const currentField = fields?.[step]
+    const currentField = fields[step]
     const isLast = step === fields.length - 1
 
-    if (!currentField) {
-        return null
-    }
+    if (!currentField) return null
 
     function validate(field: FormField) {
         if (!field.required) return true
@@ -52,7 +54,10 @@ export default function FormPlayer({ fields }: FormPlayerProps) {
         return value !== undefined && value !== ""
     }
 
-    function handleNext() {
+    async function handleNext() {
+
+        if (loading) return
+
         if (!validate(currentField)) {
             setError("Este campo es obligatorio")
             return
@@ -60,16 +65,44 @@ export default function FormPlayer({ fields }: FormPlayerProps) {
 
         setError(null)
 
-        // protección final
-        if (step + 1 >= fields.length) {
-            setIsFinished(true)
+        const isLastStep = step + 1 >= fields.length
+
+        // avanzar
+        if (!isLastStep) {
+            setStep(prev => prev + 1)
             return
         }
 
-        setStep(prev => prev + 1)
+        // 🚀 SUBMIT FINAL
+        try {
+
+            setLoading(true)
+
+            const res = await fetch(`/api/public/submissions/${submissionToken}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    responses: answers
+                })
+            })
+
+            if (!res.ok) {
+                throw new Error()
+            }
+
+            setIsFinished(true)
+
+        } catch {
+            setError("No se pudo enviar el formulario")
+        } finally {
+            setLoading(false)
+        }
     }
 
     function handleBack() {
+        if (loading) return
         setError(null)
         setStep(prev => Math.max(prev - 1, 0))
     }
@@ -95,21 +128,27 @@ export default function FormPlayer({ fields }: FormPlayerProps) {
             />
 
             {error && (
-                <p className="text-red-500 text-sm mt-2">
+                <p className="text-destructive text-sm mt-2">
                     {error}
                 </p>
             )}
 
             <div className="flex justify-between mt-8">
+
                 {step > 0 && (
-                    <Button variant="ghost" onClick={handleBack}>
+                    <Button variant="ghost" onClick={handleBack} disabled={loading}>
                         Atrás
                     </Button>
                 )}
 
-                <Button onClick={handleNext}>
-                    {isLast ? "Finalizar" : "Siguiente"}
+                <Button onClick={handleNext} disabled={loading}>
+                    {loading
+                        ? "Enviando..."
+                        : isLast
+                            ? "Finalizar"
+                            : "Siguiente"}
                 </Button>
+
             </div>
 
         </div>
