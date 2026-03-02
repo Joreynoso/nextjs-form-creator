@@ -10,7 +10,7 @@ export default function DashboardLayout({
         <>
             <Navbar />
 
-            <main className="flex-1 w-full flex mx-auto min-h-[calc(100vh-64px)] px-4 xl:px-0 max-w-7xl">
+            <main className="flex-1 w-full flex  mx-auto min-h-[calc(100vh-64px)] px-4 xl:px-0 max-w-7xl">
                 {children}
             </main>
 

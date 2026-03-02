@@ -13,6 +13,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import EmptySubmission from "@/components/Submissions/EmptySubmission"
+import SubmissionActions from "@/components/Submissions/SubmissionActions"
 
 interface Props {
     params: Promise<{ formId: string }>
@@ -110,13 +111,20 @@ export default async function FormDetailPage({ params }: Props) {
                                             #{form.submissions.length - index}
                                         </span>
                                         <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${isCompleted
-                                                ? "bg-primary/15 text-primary"
-                                                : "bg-muted text-muted-foreground"
+                                            ? "bg-primary/15 text-primary"
+                                            : "bg-muted text-muted-foreground"
                                             }`}>
                                             {isCompleted ? "✓ Completado" : "⏳ Pendiente"}
                                         </span>
                                     </div>
-                                    <time className="text-xs text-muted-foreground font-sans">{date}</time>
+                                    <div className="flex items-center gap-3">
+                                        <time className="text-xs text-muted-foreground font-sans">{date}</time>
+                                        <SubmissionActions
+                                            canCopy={isCompleted && !!responses}
+                                            responses={responses ?? {}}
+                                            fields={(form.fields as any[]).map(f => ({ id: f.id, label: f.label }))}
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Card body */}
