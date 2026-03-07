@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@/lib/generated/prisma"
+import { Prisma, SubmissionStatus } from "@/lib/generated/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
@@ -203,4 +203,52 @@ export async function disablePublicAccess(formId: string): Promise<PublicAccessR
     isPublicOpen: updated.isPublicOpen,
     token: updated.publicToken // 👈 SIEMPRE presente
   }
+}
+
+export async function expireOldSubmissions(formId: string) {
+
+  const expired = await prisma.formSubmission.updateMany({
+    where: {
+      formId,
+      status: SubmissionStatus.pending,
+      createdAt: {
+        lt: new Date(Date.now() - 1000 * 30) // 30 segundos
+      }
+    },
+    data: {
+      status: SubmissionStatus.expired
+    }
+  })
+
+  console.log("expired submissions:", expired.count)
+
+  return expired.count
+}
+
+export async function deleteSubmission(submissionId: string, formId: string) {
+
+    const { userId } = await auth()
+
+    if (!userId) {
+        throw new Error("Unauthorized")
+    }
+
+    const doctor = await getOrCreateDoctor()
+
+    const submission = await prisma.formSubmission.findUnique({
+        where: { id: submissionId },
+        include: {
+            form: true
+        }
+    })
+
+    if (!submission || submission.form.doctorId !== doctor.id) {
+        throw new Error("Not allowed")
+    }
+
+    await prisma.formSubmission.delete({
+        where: { id: submissionId }
+    })
+
+    revalidatePath(`/dashboard/${formId}`)
 }

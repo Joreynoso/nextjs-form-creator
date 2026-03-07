@@ -3,14 +3,18 @@
 import { useState } from 'react'
 import { Copy, Check, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { deleteSubmission } from '@/actions/forms/forms'
+import { toast } from 'sonner'
 
 interface SubmissionActionsProps {
     responses?: Record<string, any>
     fields?: Array<{ id: string; label: string }>
     canCopy?: boolean
+    submissionId: string
+    formId: string
 }
 
-export default function SubmissionActions({ responses = {}, fields = [], canCopy = false }: SubmissionActionsProps) {
+export default function SubmissionActions({ responses = {}, fields = [], canCopy = false, submissionId, formId }: SubmissionActionsProps) {
     const [copied, setCopied] = useState(false)
 
     function buildOrderedJson() {
@@ -31,6 +35,15 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
             setTimeout(() => setCopied(false), 2000)
         } catch {
             // clipboard no disponible
+        }
+    }
+
+    async function handleDelete() {
+        try {
+            await deleteSubmission(submissionId, formId)
+            toast.success("Respuesta eliminada correctamente")
+        } catch (error) {
+            toast.error("Error al eliminar la respuesta")
         }
     }
 
@@ -62,7 +75,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
             <Button
                 variant="ghost"
                 size="sm"
-                disabled
+                onClick={handleDelete}
                 className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 disabled:opacity-40"
             >
                 <Trash2 className="size-3.5" />

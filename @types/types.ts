@@ -82,3 +82,5 @@ export type PublicAccessResult = {
   token?: string | null
   message?: string
 }
+
+export type SubmissionStatus = "pending" | "completed" | "expired" | "cancelled"

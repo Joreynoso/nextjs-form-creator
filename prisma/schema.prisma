@@ -10,6 +10,8 @@ datasource db {
 enum SubmissionStatus {
   pending
   completed
+  expired
+  cancelled
 }
 
 model Doctor {
@@ -65,3 +67,4 @@ model FormSubmission {
   @@index([formId])
   @@index([status])
 }
+
