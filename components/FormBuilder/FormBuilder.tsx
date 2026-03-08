@@ -222,7 +222,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                     />
                     <FieldAddButton
                         icon={<Minus className="size-3.5" />}
-                        label="Separador"
+                        label="Titulo"
                         onClick={() => addField("section")}
                     />
                 </div>

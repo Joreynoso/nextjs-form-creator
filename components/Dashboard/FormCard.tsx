@@ -21,8 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useState } from 'react'
-import FormDialogDelete from './FormDialogDelete'
-import { deleteForm } from '@/actions/forms/forms'
+import  { deleteForm } from '@/actions/forms/forms'
 import { toast } from 'sonner'
 
 // toggle public access
