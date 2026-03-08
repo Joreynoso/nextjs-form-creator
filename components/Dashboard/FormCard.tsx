@@ -27,6 +27,7 @@ import { toast } from 'sonner'
 
 // toggle public access
 import { enablePublicAccess, disablePublicAccess } from "@/actions/forms/forms"
+import DeleteDialog from '../ui/deleteDialog'
 
 // type props
 type FormCardProps = {
@@ -206,11 +207,13 @@ export default function FormCard({ form }: FormCardProps) {
                 </div>
             </div>
 
-            <FormDialogDelete
+            <DeleteDialog
                 open={openDeleteDialog}
-                onClose={() => setOpenDeleteDialog(false)}
                 onConfirm={handleDeleteForm}
                 isDeleting={isDeleting}
+                onClose={() => setOpenDeleteDialog(false)}
+                title="Eliminar formulario"
+                description="Esta acción no se puede deshacer. Se eliminará permanentemente el formulario."
             />
         </>
     )

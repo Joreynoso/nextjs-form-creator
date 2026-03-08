@@ -5,6 +5,7 @@ import { Copy, Check, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { deleteSubmission } from '@/actions/forms/forms'
 import { toast } from 'sonner'
+import DeleteDialog from '../ui/deleteDialog'
 
 interface SubmissionActionsProps {
     responses?: Record<string, any>
@@ -15,6 +16,8 @@ interface SubmissionActionsProps {
 }
 
 export default function SubmissionActions({ responses = {}, fields = [], canCopy = false, submissionId, formId }: SubmissionActionsProps) {
+    const [open, setOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
     const [copied, setCopied] = useState(false)
 
     function buildOrderedJson() {
@@ -40,11 +43,19 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
 
     async function handleDelete() {
         try {
+            setIsDeleting(true)
             await deleteSubmission(submissionId, formId)
             toast.success("Respuesta eliminada correctamente")
         } catch (error) {
             toast.error("Error al eliminar la respuesta")
+        } finally {
+            setIsDeleting(false)
         }
+    }
+
+    function handleClose() {
+        setOpen(false)
+        setIsDeleting(false)
     }
 
     return (
@@ -71,16 +82,27 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
                 </Button>
             )}
 
-            {/* Eliminar — siempre visible, solo UI por ahora */}
-            <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDelete}
-                className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 disabled:opacity-40"
-            >
-                <Trash2 className="size-3.5" />
-                Eliminar
-            </Button>
+            {/* Eliminar — solo si hay un ID */}
+            {submissionId && (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setOpen(true)}
+                    className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent"
+                >
+                    <Trash2 className="size-3.5" />
+                    Eliminar
+                </Button>
+            )}
+
+            <DeleteDialog
+                open={open}
+                onConfirm={handleDelete}
+                isDeleting={isDeleting}
+                onClose={handleClose}
+                title="Eliminar respuesta"
+                description="Esta acción no se puede deshacer. Se eliminará permanentemente la respuesta."
+            />
         </div>
     )
 }

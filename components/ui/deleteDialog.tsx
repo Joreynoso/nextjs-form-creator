@@ -2,14 +2,16 @@
 import { Button } from '../ui/button'
 import { AlertTriangle } from 'lucide-react'
 
-type FormDialogDeleteProps = {
+type SubmissionDeleteDialogProps = {
     onConfirm: () => Promise<void>
     open: boolean
     isDeleting?: boolean
     onClose: () => void
+    title?: string
+    description?: string
 }
 
-export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose }: FormDialogDeleteProps) {
+export default function DeleteDialog({ open, onConfirm, isDeleting, onClose, title, description }: SubmissionDeleteDialogProps) {
 
     if (!open) return null
 
@@ -24,9 +26,9 @@ export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose 
                     </div>
 
                     <div className='space-y-2'>
-                        <h2 className='text-xl font-serif tracking-tight text-foreground'>¿Eliminar formulario?</h2>
+                        <h2 className='text-xl font-serif tracking-tight text-foreground'>{title}</h2>
                         <p className='font-sans text-muted-foreground text-sm leading-relaxed'>
-                            Esta acción no se puede deshacer. Se eliminarán permanentemente el formulario y todas sus respuestas asociadas.
+                            {description}
                         </p>
                     </div>
                 </div>
@@ -51,7 +53,7 @@ export default function FormDialogDelete({ open, onConfirm, isDeleting, onClose 
                                 <span className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
                                 Eliminando...
                             </span>
-                        ) : 'Eliminar formulario'}
+                        ) : 'Eliminar'}
                     </Button>
                 </div>
             </div>

@@ -28,7 +28,7 @@ export default async function FormPage({ params }: { params: Promise<{ token: st
   const fields = Array.isArray(form.fields) ? form.fields : []
 
   if (fields.length === 0) {
-    return <FormDisabled message="Este formulario aún no está listo" />
+    return <FormDisabled message="Este formulario aún no está listo, contacte al profesional" />
   }
 
   // Crear submission automáticamente
