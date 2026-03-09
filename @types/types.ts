@@ -50,6 +50,15 @@ export interface FormWithSubmissions extends Form {
   submissions: FormResponse[];
 }
 
+export interface Submission {
+  id: string;
+  formId: string;
+  responses: FormResponse;
+  status: SubmissionStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Patient {
   id: string;
   token: string;

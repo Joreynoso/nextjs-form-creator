@@ -47,7 +47,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
             const result = await deleteSubmission(submissionId, formId)
             setOpen(false)
             toast.success(result.message)
-        } catch (error) {
+        } catch {
             toast.error("Error al eliminar la respuesta")
         } finally {
             setIsDeleting(false)
@@ -60,39 +60,42 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
     }
 
     return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
+
             {/* Copiar JSON — solo si hay respuestas */}
             {canCopy && (
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleCopy}
-                    className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent"
+                    title="Copiar respuestas como JSON"
+                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all"
                 >
                     {copied ? (
                         <>
-                            <Check className="size-3.5 text-primary" />
-                            Copiado
+                            <Check className="size-3.5 text-primary shrink-0" />
+                            <span className="hidden sm:inline">Copiado</span>
                         </>
                     ) : (
                         <>
-                            <Copy className="size-3.5" />
-                            Copiar JSON
+                            <Copy className="size-3.5 shrink-0" />
+                            <span className="hidden sm:inline">Copiar</span>
                         </>
                     )}
                 </Button>
             )}
 
-            {/* Eliminar — solo si hay un ID */}
+            {/* Eliminar */}
             {submissionId && (
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setOpen(true)}
-                    className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent"
+                    title="Eliminar respuesta"
+                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
                 >
-                    <Trash2 className="size-3.5" />
-                    Eliminar
+                    <Trash2 className="size-3.5 shrink-0" />
+                    <span className="hidden sm:inline">Eliminar</span>
                 </Button>
             )}
 

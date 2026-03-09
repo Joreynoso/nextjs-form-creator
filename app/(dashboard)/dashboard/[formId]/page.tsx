@@ -16,6 +16,7 @@ import EmptySubmission from "@/components/Submissions/EmptySubmission"
 import SubmissionActions from "@/components/Submissions/SubmissionActions"
 import { expireOldSubmissions } from "@/actions/forms/forms"
 import getSubmissionStatus from '@/lib/utils'
+import SubmissionCard from '@/components/Submissions/SubmissionCard'
 
 interface Props {
     params: Promise<{ formId: string }>
@@ -35,11 +36,6 @@ export default async function FormDetailPage({ params }: Props) {
 
     // Expirar submissions viejas de ESTE form
     await expireOldSubmissions(formId)
-
-    //  return {
-    // success: true,
-    // count: expired.count
-    // }
 
     // Cargar el form sin basura
     const form = await prisma.form.findUnique({
@@ -111,61 +107,15 @@ export default async function FormDetailPage({ params }: Props) {
                         })
 
                         return (
-                            <div    
+                            <SubmissionCard
                                 key={sub.id}
-                                className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
-                            >
-                                {/* Card header */}
-                                <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-muted/40">
-                                    <div className="flex items-center gap-3">
-                                        <span className="font-mono text-xs text-muted-foreground">
-                                            #{form.submissions.length - index}
-                                        </span>
-                                        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${status.class}`}>
-                                            {status.label}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <time className="text-xs text-muted-foreground font-sans">{date}</time>
-                                        <SubmissionActions
-                                            canCopy={status.label === "✓ Completado" && !!responses}
-                                            responses={responses ?? {}}
-                                            fields={(form.fields as any[]).map(f => ({ id: f.id, label: f.label }))}
-                                            submissionId={sub.id}
-                                            formId={form.id}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Card body */}
-                                {status.label === "✓ Completado" && responses ? (
-                                    <dl className="divide-y divide-border/60">
-                                        {(form.fields as any[]).map(field => {
-                                            const value = responses[field.id]
-                                            if (value === undefined || value === null || value === "") return null
-
-                                            const displayValue = Array.isArray(value)
-                                                ? value.join(", ")
-                                                : String(value)
-
-                                            return (
-                                                <div key={field.id} className="grid grid-cols-[1fr_2fr] gap-x-6 px-5 py-3 hover:bg-accent/30 transition-colors">
-                                                    <dt className="text-sm text-muted-foreground font-sans self-start pt-px truncate">
-                                                        {field.label}
-                                                    </dt>
-                                                    <dd className="text-sm text-foreground font-sans">
-                                                        {displayValue}
-                                                    </dd>
-                                                </div>
-                                            )
-                                        })}
-                                    </dl>
-                                ) : (
-                                    <p className="px-5 py-4 text-sm text-muted-foreground font-sans italic">
-                                        El paciente aún no ha completado este formulario.
-                                    </p>
-                                )}
-                            </div>
+                                sub={sub}
+                                form={form}
+                                index={index}
+                                status={status}
+                                responses={responses}
+                                date={date}
+                            />  
                         )
                     })}
                 </div>
