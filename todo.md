@@ -6,6 +6,7 @@
 --> corregir el responsive para dashboar skeleton, no esta funcionando
 --> footer debe centrar las letras en pantallas pequeñas
 --> implementar un dashboard con panel lateral, en el incluir las acciones del formBuilder como agregar preguntas
+--> mejorar como se usan los iconos en about page
 
 ## Errores en los types
 --> Type '{ submissions: { id: string; formId: string; createdAt: Date; doctorId: string; token: string; responses: JsonValue; status: SubmissionStatus; completedAt: Date | null; }[]; } & { ...; }' is not assignable to type 'Form | undefined'. en <FormBuilder form={form}/>
