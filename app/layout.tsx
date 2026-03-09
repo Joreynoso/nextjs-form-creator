@@ -3,11 +3,9 @@ import { Source_Serif_4, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
 import { ThemeProvider } from "next-themes"
-import { ClerkProvider } from '@clerk/nextjs'
-import { clerkAppearance } from '@/lib/clerk-theme'
-import { esES } from '@clerk/localizations'
 import { Toaster } from '@/components/ui/sonner'
 import SizeScreenHelper from '@/components/screensizehelper'
+import ClerkProviderWithTheme from "@/components/providers/ClerkProviderWithTheme"
 
 const sourceSerif = Source_Serif_4({
   variable: "--font-source-serif",
@@ -34,21 +32,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider appearance={clerkAppearance} localization={esES}>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProviderWithTheme>
             {children}
             <Toaster position="top-center" expand />
             <SizeScreenHelper />
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          </ClerkProviderWithTheme>
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
