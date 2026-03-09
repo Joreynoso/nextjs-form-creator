@@ -201,7 +201,7 @@ export async function disablePublicAccess(formId: string): Promise<PublicAccessR
   return {
     success: true,
     isPublicOpen: updated.isPublicOpen,
-    token: updated.publicToken // 👈 SIEMPRE presente
+    token: updated.publicToken
   }
 }
 
@@ -212,7 +212,7 @@ export async function expireOldSubmissions(formId: string) {
       formId,
       status: SubmissionStatus.pending,
       createdAt: {
-        lt: new Date(Date.now() - 1000 * 30) // 30 segundos
+        lt: new Date(Date.now() - 1000 * 60 * 30) // 30 minutos
       }
     },
     data: {
@@ -222,7 +222,10 @@ export async function expireOldSubmissions(formId: string) {
 
   console.log("expired submissions:", expired.count)
 
-  return expired.count
+  return {
+    success: true,
+    count: expired.count
+  }
 }
 
 export async function deleteSubmission(submissionId: string, formId: string) {
@@ -230,7 +233,10 @@ export async function deleteSubmission(submissionId: string, formId: string) {
     const { userId } = await auth()
 
     if (!userId) {
-        throw new Error("Unauthorized")
+        return {
+          success: false,
+          message: "No autorizado"
+        }
     }
 
     const doctor = await getOrCreateDoctor()
@@ -243,7 +249,10 @@ export async function deleteSubmission(submissionId: string, formId: string) {
     })
 
     if (!submission || submission.form.doctorId !== doctor.id) {
-        throw new Error("Not allowed")
+        return {
+          success: false,
+          message: "No autorizado"
+        }
     }
 
     await prisma.formSubmission.delete({
@@ -251,4 +260,9 @@ export async function deleteSubmission(submissionId: string, formId: string) {
     })
 
     revalidatePath(`/dashboard/${formId}`)
+
+    return {
+      success: true,
+      message: "Submission deleted successfully"
+    } 
 }

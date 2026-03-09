@@ -1,9 +1,10 @@
 // import components
+'use client'
 import { Button } from '../ui/button'
 import { AlertTriangle } from 'lucide-react'
 
 type SubmissionDeleteDialogProps = {
-    onConfirm: () => Promise<void>
+    onConfirm: () => Promise<{ success: boolean; message: string }>
     open: boolean
     isDeleting?: boolean
     onClose: () => void

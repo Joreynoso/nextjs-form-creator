@@ -36,6 +36,11 @@ export default async function FormDetailPage({ params }: Props) {
     // Expirar submissions viejas de ESTE form
     await expireOldSubmissions(formId)
 
+    //  return {
+    // success: true,
+    // count: expired.count
+    // }
+
     // Cargar el form sin basura
     const form = await prisma.form.findUnique({
         where: { id: formId },
@@ -106,7 +111,7 @@ export default async function FormDetailPage({ params }: Props) {
                         })
 
                         return (
-                            <div
+                            <div    
                                 key={sub.id}
                                 className="rounded-lg border border-border bg-card shadow-sm overflow-hidden"
                             >
