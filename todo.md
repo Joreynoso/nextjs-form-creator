@@ -7,3 +7,7 @@
 ## Error en el form builder
 --> Averiguar como verificar en cada cambio que los campos no esten vacios, del lado del front y del backend, usando zod
 para evitar que se envien nombres de pregunta vacios.
+
+## Error en las sumbissions
+-- > evitar el ratelimit para los envios de formularios, que no se puedan enviar milesa
+a la vez.

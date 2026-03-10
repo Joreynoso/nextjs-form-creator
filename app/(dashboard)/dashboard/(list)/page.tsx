@@ -28,6 +28,38 @@ export default async function DashboardPage() {
 
     const doctor = await getOrCreateDoctor()
 
+    // estadisticas
+    const totalForms = await prisma.form.count({
+        where: {
+            doctorId: doctor.id
+        }
+    })
+
+    // total de envios
+    const totalSubmissions = await prisma.formSubmission.count({
+        where: {
+            form: {
+                doctorId: doctor.id
+            }
+        }
+    })
+
+    // total de formularios activos
+    const totalActiveForms = await prisma.form.count({
+        where: {
+            doctorId: doctor.id,
+            isActive: true
+        }
+    })
+
+    // total de formularios inactivos
+    const totalInactiveForms = await prisma.form.count({
+        where: {
+            doctorId: doctor.id,
+            isActive: false
+        }
+    })
+
     // buscar formularios
     const forms = await prisma.form.findMany({
         where: {
@@ -64,7 +96,12 @@ export default async function DashboardPage() {
             </div>
 
             {/* estadisticas */}
-            <StatisticList />
+            <StatisticList 
+            totalForms={totalForms}
+            totalSubmissions={totalSubmissions}
+            totalActiveForms={totalActiveForms}
+            totalInactiveForms={totalInactiveForms}
+            />
 
             {/* lista de formularios */}
             {forms.length === 0 ? <FormEmpty /> :
