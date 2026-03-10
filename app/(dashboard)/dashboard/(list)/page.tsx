@@ -105,7 +105,7 @@ export default async function DashboardPage() {
 
             {/* lista de formularios */}
             {forms.length === 0 ? <FormEmpty /> :
-                (<div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                (<div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {forms.map((form) => (
                         <FormCard key={form.id} form={form} />
                     ))}
