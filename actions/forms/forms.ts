@@ -263,6 +263,6 @@ export async function deleteSubmission(submissionId: string, formId: string) {
 
     return {
       success: true,
-      message: "Submission deleted successfully"
+      message: "Respuesta eliminada correctamente"
     } 
 }

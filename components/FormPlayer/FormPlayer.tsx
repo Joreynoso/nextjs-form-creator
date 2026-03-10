@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Button } from '../ui/button'
 import FieldRenderer from "./FieldRenderer"
 import { FormField } from "@/@types/types"
+import { ArrowRight, ArrowLeft, Check, PartyPopper } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface FormPlayerProps {
     fields: FormField[]
@@ -27,12 +29,19 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
         )
     }
 
-    // guard: terminado
+    // guard: terminado (Rediseñado para estilo Typeform)
     if (isFinished) {
         return (
-            <div className="text-center py-10">
-                <h2 className="text-xl font-semibold mb-2">Gracias 🙌</h2>
-                <p>Formulario finalizado</p>
+            <div className="max-w-xl mx-auto px-6 min-h-[80vh] flex flex-col justify-center items-center text-center animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-6">
+                    <PartyPopper className="w-8 h-8" />
+                </div>
+                <h2 className="text-3xl font-serif text-foreground/90 mb-3">
+                    ¡Gracias por completar el formulario!
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-sm">
+                    Tus respuestas han sido enviadas correctamente. Ya puedes cerrar esta ventana.
+                </p>
             </div>
         )
     }
@@ -115,40 +124,69 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
     }
 
     return (
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto px-6 py-10 min-h-[80vh] flex flex-col justify-center">
 
-            <h2 className="text-2xl font-serif mb-6">
-                {currentField.label}
-            </h2>
+            <div key={step} className="animate-in fade-in slide-in-from-bottom-5 duration-500 fill-mode-both">
+                <div className="flex items-start gap-3 mb-6">
+                    <span className="flex items-center justify-center min-w-6 h-6 bg-primary text-primary-foreground text-[10px] rounded-sm mt-1.5 font-mono">
+                        {step + 1}
+                    </span>
+                    <h2 className="text-2xl font-serif text-foreground/90 leading-snug">
+                        {currentField.label}
+                        {currentField.required && <span className="text-primary ml-1">*</span>}
+                    </h2>
+                </div>
 
-            <FieldRenderer
-                field={currentField}
-                value={answers[currentField.id]}
-                onChange={setValue}
-            />
+                <div className="pl-9">
+                    <FieldRenderer
+                        field={currentField}
+                        value={answers[currentField.id]}
+                        onChange={setValue}
+                    />
 
-            {error && (
-                <p className="text-destructive text-sm mt-2">
-                    {error}
-                </p>
-            )}
+                    {error && (
+                        <p className="text-destructive text-sm mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                            <span className="w-1 h-1 rounded-full bg-destructive" />
+                            {error}
+                        </p>
+                    )}
 
-            <div className="flex justify-between mt-8">
+                    <div className="flex items-center gap-3 mt-10">
+                        <Button
+                            size="lg"
+                            onClick={handleNext}
+                            disabled={loading}
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 shadow-md shadow-primary/10"
+                        >
+                            {loading ? (
+                                "Enviando..."
+                            ) : isLast ? (
+                                <span className="flex items-center gap-2">Finalizar <Check className="w-4 h-4" /></span>
+                            ) : (
+                                <span className="flex items-center gap-2">Siguiente <ArrowRight className="w-4 h-4" /></span>
+                            )}
+                        </Button>
 
-                {step > 0 && (
-                    <Button variant="ghost" onClick={handleBack} disabled={loading}>
-                        Atrás
-                    </Button>
-                )}
+                        {step > 0 && (
+                            <Button
+                                variant="ghost"
+                                onClick={handleBack}
+                                disabled={loading}
+                                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                            >
+                                <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Atrás
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            </div>
 
-                <Button onClick={handleNext} disabled={loading}>
-                    {loading
-                        ? "Enviando..."
-                        : isLast
-                            ? "Finalizar"
-                            : "Siguiente"}
-                </Button>
-
+            {/* Progress indicator */}
+            <div className="fixed bottom-0 left-0 w-full h-0.5 bg-border/20">
+                <div
+                    className="h-full bg-primary transition-all duration-500 ease-out"
+                    style={{ width: `${((step + 1) / fields.length) * 100}%` }}
+                />
             </div>
 
         </div>
