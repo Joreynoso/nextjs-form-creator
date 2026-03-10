@@ -16,6 +16,7 @@ import { prisma } from '@/lib/prisma'
 import FormEmpty from '@/components/Dashboard/FormEmpty'
 import FormCard from '@/components/Dashboard/FormCard'
 import CreateFormButton from '@/components/Dashboard/createFormButton'
+import StatisticList from '@/components/Dashboard/StatisticList'
 
 export default async function DashboardPage() {
 
@@ -61,6 +62,9 @@ export default async function DashboardPage() {
                 {/* client component */}
                 <CreateFormButton />
             </div>
+
+            {/* estadisticas */}
+            <StatisticList />
 
             {/* lista de formularios */}
             {forms.length === 0 ? <FormEmpty /> :

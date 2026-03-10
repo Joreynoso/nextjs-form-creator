@@ -1,6 +1,6 @@
 # 📸 PROJECT SNAPSHOT — nexjs-form-creator
 
-> Generado: 2026-03-01 · Estado: en desarrollo activo
+> Generado: 2026-03-10 · Estado: en desarrollo activo
 
 ---
 
@@ -13,8 +13,8 @@
 2. Se le crea automáticamente un perfil `Doctor` en la base de datos.
 3. Crea formularios con campos dinámicos desde el FormBuilder.
 4. El doctor habilita el acceso público → se genera un link único (`publicToken`).
-5. El doctor envía el link al paciente → el paciente completa el formulario (en desarrollo).
-6. El doctor ve las respuestas en su dashboard.
+5. El doctor envía el link al paciente → el paciente completa el formulario con un estilo premium tipo "Typeform".
+6. El doctor ve las respuestas en su dashboard con estadísticas básicas.
 
 ---
 
@@ -26,40 +26,44 @@ nexjs-form-creator/
 │   └── types.ts                  # Tipos globales TypeScript
 ├── actions/
 │   └── forms/
-│       └── forms.ts              # Server Actions (CRUD, Public Access)
+│       └── forms.ts              # Server Actions (CRUD, Public Access, Submissions)
 ├── app/
 │   ├── (dashboard)/              # Rutas con Navbar y Footer
 │   │   ├── layout.tsx
 │   │   ├── dashboard/
-│   │   │   ├── (list)/           # Lista de formularios (page.tsx)
-│   │   │   └── [formId]/         # Detalle y edición
+│   │   │   ├── (list)/           # Lista de formularios + Estadísticas (page.tsx)
+│   │   │   └── [formId]/         # Detalle y gestión de respuestas
 │   │   ├── about/
 │   │   ├── profile/
 │   │   └── sign-in / sign-up /
 │   ├── (public)/                 # Rutas limpias (sin Navbar/Footer)
 │   │   ├── layout.tsx
-│   │   └── form/[token]/         # Vista pública para el paciente
-│   ├── api/                      # Endpoints (legacy/stubs)
+│   │   └── form/[token]/         # Vista pública premium (Typeform-style)
+│   ├── api/                      # Endpoints
+│   │   └── public/               # Endpoints abiertos para el paciente
+│   │       └── submissions/
+│   │           └── [token]/      # GET (datos form) / POST (enviar respuestas)
 │   ├── layout.tsx                # Root layout (Providers solamente)
-│   ├── globals.css
+│   ├── globals.css               # Estilos globales y tokens de diseño
 │   └── page.tsx                  # Landing page (redirige a dashboard)
 ├── components/
 │   ├── ui/                       # Componentes de Shadcn UI
-│   ├── Dashboard/                # Componentes del panel de control
-│   ├── FormBuilder/              # Editor de formularios (Artesano)
-│   ├── FormPlayer/               # Visualizador de formularios (Paciente)
-│   │   ├── FormPlayer.tsx        # Lógica de pasos y validación
-│   │   ├── FieldRenderer.tsx     # Renderizado dinámico de campos
+│   ├── Dashboard/                # Componentes del panel (Cards, Listas de Forms, Stats)
+│   ├── FormBuilder/              # Editor de formularios
+│   ├── FormPlayer/               # Visualizador premium (Step-by-step)
+│   │   ├── FormPlayer.tsx        # Lógica de pasos, numeración y animaciones
+│   │   ├── FieldRenderer.tsx     # Renderizado de inputs personalizados (Option Cards)
 │   │   └── FormDisabled.tsx      # Pantalla para formularios cerrados
+│   ├── Submissions/              # Visualización de respuestas para el Doctor
 │   ├── navbar.tsx
 │   ├── footer.tsx
 │   ├── sidebar.tsx
-│   └── screensizehelper.tsx      # Utilidad de desarrollo (viewport size)
+│   └── screensizehelper.tsx      # Utilidad de desarrollo
 ├── lib/
 │   ├── prisma.ts                 # Cliente Prisma
 │   └── get-or-create-doctor.ts   # Integración Clerk -> DB
 ├── prisma/
-│   └── schema.prisma             # Modelos PostgreSQL
+│   └── schema.prisma             # Modelos PostgreSQL (Cascading deletes, Enums)
 └── middleware.ts                  # Protección de rutas con Clerk
 ```
 
@@ -67,7 +71,7 @@ nexjs-form-creator/
 
 ## 🗄️ Modelos Prisma
 
-**Provider:** PostgreSQL · **Output:** `lib/generated/prisma`
+**Provider:** PostgreSQL · **Output:** `../lib/generated/prisma`
 
 ### `Doctor`
 | Campo | Tipo | Notas |
@@ -78,8 +82,8 @@ nexjs-form-creator/
 | `firstName` | `String` | |
 | `lastName` | `String` | |
 | `createdAt` | `DateTime` | default now() |
-| `forms` | `Form[]` | relación |
-| `submissions` | `FormSubmission[]` | relación |
+| `forms` | `Form[]` | relación (onDelete: Cascade) |
+| `submissions` | `FormSubmission[]` | relación (onDelete: Cascade) |
 
 ### `Form`
 | Campo | Tipo | Notas |
@@ -87,236 +91,102 @@ nexjs-form-creator/
 | `id` | `String` (cuid) | PK |
 | `doctorId` | `String` | FK → Doctor |
 | `name` | `String` | |
-| `description` | `String?` | opcional |
-| `fields` | `Json` | Estructura dinámica (array de `FormField`) |
+| `description` | `String?` | |
+| `fields` | `Json` | Estructura dinámica |
 | `isActive` | `Boolean` | default true |
-| `publicToken` | `String?` (unique)| Token para acceso público (nanoid) |
-| `isPublicOpen` | `Boolean` | Si el formulario acepta respuestas públicas |
+| `publicToken` | `String?` (unique) | Token para vista pública |
+| `isPublicOpen` | `Boolean` | default false |
 | `version` | `Int` | default 1 |
 | `createdAt` | `DateTime` | |
-| `updatedAt` | `DateTime` | @updatedAt |
-
-**Índices:** `doctorId`, `isActive`, `publicToken`
+| `updatedAt` | `DateTime` | |
 
 ### `FormSubmission`
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `String` (cuid) | PK |
-| `token` | `String` (unique) | Link único del paciente |
+| `token` | `String` (unique) | Link único para el paciente |
 | `doctorId` | `String` | FK → Doctor |
 | `formId` | `String` | FK → Form |
 | `responses` | `Json?` | `{ [fieldId]: value }` |
-| `status` | `SubmissionStatus` | `pending` \| `completed` |
+| `status` | `SubmissionStatus` | `pending` \| `completed` \| `expired` \| `cancelled` |
 | `createdAt` | `DateTime` | |
 | `completedAt` | `DateTime?` | |
-
-**Índices:** `doctorId`, `formId`, `status`
 
 ### Enum `SubmissionStatus`
 ```prisma
 enum SubmissionStatus {
   pending
   completed
+  expired
+  cancelled
 }
 ```
-
----
-
-## 🔌 API Endpoints
-
-| Método | Ruta | Auth | Estado | Descripción |
-|---|---|---|---|---|
-| `GET` | `/api/forms` | ✅ Clerk | ⚠️ Stub | Devuelve mensaje (sin datos reales) |
-| `POST` | `/api/forms` | ✅ Clerk | ✅ Funcional | Crea un formulario con `name`, `description`, `fields` |
-| `GET` | `/api/patients` | — | ⚠️ Stub | Placeholder |
-| `POST` | `/api/patients` | — | ⚠️ Stub | Placeholder |
-| `POST` | `/api/patients/generate-link` | — | ⚠️ Stub | Placeholder |
-| `POST` | `/api/public/submissions/[token]` | — | ⚠️ Pendiente | Para que el paciente envíe respuestas |
-
-> **Nota:** La lógica real de CRUD se hace principalmente via **Server Actions**, no via API routes.
 
 ---
 
 ## ⚡ Server Actions — `actions/forms/forms.ts`
 
-Todas usan `"use server"` y verifican autenticación con Clerk.
+Lógica centralizada para evitar exposición excesiva de API routes.
 
-### CRUD Básico
-- `createEmptyForm()`: Crea form inicial.
-- `updateForm()`: Actualiza meta y campos. Revalida rutas de dashboard y edición.
-- `deleteForm()`: Elimina por ID (⚠️ mejorar seguridad).
-
-### Public Access
-- `enablePublicAccess(formId)`: Genera un `publicToken` (si no existe) y activa `isPublicOpen`.
-- `disablePublicAccess(formId)`: Desactiva `isPublicOpen`.
+- `createEmptyForm()`: Inicializa un formulario para el doctor actual.
+- `updateForm()`: Guarda campos y metadatos. Revalida `/dashboard` y rutas de edición.
+- `deleteForm()`: Eliminación con cascada habilitada en DB.
+- `enablePublicAccess(formId)`: Genera `publicToken` y abre el form al público.
+- `disablePublicAccess(formId)`: Cierra el acceso al formulario.
+- `expireOldSubmissions(formId)`: Pasa a `expired` las sesiones de más de 30 minutos.
+- `deleteSubmission(submissionId, formId)`: Elimina una respuesta específica con validación de dueño.
 
 ---
 
-## 📐 Tipos TypeScript — `@types/types.ts`
+## 🔌 API Endpoints (Public)
 
-```ts
-type FieldType = InteractiveFieldType | 'section'
-type InteractiveFieldType = 'text' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox'
-
-interface FormField {
-  id: string
-  type: FieldType
-  label: string
-  required?: boolean
-  // ... props específicas por tipo
-}
-
-interface PublicAccessResult {
-  success: boolean
-  message: string
-  isPublicOpen?: boolean
-  token?: string | null
-}
-```
+| Método | Ruta | Auth | Estado | Descripción |
+|---|---|---|---|---|
+| `GET` | `/api/public/submissions/[token]` | — | ✅ Funcional | Obtiene estructura del form para el paciente |
+| `POST` | `/api/public/submissions/[token]` | — | ✅ Funcional | Envía las respuestas del paciente |
 
 ---
 
 ## 🖥️ Páginas y Renderizado
 
-### `/` — Landing Page
-- `app/page.tsx` → **Server Component** · Redirige directamente a `/dashboard`.
+### `/dashboard`
+Renderiza estadísticas a través de `<StatisticList />` y `<StatisticCard />`. Carga formularios dinámicamente.
 
-### `/dashboard` — Lista de Formularios
-- `app/dashboard/(list)/page.tsx` → **Server Component (async)**
-- Verifica auth con Clerk → si no autenticado, redirige a `/`.
-- Llama `getOrCreateDoctor()` + `prisma.form.findMany()`.
-- Renderiza `<CreateFormButton />` (Client) + grid de `<FormCard />` (Client) o `<FormEmpty />`.
-- Tiene `loading.tsx` con **Skeleton screens**.
-
-### `/dashboard/[formId]` — Ver Respuestas
-- `app/dashboard/[formId]/page.tsx` → **Server Component (async)**
-- Carga el formulario con sus `submissions` de DB.
-- Si el formulario no existe o no es del doctor → `notFound()`.
-- Renderiza tabla de respuestas inline (campo/valor) o `<EmptySubmission />`.
-
-### `/dashboard/[formId]/edit` — Editor de Formulario
-- `app/dashboard/[formId]/edit/page.tsx` → **Server Component (async)**
-- Carga el formulario desde DB, verifica ownership.
-- Renderiza `<FormBuilder form={form} />` (Client Component).
-
----
-
-## 🧩 Componentes Clave
-
-### `FormBuilder` (Editor)
-- Gestión de estado para `fields` dinámicos.
-- Botones de "Guardar" con detección de cambios (`isDirty`).
-- **Field Toolbar** para añadir nuevos elementos con micro-animaciones.
-
-### `FormPlayer` (Visualizador)
-- **Modo Pasos:** Renderiza una pregunta a la vez (step-by-step).
-- **Validación:** Verifica `required` antes de avanzar.
-- `FieldRenderer`: Componente recursivo/switch para renderizar el input correcto.
-- Utiliza `FormDisabled` si el formulario no está disponible.
-
----
-
-### `FormCard` — `components/Dashboard/FormCard.tsx`
-**Client Component** (`'use client'`)
-
-**Props:** `form: { id, name, description, isActive, createdAt }`
-
-**Lógica:**
-- `handleDeleteForm()` → llama `deleteForm()` Server Action.
-- Controla `openDeleteDialog` y `isDeleting` con estado local.
-
-**UI:**
-- Card con nombre (font-serif), descripción, badge Activo/Inactivo, fecha.
-- Dropdown menu: Ver respuestas · Editar formulario · Eliminar formulario.
-- `<FormDialogDelete />` como dialog de confirmación de eliminación.
-
----
-
-### `createFormButton` — `components/Dashboard/createFormButton.tsx`
-**Client Component** — Botón que llama `createEmptyForm()` y redirige al editor con `useRouter`.
-
----
-
-## 🔐 Autenticación y Middleware
-
-- **Proveedor:** [Clerk](https://clerk.com) — `@clerk/nextjs ^6.37.3`
-- **Localización:** `@clerk/localizations ^3.35.3`
-- **Middleware:** `middleware.ts`
-  - Rutas **públicas:** `/`, `/about`, `/sign-in(.*)`, `/sign-up(.*)`
-  - Todas las demás rutas → `auth.protect()` (requieren sesión)
-
-### `getOrCreateDoctor()` — `lib/get-or-create-doctor.ts`
-- Obtiene el usuario actual de Clerk (`currentUser()`).
-- Busca el `Doctor` en DB por `userId` (Clerk ID).
-- Si no existe, lo **crea automáticamente** con email, firstName, lastName de Clerk.
-- Permite que la app funcione sin un paso de "onboarding" explícito.
+### `/form/[token]` — Experiencia del Paciente
+Visualizador premium optimizado para mobile y desktop:
+- **Stepped UI**: Una pregunta a la vez con numeración.
+- **Micro-Animations**: Transiciones de entrada por paso.
+- **Custom Inputs**:
+  - `Radio/Checkbox`: Tarjetas con letras (A, B, C...) y feedback visual instantáneo.
+  - `Select`: Dropdown personalizado que reemplaza al estándar de HTML.
+  - `Text/Textarea`: Líneas minimalistas con foco animado.
+- **Pantalla Final**: Celebración animada al completar el envío.
 
 ---
 
 ## 📦 Dependencias Principales
 
-### Runtime
-| Paquete | Versión | Uso |
+| Paquete | Versión | Uso Princial |
 |---|---|---|
-| `next` | `16.1.6` | Framework |
-| `react` / `react-dom` | `19.2.3` | UI |
-| `@clerk/nextjs` | `^6.37.3` | Auth |
-| `@clerk/themes` | `^2.4.51` | Tema Clerk |
-| `@clerk/localizations` | `^3.35.3` | Localización Clerk |
-| `@prisma/client` | `^7.3.0` | ORM |
-| `@prisma/adapter-pg` | `^7.3.0` | Adapter PostgreSQL |
-| `pg` | `^8.18.0` | Driver PostgreSQL |
-| `next-themes` | `^0.4.6` | Dark/Light mode |
-| `lucide-react` | `^0.563.0` | Iconos |
-| `sonner` | `^2.0.7` | Toast notifications |
-| `radix-ui` | `^1.4.3` | Primitivos UI |
-| `clsx` | `^2.1.1` | Clases condicionales |
-| `class-variance-authority` | `^0.7.1` | CVA para variantes |
-| `tailwind-merge` | `^3.4.0` | Merging de clases Tailwind |
-| `nanoid` | `^5.1.6` | IDs únicos |
-| `dotenv` | `^17.2.4` | Variables de entorno |
-
-### Dev
-| Paquete | Versión | Uso |
-|---|---|---|
-| `tailwindcss` | `^4` | Estilos |
-| `@tailwindcss/postcss` | `^4` | PostCSS plugin |
-| `tw-animate-css` | `^1.4.0` | Animaciones Tailwind |
-| `prisma` | `^7.3.0` | CLI Prisma |
-| `shadcn` | `^3.8.4` | CLI componentes UI |
-| `typescript` | `^5` | Tipos |
-| `tsx` | `^4.21.0` | Ejecutar TS directamente |
-| `eslint` / `eslint-config-next` | `^9` / `16.1.6` | Linting |
+| `next` | `16.1.6` | App Router & Server Components |
+| `react` | `19.2.3` | UI |
+| `@clerk/nextjs` | `^6.37.3` | Gestión de identidades y Auth |
+| `@prisma/client` | `^7.3.0` | ORM (PostgreSQL) |
+| `lucide-react` | `^0.563.0` | Iconografía premium |
+| `tw-animate-css` | `^1.4.0` | Animaciones de Tailwind CSS |
+| `sonner` | `^2.0.7` | UI Toasts |
+| `nanoid` | `^5.1.6` | Tokens de seguridad |
 
 ---
 
-## 🗺️ Mapa de Rutas
-
-```
-/                        → Landing (redirige a /dashboard)
-/sign-in                 → Clerk Sign In
-/sign-up                 → Clerk Sign Up
-/about                   → Página Sobre el proyecto
-/profile                 → Perfil del doctor (pendiente)
-/dashboard               → Lista de formularios (Server Component)
-/dashboard/[formId]       → Ver respuestas del formulario (Server Component)
-/dashboard/[formId]/edit  → Editor del formulario → <FormBuilder /> (Client)
-/form/[token]            → Vista pública: paciente completa el formulario (pendiente)
-```
-
----
-
-## 🏁 Estado y Pendientes
+## 🏁 Estado de Funcionalidades
 
 | Feature | Estado |
 |---|---|
-| Auth con Clerk | ✅ Completo |
-| CRUD de formularios | ✅ Completo |
+| Onboarding Doctor (integración Clerk) | ✅ Completo |
 | Editor dinámico (FormBuilder) | ✅ Funcional |
-| Separación de Layouts (Auth vs Public) | ✅ Completo |
-| Gestión de Link Público (Tokens) | ✅ Completo |
-| Vista pública del paciente (`FormPlayer`) | 🏗️ En desarrollo |
-| Envío de respuestas (submissions) | ❌ Pendiente |
+| Vista pública Premium (Mode Typeform) | ✅ Completo |
+| Envío de respuestas (Submissions) | ✅ Funcional |
+| Dashboard con Estadísticas | ✅ Básico/Funcional |
 | Lógica condicional (`showIf`) | ❌ Pendiente |
-| Dashboard: Tabla de respuestas real | ⚠️ Stub básico |
-| Seguridad: Validación de dueño en delete | ⚠️ Gap pendiente |
+| Reportes avanzados / PDF | ❌ Pendiente |
