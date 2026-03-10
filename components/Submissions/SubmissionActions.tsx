@@ -47,8 +47,11 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
             const result = await deleteSubmission(submissionId, formId)
             setOpen(false)
             toast.success(result.message)
+            return result
         } catch {
-            toast.error("Error al eliminar la respuesta")
+            const errorMsg = "Error al eliminar la respuesta"
+            toast.error(errorMsg)
+            return { success: false, message: errorMsg }
         } finally {
             setIsDeleting(false)
         }

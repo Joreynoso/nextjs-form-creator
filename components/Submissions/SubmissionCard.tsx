@@ -1,14 +1,15 @@
-import { FormWithSubmissions, Submission } from "@/@types/types"
+import { FormWithSubmissions } from "@/@types/types"
+import { FormSubmission } from '@/lib/generated/prisma'
 import SubmissionActions from "./SubmissionActions"
 
 interface SubmissionCardProps {
-    sub: Submission
+    sub: FormSubmission
     form: FormWithSubmissions
     index: number
     status: any
     responses: any
     date: string
-}
+}   
 
 const isCompleted = (label: string) => label === "✓ Completado"
 
@@ -75,7 +76,7 @@ export default function SubmissionCard({ sub, form, index, status, responses, da
                                 <dt className="text-xs sm:text-sm text-muted-foreground font-sans font-medium truncate">
                                     {field.label}
                                 </dt>
-                                <dd className="text-sm text-foreground font-sans break-words">
+                                <dd className="text-sm text-foreground font-sans wrap-break-word">
                                     {displayValue}
                                 </dd>
                             </div>

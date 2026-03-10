@@ -1,3 +1,5 @@
+import { Prisma } from '@/lib/generated/prisma';
+
 // Tipos de campos soportados
 export type FieldType =
   | InteractiveFieldType
@@ -46,9 +48,10 @@ export interface Form {
   isPublicOpen: boolean;
 }
 
-export interface FormWithSubmissions extends Form {
-  submissions: FormResponse[];
-}
+export type FormWithSubmissions =
+  Prisma.FormGetPayload<{
+    include: { submissions: true }
+  }>
 
 export interface Submission {
   id: string;
@@ -91,5 +94,15 @@ export type PublicAccessResult = {
   token?: string | null
   message?: string
 }
+
+export interface Submission {
+  id: string
+  formId: string
+  responses: FormResponse
+  status: SubmissionStatus
+  createdAt: Date
+  updatedAt: Date
+}
+
 
 export type SubmissionStatus = "pending" | "completed" | "expired" | "cancelled"
