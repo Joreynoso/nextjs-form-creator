@@ -18,7 +18,7 @@ export default function StatisticCard({
     }
 }) {
     return (
-        <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[160px] shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm">
+        <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[160px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
 
             <div className="space-y-3">
                 <div className="flex items-start justify-between">
@@ -41,7 +41,7 @@ export default function StatisticCard({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <p className="text-4xl font-serif font-medium text-foreground tracking-tight">
+                    <p className="text-4xl font-serif font-medium text-foreground tracking-tight" style={{ fontVariantNumeric: 'tabular-nums' }}>
                         {value}
                     </p>
                     <p className="text-sm text-muted-foreground line-clamp-1">
@@ -50,7 +50,7 @@ export default function StatisticCard({
                 </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
+            <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between font-variant">
                 <span className="text-muted-foreground/40 text-[10px] font-medium uppercase tracking-wider">
                     Datos actualizados
                 </span>

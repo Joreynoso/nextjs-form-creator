@@ -27,7 +27,7 @@ export default function CreateFormButton() {
       disabled={isPending}
       className="bg-primary text-primary-foreground px-4 py-2 rounded-md"
     >
-      {isPending ? "Creando..." : "Crear formulario"}
+      {isPending ? "Creando…" : "Crear formulario"}
     </Button>
   )
 }

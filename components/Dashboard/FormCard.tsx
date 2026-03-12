@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useState } from 'react'
-import  { deleteForm } from '@/actions/forms/forms'
+import { deleteForm } from '@/actions/forms/forms'
 import { toast } from 'sonner'
 
 // toggle public access
@@ -52,20 +52,25 @@ export default function FormCard({ form }: FormCardProps) {
     const [isDeleting, setIsDeleting] = useState(false)
 
     // delete form
-    const handleDeleteForm = async () => {
+    const handleDeleteForm = async (): Promise<{ success: boolean; message: string }> => {
         setIsDeleting(true)
-        try {
-            const { success, message } = await deleteForm(form.id)
 
-            if (!success) {
-                toast.error(message)
-                return
+        try {
+            const result = await deleteForm(form.id)
+
+            if (!result.success) {
+                toast.error(result.message)
+                return result
             }
 
             setOpenDeleteDialog(false)
-            toast.success(message)
+            toast.success(result.message)
+
+            return result
         } catch {
-            toast.error('Error al eliminar el formulario')
+            const result = { success: false, message: 'Error al eliminar el formulario' }
+            toast.error(result.message)
+            return result
         } finally {
             setIsDeleting(false)
         }
@@ -122,19 +127,23 @@ export default function FormCard({ form }: FormCardProps) {
 
     return (
         <>
-            <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[180px] shadow-sm hover:shadow-md transition-all duration-300 backdrop-blur-sm">
+            <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
 
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
-                        <p className='text-foreground line-clamp-1 font-serif text-xl'>{form.name}</p>
+                        <p className='text-foreground line-clamp-1 font-serif text-xl' style={{ textWrap: 'balance' }}>{form.name}</p>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant={'ghost'} size="icon-xs" className='absolute top-3 right-3 opacity-70 hover:opacity-100'>
+                                <Button
+                                    variant={'ghost'}
+                                    size="icon-xs"
+                                    className='absolute top-3 right-3 opacity-70 hover:opacity-100'
+                                    aria-label="Opciones del formulario"
+                                >
                                     <EllipsisVertical />
                                 </Button>
                             </DropdownMenuTrigger>
-
                             <DropdownMenuContent className="w-40" align="end">
                                 <DropdownMenuItem asChild>
                                     <Link href={`/dashboard/${form.id}`}>
@@ -186,7 +195,7 @@ export default function FormCard({ form }: FormCardProps) {
                             className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5"
                         >
                             <Copy className="size-3" />
-                            link
+                            Copiar link
                         </Button>
                     </div>
                 </div>
@@ -194,7 +203,7 @@ export default function FormCard({ form }: FormCardProps) {
                 <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-muted-foreground/60 text-[11px] font-medium uppercase tracking-tight">
                         <Calendar className="size-3 opacity-70" />
-                        {form.createdAt.toLocaleDateString()}
+                        {new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(form.createdAt)}
                     </span>
 
                     <Link
