@@ -5,10 +5,11 @@ import { Copy, Check, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { deleteSubmission } from '@/actions/forms/forms'
 import { toast } from 'sonner'
+import { Submission } from '@/@types/types'
 import DeleteDialog from '../ui/deleteDialog'
 
 interface SubmissionActionsProps {
-    responses?: Record<string, any>
+    responses?: Submission['responses']
     fields?: Array<{ id: string; label: string }>
     canCopy?: boolean
     submissionId: string

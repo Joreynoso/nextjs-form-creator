@@ -5,17 +5,19 @@ import { Button } from '../ui/button'
 import FieldRenderer from "./FieldRenderer"
 import { FormField } from "@/@types/types"
 import { ArrowRight, ArrowLeft, Check, PartyPopper } from "lucide-react"
-import { cn } from "@/lib/utils"
+
 
 interface FormPlayerProps {
     fields: FormField[]
     submissionToken: string
 }
 
+type asnwerValue = string | number | boolean | string[] | undefined | null
+
 export default function FormPlayer({ fields, submissionToken }: FormPlayerProps) {
 
     const [step, setStep] = useState(0)
-    const [answers, setAnswers] = useState<Record<string, any>>({})
+    const [answers, setAnswers] = useState<Record<string, asnwerValue>>({})
     const [error, setError] = useState<string | null>(null)
     const [isFinished, setIsFinished] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -116,7 +118,7 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
         setStep(prev => Math.max(prev - 1, 0))
     }
 
-    function setValue(value: any) {
+    function setValue(value: asnwerValue) {
         setAnswers(prev => ({
             ...prev,
             [currentField.id]: value
