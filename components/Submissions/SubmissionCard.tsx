@@ -1,4 +1,4 @@
-import { FormWithSubmissions } from "@/@types/types"
+import { FormWithSubmissions, FormField, FormResponse, SubmissionStatusInfo } from "@/@types/types"
 import { FormSubmission } from '@/lib/generated/prisma'
 import SubmissionActions from "./SubmissionActions"
 
@@ -6,8 +6,8 @@ interface SubmissionCardProps {
     sub: FormSubmission
     form: FormWithSubmissions
     index: number
-    status: any
-    responses: any
+    status: SubmissionStatusInfo
+    responses: FormResponse | null
     date: string
 }   
 
@@ -15,7 +15,7 @@ const isCompleted = (label: string) => label === "✓ Completado"
 
 export default function SubmissionCard({ sub, form, index, status, responses, date }: SubmissionCardProps) {
     const completed = isCompleted(status.label)
-    const fields = (form.fields as any[]).map(f => ({ id: f.id, label: f.label }))
+    const fields = (form.fields as unknown as FormField[]).map(f => ({ id: f.id, label: f.label }))
 
     // Solo los campos que tienen valor
     const filledFields = completed && responses

@@ -59,7 +59,12 @@ export interface Submission {
   responses: FormResponse;
   status: SubmissionStatus;
   createdAt: Date;
-  updatedAt: Date;
+  completedAt?: Date | null;
+}
+
+export interface SubmissionStatusInfo {
+  label: string;
+  class: string;
 }
 
 export interface Patient {
@@ -95,14 +100,6 @@ export type PublicAccessResult = {
   message?: string
 }
 
-export interface Submission {
-  id: string
-  formId: string
-  responses: FormResponse
-  status: SubmissionStatus
-  createdAt: Date
-  updatedAt: Date
-}
 
 
 export type SubmissionStatus = "pending" | "completed" | "expired" | "cancelled"

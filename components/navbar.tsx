@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ModeToggle } from "./themetoggle"
 import { Menu, X } from "lucide-react"
 import { Button } from './ui/button'
+import { cn } from "@/lib/utils"
 
 // react
 import { useState } from 'react'

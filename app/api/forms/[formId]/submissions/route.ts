@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
 import { nanoid } from "nanoid"
 
-export async function POST(req: Request, { params }: { params: { formId: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ formId: string }> }) {
     try {
         const { userId } = await auth()
 
