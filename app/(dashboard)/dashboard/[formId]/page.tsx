@@ -16,13 +16,13 @@ import EmptySubmission from "@/components/Submissions/EmptySubmission"
 import { expireOldSubmissions } from "@/actions/forms/forms"
 import getSubmissionStatus from '@/lib/utils'
 import SubmissionCard from '@/components/Submissions/SubmissionCard'
+import { FormResponse } from "@/@types/types"
 
 interface Props {
     params: Promise<{ formId: string }>
 }
 
 export default async function FormDetailPage({ params }: Props) {
-
     const { userId } = await auth()
 
     if (!userId) {
@@ -99,7 +99,7 @@ export default async function FormDetailPage({ params }: Props) {
                 <div className="flex flex-col gap-4">
                     {form.submissions.map((sub, index) => {
                         const status = getSubmissionStatus(sub.status)
-                        const responses = sub.responses as Record<string, any> | null
+                        const responses = sub.responses as FormResponse | null
                         const date = new Date(sub.createdAt).toLocaleDateString("es-AR", {
                             day: "2-digit", month: "short", year: "numeric",
                             hour: "2-digit", minute: "2-digit"

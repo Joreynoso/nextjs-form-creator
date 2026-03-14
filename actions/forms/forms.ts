@@ -148,7 +148,7 @@ export async function enablePublicAccess(formId: string): Promise<PublicAccessRe
     return { success: false, message: "Form not found" }
   }
 
-  let token = form.publicToken ?? nanoid(16)
+  const token = form.publicToken ?? nanoid(16)
 
   const updated = await prisma.form.update({
     where: { id: formId },

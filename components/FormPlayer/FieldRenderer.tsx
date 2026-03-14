@@ -2,11 +2,13 @@
 
 import { FormField } from '@/@types/types'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import type { answerValue } from '@/@types/types'
 
 interface Props {
   field: FormField
-  value: any
-  onChange: (value: any) => void
+  value: answerValue
+  onChange: (value: answerValue) => void
 }
 
 export default function FieldRenderer({ field, value, onChange }: Props) {
@@ -17,7 +19,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     return (
       <input
         className={inputBaseClasses}
-        value={value ?? ""}
+        value={typeof value === "string" || typeof value === "number" ? value : ""}
         placeholder="Escribe tu respuesta aquí..."
         onChange={e => onChange(e.target.value)}
       />
@@ -29,7 +31,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
       <input
         type="number"
         className={inputBaseClasses}
-        value={value ?? ""}
+        value={typeof value === "string" || typeof value === "number" ? value : ""}
         placeholder="0"
         onChange={e => onChange(e.target.value)}
       />
@@ -40,7 +42,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     return (
       <textarea
         className={cn(inputBaseClasses, "min-h-[100px] resize-none")}
-        value={value ?? ""}
+        value={typeof value === "string" || typeof value === "number" ? value : ""}
         placeholder="Escribe tu respuesta larga aquí..."
         onChange={e => onChange(e.target.value)}
       />
@@ -89,7 +91,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
   }
 
   if (field.type === "checkbox") {
-    const arr = value ?? []
+    const arr: string[] = Array.isArray(value) ? value : []
 
     return (
       <div className="grid gap-2.5 max-w-md">
@@ -139,7 +141,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
 
   if (field.type === "select") {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [isOpen, setIsOpen] = (typeof window !== 'undefined') ? require('react').useState(false) : [false, () => {}]
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
       <div className="relative max-w-md">
@@ -188,4 +190,4 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
   }
 
   return null
-}
+}

@@ -88,6 +88,7 @@ export interface FormResponse {
 export type FieldValue =
   | string
   | number
+  | boolean
   | string[]
   | null
   | undefined
@@ -100,6 +101,8 @@ export type PublicAccessResult = {
   message?: string
 }
 
+
+export type answerValue = string | number | boolean | string[] | null | undefined
 
 
 export type SubmissionStatus = "pending" | "completed" | "expired" | "cancelled"
