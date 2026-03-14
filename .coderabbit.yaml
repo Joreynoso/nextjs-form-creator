@@ -1,0 +1,47 @@
+reviews:
+  profile: assertive
+
+  request_changes_workflow: false
+
+  high_level_summary: true
+
+  poem: false
+
+  review_status: true
+
+  collapse_walkthrough: false
+  
+  # Ignore auto-generated Prisma client
+  ignore:
+    - "lib/generated/**"
+
+  path_instructions:
+    - path: "components/**"
+      instructions: |
+        Review React best practices, unnecessary re-renders, and hooks usage. 
+        Note: Project uses Tailwind CSS v4; check for proper utility usage and modern CSS patterns.
+
+    - path: "app/**"
+      instructions: |
+        Check Next.js App Router patterns, server/client component separation, and route segments (layout vs page).
+        Ensure proper use of metadata API and standard Next.js performance optimizations.
+
+    - path: "actions/**"
+      instructions: |
+        Review server actions for security issues (CSRF, authorization), validation (Zod) and proper error handling.
+
+    - path: "prisma/**"
+      instructions: |
+        Check database schema design, indexing, and query performance. Ensure sensitive fields are properly handled.
+
+    - path: "lib/**"
+      instructions: |
+        Review utility logic, shared state management, and Prisma client integration. 
+        Ensure modularity and proper TypeScript typing.
+
+    - path: "middleware.ts"
+      instructions: |
+        Review Clerk authentication logic, route protection, and matcher performance.
+
+chat:
+  auto_reply: true
