@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import FormPlayer from '@/components/FormPlayer/FormPlayer'
 import FormDisabled from '@/components/FormPlayer/FormDisabled'
 import { nanoid } from 'nanoid'
+import { FormField } from '@/@types/types'
 
 export default async function FormPage({ params }: { params: Promise<{ token: string }> }) {
 
@@ -48,7 +49,7 @@ export default async function FormPage({ params }: { params: Promise<{ token: st
   return (
     <div className="w-full py-5">
       <FormPlayer
-        fields={fields as any}
+        fields={fields as unknown as FormField[]}
         submissionToken={submission.token}
       />
     </div>

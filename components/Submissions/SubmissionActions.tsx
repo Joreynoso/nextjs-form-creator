@@ -22,7 +22,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
     const [copied, setCopied] = useState(false)
 
     function buildOrderedJson() {
-        const ordered: Record<string, any> = {}
+        const ordered: Record<string, unknown> = {}
         for (const field of fields) {
             const value = responses[field.id]
             if (value !== undefined && value !== null && value !== '') {
