@@ -3,7 +3,7 @@ name: Release Please
 on:
   push:
     branches:
-      - master
+      - master   # Cambia a main si tu repo usa main
 
 permissions:
   contents: write
@@ -12,19 +12,19 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    name: Automated Release and AI Notes
+    name: Automated Release PR and AI Notes
     steps:
-      # Genera un Release PR o crea una GitHub Release cuando se fusiona el PR
-      - uses: google-github-actions/release-please-action@v4
+      # Crea un Release PR sin hacer merge ni release automático
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           target-branch: master
-          # El tipo node actualizará el package.json y generará el CHANGELOG.md automáticamente
           release-type: node
+          create-release: false   # <--- importante para PR manual
 
-      # Generar notas de release con IA en castellano si se ha creado una release (POST-RELEASE)
+      # Generar notas de release con IA basadas en el PR de release
       - name: Generate AI Release Notes (Spanish)
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.pull_request_url }}
         uses: actions/github-script@v7
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -38,49 +38,44 @@ jobs:
             Usa un tono cercano pero profesional.
         with:
           script: |
-            const releaseTag = '${{ steps.release.outputs.tag_name }}';
-            const releaseBody = `${{ steps.release.outputs.body }}`;
-            const releaseId = '${{ steps.release.outputs.id }}';
+            const prUrl = '${{ steps.release.outputs.pull_request_url }}'
+            const releaseBody = `${{ steps.release.outputs.body }}`
             
             if (!process.env.GEMINI_API_KEY) {
-              console.warn("⚠️ No se encontró GEMINI_API_KEY. Las notas de la release se mantendrán en el formato estándar.");
+              console.warn("⚠️ No se encontró GEMINI_API_KEY. Las notas se mantendrán en formato estándar.");
               return;
             }
 
-            console.log(`🚀 Procesando cambios para la versión ${releaseTag}...`);
+            console.log(`🚀 Generando notas de IA para el PR de release ${prUrl}...`);
 
             try {
-              // Utilizamos el campo system_instruction para el rol de sistema
-              // y el campo contents para la petición específica del usuario
               const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  system_instruction: {
-                    parts: [{ text: process.env.SYSTEM_PROMPT }]
-                  },
+                  system_instruction: { parts: [{ text: process.env.SYSTEM_PROMPT }] },
                   contents: [{ 
                     role: 'user', 
-                    parts: [{ text: `Genera las notas del release en castellano para la versión ${releaseTag} basándote en el siguiente listado de cambios:\n\n${releaseBody}` }] 
+                    parts: [{ text: `Genera las notas del release basándote en el siguiente listado de cambios:\n\n${releaseBody}` }] 
                   }]
                 })
-              });
+              })
 
-              if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+              if (!response.ok) throw new Error(`API Error: ${response.statusText}`)
               
-              const data = await response.json();
-              const aiNotes = data.candidates[0].content.parts[0].text;
+              const data = await response.json()
+              const aiNotes = data.candidates[0].content.parts[0].text
+              console.log("✅ Notas generadas correctamente por la IA:\n", aiNotes)
 
-              console.log("✅ Notas generadas correctamente por la IA.");
-
-              // Actualizamos la release de GitHub con las notas traducidas y mejoradas
-              await github.rest.repos.updateRelease({
+              // Comentar las notas de IA directamente en el PR de release
+              const prNumber = parseInt(prUrl.split('/').pop())
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                release_id: parseInt(releaseId),
-                body: aiNotes
-              });
+                issue_number: prNumber,
+                body: `### Notas de release generadas por IA\n\n${aiNotes}`
+              })
 
             } catch (error) {
-              console.error("❌ Error al generar o actualizar las notas con IA:", error);
+              console.error("❌ Error al generar o actualizar las notas con IA:", error)
             }
