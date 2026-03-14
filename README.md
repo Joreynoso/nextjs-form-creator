@@ -47,3 +47,4 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ## Documentación completa
 
 Para una guía detallada de implementación, consulta el archivo `guide.md`.
+test para la pr
