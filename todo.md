@@ -20,3 +20,7 @@ Encountered two children with the same key, `Nueva opción`. Keys should be uniq
 
 ## Error en el dashboard
 --> Crear la barra lateral para el dashboard, que permita navegar entre los formularios, las estadisticas y las sumbissions.
+
+
+## Unificar el borde de todas mis cards para que sea el mismo
+y el diseño tenga coherencia en toda la pagina.

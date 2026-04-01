@@ -200,3 +200,15 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* Clerk Avatar Overrides */
+.cl-userButtonAvatarImage,
+.cl-avatarImage {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.cl-userButtonAvatarBox,
+.cl-avatarBox {
+  border: 1px solid var(--border) !important;
+}

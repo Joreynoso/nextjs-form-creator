@@ -50,6 +50,14 @@ export function getClerkAppearance(resolvedTheme: string | undefined) {
             footerActionLink: isDark
                 ? 'text-[oklch(0.7272_0.0539_52.3320)] hover:opacity-80'
                 : 'text-[oklch(0.6083_0.0623_44.3588)] hover:opacity-80',
+            userButtonAvatarBox: 'border border-primary/20!',
+            userButtonAvatarImage: isDark
+                ? 'bg-[oklch(0.7272_0.0539_52.3320)]! text-[oklch(0.2721_0.0141_48.1783)]!'
+                : 'bg-[oklch(0.6083_0.0623_44.3588)]! text-white!',
+            avatarBox: 'border border-primary/20!',
+            avatarImage: isDark
+                ? 'bg-[oklch(0.7272_0.0539_52.3320)]! text-[oklch(0.2721_0.0141_48.1783)]!'
+                : 'bg-[oklch(0.6083_0.0623_44.3588)]! text-white!',
         }
     }
 }
