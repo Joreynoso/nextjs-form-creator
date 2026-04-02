@@ -1,60 +1,56 @@
+import { Skeleton } from "@/components/ui/skeleton"
+
 export default function FormBuilderSkeleton() {
     return (
-        <div className="space-y-6 w-full py-5 animate-pulse">
+        <div className="w-full py-5 space-y-6">
 
-            {/* isDirty bar skeleton */}
-            <div className="w-full bg-card border border-border/40 shadow-sm p-6 rounded-lg flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary/60" />
-                    <div className="h-3.5 w-28 rounded bg-muted/60" />
+            {/* ── Status Bar ── */}
+            <div className="flex items-center justify-between gap-4 mb-8">
+                {/* Unified Badge Style - No custom backgrounds, just skeleton weight */}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/20">
+                    <Skeleton className="size-3 rounded-full opacity-60" />
+                    <Skeleton className="h-2.5 w-16 opacity-60" />
                 </div>
-                <div className="h-9 w-24 rounded-md bg-secondary/60" />
+                {/* Main Action Button */}
+                <Skeleton className="h-10 w-44 rounded-full opacity-60" />
             </div>
 
-            {/* name & description skeleton */}
-            <div className="flex flex-col p-6 gap-4 border border-border/40 rounded-lg bg-card shadow-sm">
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-muted/50" />
-                    <div className="h-5 w-2/3 rounded bg-muted/60" />
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-muted/40" />
-                    <div className="h-4 w-1/2 rounded bg-muted/40" />
+            {/* ── Editorial Header ── */}
+            <div className="flex flex-col gap-4 py-8 border-b border-border/10 mb-8">
+                {/* Main Title - Standard opacity-60 */}
+                <Skeleton className="h-12 w-2/3 opacity-60 rounded-lg" />
+                <div className="border-l-2 border-primary/10 pl-6">
+                    {/* Description - Same standard opacity-60 */}
+                    <Skeleton className="h-8 w-full opacity-60 rounded-md" />
                 </div>
             </div>
 
-            {/* toolbar skeleton */}
-            <div className="flex flex-col gap-3 py-2">
-                <div className="flex items-center px-1 gap-4">
-                    <div className="h-2.5 w-20 rounded bg-muted/40" />
+            {/* ── Toolbar ── */}
+            <div className="flex flex-col gap-4 py-8">
+                <div className="flex items-center gap-4">
+                    {/* Toolbar Label - Standard opacity-60 */}
+                    <Skeleton className="h-2.5 w-24 opacity-60 uppercase tracking-widest" />
                     <div className="h-px flex-1 bg-border/20" />
                 </div>
-                <div className="flex flex-wrap items-center gap-1">
-                    {Array.from({ length: 7 }).map((_, i) => (
-                        <div
+                <div className="flex flex-wrap items-center gap-3">
+                    {/* Add Field Buttons - All opacity-60 */}
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <Skeleton 
                             key={i}
-                            className="h-9 w-24 rounded-md bg-secondary/40"
+                            className="h-10 w-32 rounded-full border border-border/30 opacity-60"
                         />
                     ))}
                 </div>
             </div>
 
-            {/* field cards skeleton */}
+            {/* ── Field Cards List ── */}
             <div className="space-y-4">
+                {/* Field Cards - Match precisely with opacity-60 */}
                 {Array.from({ length: 3 }).map((_, i) => (
-                    <div
+                    <Skeleton 
                         key={i}
-                        className="bg-card border border-border/40 rounded-lg p-5 shadow-sm space-y-3"
-                    >
-                        <div className="flex items-center justify-between">
-                            <div className="h-4 w-1/3 rounded bg-muted/50" />
-                            <div className="flex gap-2">
-                                <div className="h-7 w-7 rounded bg-muted/40" />
-                                <div className="h-7 w-7 rounded bg-muted/40" />
-                            </div>
-                        </div>
-                        <div className="h-10 w-full rounded-md bg-muted/30" />
-                    </div>
+                        className="h-[280px] w-full rounded-[2rem] border border-border/40 opacity-60 shadow-sm"
+                    />
                 ))}
             </div>
 
