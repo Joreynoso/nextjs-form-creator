@@ -11,7 +11,7 @@ import {
 // imports
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
+import { getOrCreateDoctor } from "@/actions/doctors/sync"
 import { prisma } from '@/lib/prisma'
 import FormEmpty from '@/components/Dashboard/FormEmpty'
 import FormCard from '@/components/Dashboard/FormCard'

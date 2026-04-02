@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
+import { getOrCreateDoctor } from "@/actions/doctors/sync"
 
 // import breacumb
 import {
@@ -13,10 +13,10 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import EmptySubmission from "@/components/Submissions/EmptySubmission"
-import { expireOldSubmissions } from "@/actions/forms/forms"
+import { expireOldSubmissions } from "@/actions/forms/submissions"
 import getSubmissionStatus from '@/lib/utils'
 import SubmissionCard from '@/components/Submissions/SubmissionCard'
-import { FormResponse } from "@/@types/types"
+import { FormResponse } from "@/types/submission.types"
 
 interface Props {
     params: Promise<{ formId: string }>

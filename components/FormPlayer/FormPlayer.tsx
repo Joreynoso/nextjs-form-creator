@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { Button } from '../ui/button'
 import FieldRenderer from "./FieldRenderer"
-import { FormField } from "@/@types/types"
+import { FormField } from "@/types/form.types"
+import { validateField } from "@/lib/validators/submission.validator"
 import { ArrowRight, ArrowLeft, Check, PartyPopper } from "lucide-react"
 
 
@@ -53,23 +54,13 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
 
     if (!currentField) return null
 
-    function validate(field: FormField) {
-        if (!field.required) return true
 
-        const value = answers[field.id]
-
-        if (field.type === "checkbox") {
-            return Array.isArray(value) && value.length > 0
-        }
-
-        return value !== undefined && value !== ""
-    }
 
     async function handleNext() {
 
         if (loading) return
 
-        if (!validate(currentField)) {
+        if (!validateField(currentField, answers[currentField.id])) {
             setError("Este campo es obligatorio")
             return
         }

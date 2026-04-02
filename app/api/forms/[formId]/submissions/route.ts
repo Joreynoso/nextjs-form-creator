@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { getOrCreateDoctor } from "@/lib/get-or-create-doctor"
+import { getOrCreateDoctor } from "@/actions/doctors/sync"
 import { nanoid } from "nanoid"
 
 export async function POST(req: Request, { params }: { params: Promise<{ formId: string }> }) {

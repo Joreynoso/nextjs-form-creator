@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { validateSubmission } from "@/lib/validators/submission.validator"
+import { FormField } from "@/types/form.types"
 
 export async function GET(req: Request, { params }: { params: Promise<{ token: string }> }) {
     try {
@@ -105,6 +107,16 @@ export async function POST(
         if (!responses) {
             return NextResponse.json(
                 { error: "Missing responses" },
+                { status: 400 }
+            )
+        }
+
+        const fields = submission.form.fields as unknown as FormField[]
+        const validation = validateSubmission(fields, responses)
+
+        if (!validation.isValid) {
+            return NextResponse.json(
+                { error: "Validation failed", details: validation.errors },
                 { status: 400 }
             )
         }

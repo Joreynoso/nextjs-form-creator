@@ -1,5 +1,5 @@
-import FormBuilderSkeleton from "@/components/FormBuilder/FormBuilderSkeleton"
+import { Spinner } from "@/components/ui/spinner"
 
-export default function Loading() {
-    return <FormBuilderSkeleton />
+export default function EditFormLoading() {
+    return <Spinner />
 }

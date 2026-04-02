@@ -3,10 +3,10 @@
 import { prisma } from "@/lib/prisma";
 
 // import getOrCreateDoctor
-import { getOrCreateDoctor } from "@/lib/get-or-create-doctor";
+import { getOrCreateDoctor } from "@/actions/doctors/sync";
 import { notFound } from 'next/navigation';
-import FormBuilder from '@/components/FormBuilder/FormBuilder';
-import { FormField } from '@/@types/types';
+import { FormBuilder } from '@/components/FormBuilder';
+import { FormField } from '@/types/form.types';
 
 interface Props {
     params: Promise<{ formId: string }>

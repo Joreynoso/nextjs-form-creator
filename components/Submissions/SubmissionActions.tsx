@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { Copy, Check, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { deleteSubmission } from '@/actions/forms/forms'
+import { deleteSubmission } from '@/actions/forms/submissions'
 import { toast } from 'sonner'
-import { Submission } from '@/@types/types'
+import { Submission } from '@/types/submission.types'
 import DeleteDialog from '../ui/deleteDialog'
 
 interface SubmissionActionsProps {

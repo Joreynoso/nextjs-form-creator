@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import FormPlayer from '@/components/FormPlayer/FormPlayer'
 import FormDisabled from '@/components/FormPlayer/FormDisabled'
 import { nanoid } from 'nanoid'
-import { FormField } from '@/@types/types'
+import { FormField, FieldType, Form } from '@/types/form.types'
 
 export default async function FormPage({ params }: { params: Promise<{ token: string }> }) {
 

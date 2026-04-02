@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { useState } from 'react'
-import { deleteForm } from '@/actions/forms/forms'
+import { deleteForm } from '@/actions/forms/crud'
 import { toast } from 'sonner'
 
 // toggle public access
-import { enablePublicAccess, disablePublicAccess } from "@/actions/forms/forms"
+import { enablePublicAccess, disablePublicAccess } from "@/actions/forms/access"
 import DeleteDialog from '../ui/deleteDialog'
 
 // type props

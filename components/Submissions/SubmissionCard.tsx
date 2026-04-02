@@ -1,4 +1,5 @@
-import { FormWithSubmissions, FormField, FormResponse, SubmissionStatusInfo } from "@/@types/types"
+import { FormWithSubmissions, FormField } from "@/types/form.types"
+import { FormResponse, SubmissionStatusInfo } from "@/types/submission.types"
 import { FormSubmission } from '@/lib/generated/prisma'
 import SubmissionActions from "./SubmissionActions"
 

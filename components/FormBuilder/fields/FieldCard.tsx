@@ -1,5 +1,5 @@
-import { FormField } from '@/@types/types'
-import { Button } from '../ui/button'
+import { FormField } from '@/types/form.types'
+import { Button } from '@/components/ui/button'
 import { Trash2, Asterisk } from 'lucide-react'
 
 const fielCardStyle = "bg-linear-to-br from-card to-muted/10 flex flex-col p-8 gap-4 border border-border/40 rounded-3xl shadow-sm shadow-primary/5 backdrop-blur-sm transition-all duration-500 animate-in fade-in slide-in-from-bottom-3"
