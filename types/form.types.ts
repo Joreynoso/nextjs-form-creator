@@ -53,56 +53,9 @@ export type FormWithSubmissions =
     include: { submissions: true }
   }>
 
-export interface Submission {
-  id: string;
-  formId: string;
-  responses: FormResponse;
-  status: SubmissionStatus;
-  createdAt: Date;
-  completedAt?: Date | null;
-}
-
-export interface SubmissionStatusInfo {
-  label: string;
-  class: string;
-}
-
-export interface Patient {
-  id: string;
-  token: string;
-  doctorId: string;
-  formId: string;
-  firstName?: string;
-  lastName?: string;
-  formResponses?: FormResponse;
-  formCompleted: boolean;
-  completedAt?: Date;
-  createdAt: Date;
-  linkSentAt: Date;
-}
-
-export interface FormResponse {
-  [fieldId: string]: FieldValue
-}
-
-export type FieldValue =
-  | string
-  | number
-  | boolean
-  | string[]
-  | null
-  | undefined
-
-
 export type PublicAccessResult = {
   success: boolean
   isPublicOpen?: boolean
   token?: string | null
   message?: string
 }
-
-
-export type answerValue = string | number | boolean | string[] | null | undefined
-
-
-export type SubmissionStatus = "pending" | "completed" | "expired" | "cancelled"

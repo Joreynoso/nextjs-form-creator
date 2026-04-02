@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { getOrCreateDoctor } from '@/lib/get-or-create-doctor'
+import { getOrCreateDoctor } from '@/actions/doctors/sync'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@clerk/nextjs/server'
 

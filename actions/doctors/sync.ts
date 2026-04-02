@@ -1,6 +1,7 @@
+"use server"
 
 import { currentUser } from "@clerk/nextjs/server";
-import { prisma } from './prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function getOrCreateDoctor() {
   const user = await currentUser();

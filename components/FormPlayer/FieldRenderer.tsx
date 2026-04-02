@@ -1,9 +1,9 @@
 'use client'
 
-import { FormField } from '@/@types/types'
+import { FormField } from '@/types/form.types'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import type { answerValue } from '@/@types/types'
+import type { answerValue } from '@/types/submission.types'
 
 interface Props {
   field: FormField

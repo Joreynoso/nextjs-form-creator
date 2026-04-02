@@ -2,9 +2,9 @@
 
 // import componentes
 import { useState } from "react"
-import { FormField, FieldType, Form } from '@/@types/types'
+import { FormField, FieldType, Form } from '@/types/form.types'
 import { Button } from '../ui/button'
-import { updateForm } from '@/actions/forms/forms'
+import { updateForm } from '@/actions/forms/crud'
 import { toast } from 'sonner'
 import {
     Check,
@@ -19,29 +19,16 @@ import {
     Minus,
     Plus
 } from 'lucide-react'
-import FieldCard from './FieldCard'
-import FieldEmpty from './FieldEmpty'
+import { FieldAddButton } from './toolbar/FieldAddButton'
+import FieldCard from './fields/FieldCard'
+import FieldEmpty from './fields/FieldEmpty'
 
 interface FormBuilderProps {
     initialFields?: FormField[]
     form?: Form | null
 }
 
-function FieldAddButton({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick: () => void }) {
-    return (
-        <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClick}
-            className="flex items-center gap-2.5 h-10 px-4 bg-muted/10 border border-border/10 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/70 hover:text-primary transition-all duration-300 rounded-full group shadow-xs"
-        >
-            <div className="opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">
-                {icon}
-            </div>
-            <span className="text-[11px] font-semibold tracking-wide whitespace-nowrap">{label}</span>
-        </Button>
-    )
-}
+
 
 export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
@@ -166,7 +153,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
             <div className="flex flex-col gap-4 py-8 border-b border-border/10 mb-8 group relative lg:max-w-[90%]">
                 <input
-                    className="font-serif text-3xl sm:text-4xl md:text-7xl w-full outline-none bg-transparent placeholder:text-muted-foreground/30 text-foreground transition-all focus:placeholder:opacity-0 tracking-tight truncate z-10"
+                    className="font-serif text-3xl sm:text-4xl md:text-6xl w-full outline-none bg-transparent placeholder:text-muted-foreground/30 text-foreground transition-all focus:placeholder:opacity-0 tracking-tight truncate z-10"
                     value={name}
                     placeholder='Formulario sin título'
                     onChange={(e) => setName(e.target.value)}

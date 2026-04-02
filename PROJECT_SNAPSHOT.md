@@ -22,11 +22,13 @@
 
 ```
 nexjs-form-creator/
-├── @types/
-│   └── types.ts                  # Tipos globales e interfaces de formularios
 ├── actions/
+│   ├── doctors/
+│   │   └── sync.ts               # Sincronización de perfiles Doctor con Clerk
 │   └── forms/
-│       └── forms.ts              # Server Actions (CRUD, Public Access, Submissions)
+│       ├── access.ts             # Gestión de tokens y acceso público
+│       ├── crud.ts               # Creación, actualización y borrado
+│       └── submissions.ts        # Administración de envíos
 ├── app/
 │   ├── (dashboard)/              # Rutas con Sidebar y Navbar (Protegidas)
 │   │   ├── layout.tsx            # Layout con navegación lateral
@@ -45,6 +47,9 @@ nexjs-form-creator/
 │   ├── ui/                       # Basado en shadcn/ui (Radix + Tailwind)
 │   ├── Dashboard/                # Layout del panel, Listas y StatsCards
 │   ├── FormBuilder/              # Constructor visual de formularios
+│   │   ├── fields/               # Subcomponentes (Cards, List, Skeletons)
+│   │   ├── toolbar/              # Barra de herramientas y controles extras
+│   │   └── index.ts              # Export centralizado (Barrel)
 │   ├── FormPlayer/               # Motor de visualización (Step-by-step UI)
 │   ├── Submissions/              # Visualización de respuestas y tablas
 │   ├── Hero/                     # Componentes de la Landing
@@ -53,10 +58,16 @@ nexjs-form-creator/
 │   ├── sidebar.tsx               # Menú lateral del dashboard
 │   └── themetoggle.tsx           # Switcher Dark/Light
 ├── lib/
+│   ├── validators/               # Lógica compartida de validaciones
+│   │   └── submission.validator.ts 
 │   ├── prisma.ts                 # Cliente singleton de Prisma
-│   └── get-or-create-doctor.ts   # Sync User Clerk -> DB
+│   └── utils.ts                  # Helpers estilo tailwind-merge y clasx
 ├── prisma/
 │   └── schema.prisma             # Modelado de datos (PostgreSQL)
+├── types/                        # Tipos modulares
+│   ├── doctor.types.ts
+│   ├── form.types.ts
+│   └── submission.types.ts
 └── middleware.ts                  # Control de acceso con Clerk
 ```
 
@@ -81,12 +92,12 @@ Registro de una respuesta.
 
 ## ⚡ Server Actions (Lógica de Negocio)
 
-Centralizadas en `actions/forms/forms.ts` para seguridad y performance:
-- `createEmptyForm()`: Inicio rápido de nuevos proyectos.
-- `updateForm()`: Guardado persistente con revalidación de caché de Next.js.
-- `deleteForm()`: Borrado seguro con validación de autoría.
-- `enablePublicAccess()`: Generación de tokens y apertura de disponibilidad.
-- `expireOldSubmissions()`: Limpieza automática de sesiones inactivas.
+Ahora modularizadas en dominios específicos para mayor mantenibilidad e inyección de dependencias más limpia:
+- **`actions/forms/crud.ts`**: `createEmptyForm()`, `updateForm()`, `deleteForm()`
+- **`actions/forms/access.ts`**: `enablePublicAccess()`
+- **`actions/forms/submissions.ts`**: `getFormSubmissions()`
+- **`actions/doctors/sync.ts`**: `getOrCreateDoctor()` (movido desde `/lib`)
+- **`lib/validators/submission.validator.ts`**: Validaciones compartidas Cliente/Servidor (`validateField`, `validateSubmission`)
 
 ---
 
