@@ -33,12 +33,12 @@ function FieldAddButton({ icon, label, onClick }: { icon: React.ReactNode, label
             variant="ghost"
             size="sm"
             onClick={onClick}
-            className="flex items-center gap-2 h-9 px-3 border border-transparent hover:border-border/40 hover:bg-secondary/40 text-muted-foreground hover:text-foreground transition-all duration-200 rounded-md group"
+            className="flex items-center gap-2.5 h-10 px-4 bg-muted/10 border border-border/10 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/70 hover:text-primary transition-all duration-300 rounded-full group shadow-xs"
         >
-            <div className="text-muted-foreground/60 group-hover:text-primary transition-colors">
+            <div className="opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">
                 {icon}
             </div>
-            <span className="text-xs font-medium whitespace-nowrap">{label}</span>
+            <span className="text-[11px] font-semibold tracking-wide whitespace-nowrap">{label}</span>
         </Button>
     )
 }
@@ -134,95 +134,106 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     return (
         <div className="space-y-6">
 
-            {/* isDirty section */}
-            <div className="w-full bg-card border border-border/40 shadow-sm backdrop-blur-sm transition-all hover:shadow-md p-6 rounded-lg flex items-center justify-between mb-4">
-                {isDirty ? (
-                    <span className="text-sm text-accent flex items-center gap-3">
-                        {unsaveAlert} Cambios sin guardar
-                    </span>
-                ) : (
-                    <span className="text-sm text-muted-foreground flex items-center gap-3">
-                        {checkSaved} Guardado
-                    </span>
-                )}
+            {/* isDirty section - Pill compacta integrada */}
+            <div className="flex items-center justify-between gap-4 mb-8">
+                <div className="flex items-center gap-3">
+                    {isDirty ? (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 transition-all duration-500">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            <span className="text-[11px] font-medium text-primary uppercase tracking-wider">Cambios sin guardar</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/30 border border-border/20">
+                            <Check className="size-3 text-muted-foreground/80" />
+                            <span className="text-[11px] font-medium text-muted-foreground/80 uppercase tracking-wider">Guardado</span>
+                        </div>
+                    )}
+                </div>
 
                 <Button
                     disabled={!isDirty || loading}
                     onClick={handleSave}
-                    variant={isDirty ? "default" : "secondary"}
-                    className="shadow-sm"
+                    className={`rounded-full px-6 transition-all duration-300 ${isDirty 
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30" 
+                        : "bg-muted/10 text-muted-foreground/40 overflow-hidden"}`}
                 >
-                    {loading ? "Guardando..." : "Guardar"}
+                    {loading ? "Guardando..." : "Guardar cambios"}
                 </Button>
             </div>
 
-            {/* nombre y descripcion */}
-            <div className="bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg bg-card shadow-sm backdrop-blur-sm transition-all hover:shadow-md">
-
-                {/* name input */}
-                <div className="flex items-center gap-2">
-                    <Pencil className="w-4 h-4 text-muted-foreground" />
-                    <input
-                        className="font-serif text-xl w-full outline-none bg-transparent placeholder:text-muted-foreground/50"
-                        value={name}
-                        placeholder='Añade un titulo para tu formulario'
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
-
-                {/* description input */}
-                <div className="flex items-center gap-2">
-                    <Pencil className="w-4 h-4 text-muted-foreground" />
-                    <input
-                        className="font-sans w-full text-base text-muted-foreground outline-none bg-transparent placeholder:text-muted-foreground/40"
-                        placeholder='Añade una descripcion para tu formulario'
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </div>
+            <div className="flex flex-col gap-4 py-8 border-b border-border/10 mb-8 group relative lg:max-w-[90%]">
+                <input
+                    className="font-serif text-3xl sm:text-4xl md:text-7xl w-full outline-none bg-transparent placeholder:text-muted-foreground/30 text-foreground transition-all focus:placeholder:opacity-0 tracking-tight truncate z-10"
+                    value={name}
+                    placeholder='Formulario sin título'
+                    onChange={(e) => setName(e.target.value)}
+                />
+                
+                {/* Custom hover info para nombres largos */}
+                {name && name.length > 20 && (
+                    <div className="absolute left-0 -top-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-y-2 group-hover:translate-y-0 z-20">
+                        <div className="bg-card border border-border/40 px-3 py-1.5 rounded-lg shadow-xl text-xs font-serif text-muted-foreground whitespace-nowrap">
+                            {name}
+                        </div>
+                    </div>
+                )}
+                
+                <textarea
+                    className="font-sans w-full text-lg md:text-2xl text-muted-foreground/70 outline-none bg-transparent placeholder:text-muted-foreground/50 leading-relaxed resize-none h-auto min-h-[40px] border-l-2 border-primary/20 pl-6 focus:border-primary/50 transition-colors"
+                    placeholder='Añade una descripción sutil para guiar a tus usuarios...'
+                    value={description}
+                    onChange={(e) => {
+                        setDescription(e.target.value)
+                        e.target.style.height = 'auto'
+                        e.target.style.height = e.target.scrollHeight + 'px'
+                    }}
+                />
             </div>
 
-            {/* minimalist toolbar   */}
-            <div className="flex flex-col gap-3 py-2">
-                <div className="flex items-center justify-between px-1">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">Constructor</span>
-                    <div className="h-px flex-1 bg-border/20 mx-4" />
+            {/* Toolbar revisada - Pills/Chips modernos */}
+            <div className="flex flex-col gap-4 py-8">
+                <div className="flex items-center gap-4">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Añadir Campo</span>
+                    <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1">
+                <div className="flex flex-wrap items-center gap-3">
                     <FieldAddButton
-                        icon={<Type className="size-3.5" />}
+                        icon={<Type className="size-4" />}
                         label="Texto"
                         onClick={() => addField("text")}
                     />
                     <FieldAddButton
-                        icon={<Hash className="size-3.5" />}
+                        icon={<Hash className="size-4" />}
                         label="Número"
                         onClick={() => addField("number")}
                     />
                     <FieldAddButton
-                        icon={<AlignLeft className="size-3.5" />}
-                        label="Área de texto"
+                        icon={<AlignLeft className="size-4" />}
+                        label="Largo"
                         onClick={() => addField("textarea")}
                     />
                     <FieldAddButton
-                        icon={<ListFilter className="size-3.5" />}
+                        icon={<ListFilter className="size-4" />}
                         label="Selección"
                         onClick={() => addField("select")}
                     />
                     <FieldAddButton
-                        icon={<CircleDot className="size-3.5" />}
+                        icon={<CircleDot className="size-4" />}
                         label="Radio"
                         onClick={() => addField("radio")}
                     />
                     <FieldAddButton
-                        icon={<CheckSquare className="size-3.5" />}
+                        icon={<CheckSquare className="size-4" />}
                         label="Check"
                         onClick={() => addField("checkbox")}
                     />
                     <FieldAddButton
-                        icon={<Minus className="size-3.5" />}
-                        label="Titulo"
+                        icon={<Minus className="size-4" />}
+                        label="Divisor"
                         onClick={() => addField("section")}
                     />
                 </div>

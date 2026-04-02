@@ -10,16 +10,13 @@ import {
 // imports
 import Link from 'next/link'
 import { Button } from '../ui/button'
-import { Badge } from '../ui/badge'
-
-// import dropdown menu components
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import { cn } from "@/lib/utils"
 import { useState } from 'react'
 import { deleteForm } from '@/actions/forms/forms'
 import { toast } from 'sonner'
@@ -127,7 +124,7 @@ export default function FormCard({ form }: FormCardProps) {
 
     return (
         <>
-            <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
+            <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
 
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
@@ -179,13 +176,26 @@ export default function FormCard({ form }: FormCardProps) {
                     </p>
 
                     <div className="flex flex-wrap gap-2 items-center pt-1">
-                        <Badge variant={form.isActive ? "default" : "secondary"} className="text-[10px] px-2 py-0">
+                        {/* Pill Status: Activo/Inactivo */}
+                        <div className={cn(
+                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-bold uppercase tracking-wider",
+                            form.isActive 
+                                ? "bg-primary/5 border-primary/20 text-primary/70" 
+                                : "bg-muted/10 border-border/40 text-muted-foreground/60"
+                        )}>
+                            <div className={cn("size-1.5 rounded-full", form.isActive ? "bg-primary animate-pulse" : "bg-muted-foreground/40")} />
                             {form.isActive ? 'Activo' : 'Inactivo'}
-                        </Badge>
+                        </div>
 
-                        <Badge variant={isPublicOpen ? "default" : "secondary"} className="text-[10px] px-2 py-0">
+                        {/* Pill Status: Público/Privado */}
+                        <div className={cn(
+                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-bold uppercase tracking-wider",
+                            isPublicOpen 
+                                ? "bg-primary/5 border-primary/20 text-primary/70" 
+                                : "bg-muted/10 border-border/40 text-muted-foreground/60"
+                        )}>
                             {isPublicOpen ? 'Abierto' : 'Cerrado'}
-                        </Badge>
+                        </div>
 
                         <Button
                             variant="ghost"
@@ -200,15 +210,15 @@ export default function FormCard({ form }: FormCardProps) {
                     </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-muted-foreground/60 text-[11px] font-medium uppercase tracking-tight">
-                        <Calendar className="size-3 opacity-70" />
+                <div className="mt-6 pt-4 border-t border-border/10 flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-muted-foreground/50 text-[0.65rem] font-medium uppercase tracking-[0.12em]">
+                        <Calendar className="size-3 opacity-60" />
                         {new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(form.createdAt)}
                     </span>
 
                     <Link
                         href={`/dashboard/${form.id}`}
-                        className="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-tight"
+                        className="text-[0.65rem] font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-[0.12em]"
                     >
                         Ver Respuestas
                     </Link>

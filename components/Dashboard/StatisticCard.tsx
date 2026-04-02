@@ -18,11 +18,11 @@ export default function StatisticCard({
     }
 }) {
     return (
-        <div className="relative flex flex-col justify-between border border-border/40 rounded-lg bg-card p-6 min-h-[160px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
+        <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[160px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
 
             <div className="space-y-3">
                 <div className="flex items-start justify-between">
-                    <h3 className="text-[11px] font-medium text-muted-foreground/60 uppercase tracking-tight flex items-center gap-1.5">
+                    <h3 className="text-[0.65rem] font-medium text-muted-foreground/80 uppercase tracking-[0.12em] flex items-center gap-1.5">
                         <Icon className="size-3 opacity-70" />
                         {title}
                     </h3>
@@ -41,7 +41,7 @@ export default function StatisticCard({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <p className="text-4xl font-serif font-medium text-foreground tracking-tight" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    <p className="text-[2.5rem] font-serif font-semibold text-foreground tracking-tight leading-none mb-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
                         {value}
                     </p>
                     <p className="text-sm text-muted-foreground line-clamp-1">
@@ -50,8 +50,8 @@ export default function StatisticCard({
                 </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between font-variant">
-                <span className="text-muted-foreground/40 text-[10px] font-medium uppercase tracking-wider">
+            <div className="mt-4 pt-4 border-t border-border/10 flex items-center justify-between font-variant">
+                <span className="text-muted-foreground/40 text-[0.65rem] font-medium uppercase tracking-[0.12em]">
                     Datos actualizados
                 </span>
                 <TrendingUp className="size-3 text-primary/40" />

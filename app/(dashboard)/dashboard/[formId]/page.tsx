@@ -83,11 +83,10 @@ export default async function FormDetailPage({ params }: Props) {
                     )}
                 </div>
                 {form.submissions.length > 0 && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary font-medium">
-                            {completedCount} completada{completedCount !== 1 ? "s" : ""}
-                        </span>
-                        <span>de {form.submissions.length} enviada{form.submissions.length !== 1 ? "s" : ""}</span>
+                    <div className="flex items-center gap-1.5 text-[0.8rem] font-sans text-muted-foreground">
+                        <span>{completedCount} completada{completedCount !== 1 ? "s" : ""}</span>
+                        <span>de</span>
+                        <span>{form.submissions.length} enviada{form.submissions.length !== 1 ? "s" : ""}</span>
                     </div>
                 )}
             </div>
