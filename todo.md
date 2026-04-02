@@ -24,3 +24,7 @@ Encountered two children with the same key, `Nueva opción`. Keys should be uniq
 
 ## Unificar el borde de todas mis cards para que sea el mismo
 y el diseño tenga coherencia en toda la pagina.
+
+## Mejorar ui, crear el menu de acciones flotante para cuando el formulario
+sea demasiado largo, considerar la opción de guardar cambios también en ese
+mismo menú flotante

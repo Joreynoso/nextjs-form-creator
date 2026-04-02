@@ -4,17 +4,21 @@ export default function FormEmpty() {
 
     // render return
     return (
-        <div className='w-full bg-card/70 backdrop-blur-sm border border-dashed border-border/40 min-h-[320px] 
-        flex flex-col items-center justify-center gap-6 py-12 px-4 rounded-lg'>
-            <div className="rounded-full aspect-square h-20 w-20 bg-secondary/30 border border-secondary/40 p-4 flex justify-center items-center">
-                <ClipboardType className="h-10 w-10 text-muted-foreground/70" />
+        <div className='w-full bg-linear-to-br from-card to-muted/5 backdrop-blur-sm border border-dashed border-border/20 min-h-[400px] 
+        flex flex-col items-center justify-center gap-8 py-16 px-8 rounded-3xl transition-all duration-500'>
+            <div className="relative group">
+                <div className="absolute -inset-1 bg-primary/20 rounded-full blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+                <div className="relative rounded-full aspect-square h-24 w-24 bg-card border border-border/20 flex justify-center items-center shadow-2xl">
+                    <ClipboardType className="h-10 w-10 text-primary" />
+                </div>
             </div>
-            <div className="text-center space-y-3">
-                <h3 className="text-lg font-serif text-foreground">
+            
+            <div className="text-center space-y-4 max-w-sm">
+                <h3 className="text-3xl font-serif text-foreground tracking-tight">
                     No hay formularios
                 </h3>
-                <p className='text-sm font-sans text-muted-foreground max-w-sm'>
-                    Aún no has creado tu primer formulario.
+                <p className='text-base font-sans text-muted-foreground/60 leading-relaxed'>
+                    Aún no has creado tu primer formulario. Comienza tu viaje editorial diseñando tu primera experiencia de recolección de datos.
                 </p>
             </div>
         </div>

@@ -2,7 +2,7 @@ import { FormField } from '@/@types/types'
 import { Button } from '../ui/button'
 import { Trash2, Asterisk } from 'lucide-react'
 
-const fielCardStyle = "bg-linear-to-br from-secondary/20 to-secondary/5 flex flex-col p-6 gap-3 border border-border/40 rounded-lg shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 duration-500"
+const fielCardStyle = "bg-linear-to-br from-card to-muted/10 flex flex-col p-8 gap-4 border border-border/40 rounded-3xl shadow-sm shadow-primary/5 backdrop-blur-sm transition-all duration-500 animate-in fade-in slide-in-from-bottom-3"
 
 interface FieldCardProps {
   field: FormField
@@ -36,15 +36,15 @@ export default function FieldCard({
     <div
       onClick={onSelect}
       className={`${fielCardStyle} ${isActive
-        ? "border-primary/50 bg-primary/1"
-        : "border-border/30 hover:border-border/60 hover:shadow-md"
+        ? "border-primary/40 ring-1 ring-primary/10 shadow-md shadow-primary/10 -translate-y-1"
+        : "border-border/30 hover:border-border/60 hover:shadow-lg hover:shadow-primary/5"
         }`}
     >
-      {/* Label */}
-      <div className="flex flex-col gap-1.5 focus-within:opacity-100 transition-opacity">
-        <label className="text-[10px] font-sans font-semibold text-muted-foreground/60 uppercase tracking-widest">Etiqueta de la pregunta</label>
+      {/* Label & Title — Contraste mejorado */}
+      <div className="flex flex-col gap-2 focus-within:opacity-100 transition-opacity">
+        <label className="text-[10px] font-sans font-bold text-primary/60 uppercase tracking-[0.2em] mb-1">Pregunta</label>
         <input
-          className="w-full font-serif text-lg outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30 selection:bg-primary/20"
+          className="w-full font-serif text-2xl md:text-3xl outline-none bg-transparent text-foreground placeholder:text-muted-foreground/40 selection:bg-primary/20 transition-all border-b border-foreground/5 focus:border-primary/20 pb-2"
           value={field.label}
           placeholder="Escribe tu pregunta aquí..."
           onChange={(e) =>
@@ -53,23 +53,23 @@ export default function FieldCard({
         />
       </div>
 
-      {/* Render según tipo */}
-      <div className="pt-2">
+      {/* Render según tipo — Contraste de respuesta +20% */}
+      <div className="pt-4">
         {field.type === "text" && (
-          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-2.5 px-4 text-sm text-muted-foreground/50 italic">
-            Respuesta corta
+          <div className="w-full bg-muted/15 border border-border/40 rounded-xl py-3.5 px-5 text-sm text-muted-foreground italic font-sans tracking-wide">
+            Escribe aquí la respuesta corta...
           </div>
         )}
 
         {field.type === "number" && (
-          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-2.5 px-4 text-sm text-muted-foreground/50 italic">
-            Respuesta numérica
+          <div className="w-full bg-muted/15 border border-border/40 rounded-xl py-3.5 px-5 text-sm text-muted-foreground italic font-sans tracking-wide">
+            0.00
           </div>
         )}
 
         {field.type === "textarea" && (
-          <div className="w-full bg-secondary/10 border border-border/20 rounded-md py-4 px-4 text-sm text-muted-foreground/50 italic min-h-[80px]">
-            Respuesta larga
+          <div className="w-full bg-muted/15 border border-border/40 rounded-xl py-5 px-5 text-sm text-muted-foreground italic font-sans tracking-wide min-h-[100px]">
+            Escribe aquí la respuesta extensa...
           </div>
         )}
 
@@ -79,9 +79,9 @@ export default function FieldCard({
             <div className="space-y-3">
               {field.options?.map((opt, i) => (
                 <div key={i} className="flex items-center gap-3 group/option">
-                  <div className="size-4 rounded-full border border-border/40 bg-secondary/10 group-focus-within/option:border-primary/40 transition-colors" />
+                  <div className="size-4 rounded-full border border-border/40 bg-muted/20 group-focus-within/option:border-primary/50 transition-colors" />
                   <input
-                    className="w-full bg-transparent border-b border-border/10 focus:border-primary/30 outline-none p-1 text-sm text-foreground transition-all placeholder:text-muted-foreground/20"
+                    className="w-full bg-transparent border-b border-border/30 focus:border-primary/40 outline-none p-1 text-sm text-foreground transition-all placeholder:text-muted-foreground/50"
                     value={opt}
                     onChange={(e) => updateOptions(i, e.target.value)}
                   />
@@ -106,43 +106,40 @@ export default function FieldCard({
         )}
       </div>
 
-      {/* Footer Actions */}
-      <div className="flex items-center justify-between pt-5 mt-3 border-t border-border/10">
-        <div className="flex items-center gap-1 h-8">
+      {/* Footer Actions - Rediseñados */}
+      <div className="flex items-center justify-between pt-6 mt-4 border-t border-border/5">
+        <div className="flex items-center gap-3">
           {field.type !== "section" && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation()
                 onChange({ ...field, required: !field.required })
               }}
-              className={`h-8 px-3 text-xs gap-2 transition-all duration-300 ${field.required
-                ? "text-primary bg-primary/10 hover:bg-primary/20 font-medium"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+              className={`flex items-center gap-2.5 px-4 py-2 rounded-full transition-all duration-300 text-[11px] font-bold tracking-wider uppercase border ${field.required
+                ? "bg-primary/10 border-primary/20 text-primary"
+                : "bg-muted/5 border-border/5 text-muted-foreground/50 hover:bg-muted/10 hover:text-muted-foreground focus:ring-1 focus:ring-primary/20"
                 }`}
             >
-              <Asterisk className={`size-3 transition-transform duration-300 ${field.required ? "rotate-30 scale-125" : "rotate-0"}`} />
+              <div className={`size-1.5 rounded-full transition-all duration-500 ${field.required ? "bg-primary scale-125 shadow-[0_0_8px_rgba(var(--primary),0.5)]" : "bg-muted-foreground/30"}`} />
               Requerido
-            </Button>
+            </button>
           )}
         </div>
 
-        <div className="flex items-center gap-3 h-8">
-          <div className="w-px h-4 bg-border/30 mx-1" />
-
-          {/* Delete */}
+        <div className="flex items-center gap-2">
+          {/* Delete icon-only */}
           <Button
             variant="ghost"
-            size="sm"
+            size="icon-xs"
             onClick={(e) => {
               e.stopPropagation()
               onDelete()
             }}
-            className="text-muted-foreground/60 hover:text-destructive hover:bg-destructive/5 h-8 w-8 p-0 sm:w-auto sm:px-3 gap-2 transition-colors"
+            className="text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors rounded-full size-9 p-0"
+            title="Eliminar pregunta"
           >
             <Trash2 className="size-4" />
-            <span className="hidden sm:inline">Eliminar</span>
           </Button>
         </div>
       </div>
