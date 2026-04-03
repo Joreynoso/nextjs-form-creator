@@ -33,6 +33,7 @@ export default function Navbar() {
     // auth links, visibles solo para usuarios registrados
     const authLinks = [
         { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Chat', href: '/dashboard/chat' },
     ]
 
     // render return

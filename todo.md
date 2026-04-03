@@ -28,3 +28,9 @@ y el diseño tenga coherencia en toda la pagina.
 ## Mejorar ui, crear el menu de acciones flotante para cuando el formulario
 sea demasiado largo, considerar la opción de guardar cambios también en ese
 mismo menú flotante
+
+## Error en el middleware de clerk,  '/api/chat(.*)' deberia ser privada
+pero si la coloco privada no puedo acceder.
+
+## Verificar o provar modelos con capas gratuitas o modelos de gemini que no tengan costo
+o intentar arreglar el mpc usando groq

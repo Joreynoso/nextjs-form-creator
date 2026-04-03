@@ -44,6 +44,43 @@ export async function createEmptyForm() {
   }
 }
 
+export async function createForm(title: string, description: string) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return {
+      success: false,
+      message: "No autorizado"
+    }
+  }
+
+  const doctor = await getOrCreateDoctor()
+
+  const form = await prisma.form.create({
+    data: {
+      name: title,
+      description,
+      doctorId: doctor.id,
+      fields: []
+    }
+  })
+
+  if (!form) {
+    return {
+      success: false,
+      message: "Error al crear el formulario"
+    }
+  }
+
+  revalidatePath("/dashboard")
+
+  return {
+    success: true,
+    message: "Formulario creado correctamente",
+    data: form.id
+  }
+}
+
 export async function deleteForm(id: string) {
   const { userId } = await auth()
 
