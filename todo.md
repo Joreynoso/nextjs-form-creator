@@ -34,3 +34,8 @@ pero si la coloco privada no puedo acceder.
 
 ## Verificar o provar modelos con capas gratuitas o modelos de gemini que no tengan costo
 o intentar arreglar el mpc usando groq
+
+## Error en el chat
+--> el nombre del usuario tarda un poco en mostrarse, esto no deberia ser asi, deberia mostrarse inmediatamente al cargar la pagina.
+-->  const { user } = useUser()
+-->  const firstName = user?.firstName
