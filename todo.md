@@ -39,3 +39,7 @@ o intentar arreglar el mpc usando groq
 --> el nombre del usuario tarda un poco en mostrarse, esto no deberia ser asi, deberia mostrarse inmediatamente al cargar la pagina.
 -->  const { user } = useUser()
 -->  const firstName = user?.firstName
+
+## Errir en la ui
+--> el chat debe permanercer con los chips igual que en el estado inicial, cuando hay mensajes.
+--> que cuando no hay mensajes.

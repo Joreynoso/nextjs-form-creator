@@ -157,3 +157,30 @@ export async function updateForm(formId: string,
     form: form
   }
 }
+
+export async function findForm(query: string, doctorId: string) {
+  const forms = await prisma.form.findMany({
+    where: {
+      doctorId,
+      name: {
+        contains: query,
+        mode: 'insensitive'
+      }
+    },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      isPublicOpen: true,
+    },
+    take: 5
+  })
+
+  return {
+    success: true,
+    forms: forms.map(f => ({
+      ...f,
+      editUrl: `/dashboard/${f.id}/edit`,
+    }))
+  }
+}

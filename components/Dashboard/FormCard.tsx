@@ -124,11 +124,11 @@ export default function FormCard({ form }: FormCardProps) {
 
     return (
         <>
-            <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
+            <div className="relative flex-1 flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
 
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
-                        <p className='text-foreground line-clamp-1 font-serif text-xl' style={{ textWrap: 'balance' }}>{form.name}</p>
+                        <p className='text-foreground line-clamp-1 font-serif text-xl font-medium' style={{ textWrap: 'balance' }}>{form.name}</p>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -171,14 +171,14 @@ export default function FormCard({ form }: FormCardProps) {
                         </DropdownMenu>
                     </div>
 
-                    <p className='text-muted-foreground text-sm line-clamp-2 leading-snug'>
+                    <p className='text-muted-foreground text-sm line-clamp-2 leading-snug font-sans'>
                         {form.description || "Sin descripción"}
                     </p>
 
                     <div className="flex flex-wrap gap-2 items-center pt-1">
                         {/* Pill Status: Activo/Inactivo */}
                         <div className={cn(
-                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-bold uppercase tracking-wider",
+                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-medium uppercase tracking-wider",
                             form.isActive 
                                 ? "bg-primary/5 border-primary/20 text-primary/70" 
                                 : "bg-muted/10 border-border/40 text-muted-foreground/60"
@@ -189,7 +189,7 @@ export default function FormCard({ form }: FormCardProps) {
 
                         {/* Pill Status: Público/Privado */}
                         <div className={cn(
-                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-bold uppercase tracking-wider",
+                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-sans font-medium uppercase tracking-wider",
                             isPublicOpen 
                                 ? "bg-primary/5 border-primary/20 text-primary/70" 
                                 : "bg-muted/10 border-border/40 text-muted-foreground/60"
@@ -202,7 +202,7 @@ export default function FormCard({ form }: FormCardProps) {
                             size="xs"
                             onClick={handleCopyLink}
                             disabled={!isPublicOpen}
-                            className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5"
+                            className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5 font-medium"
                         >
                             <Copy className="size-3" />
                             Copiar link
@@ -211,14 +211,14 @@ export default function FormCard({ form }: FormCardProps) {
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-border/10 flex items-center justify-between">
-                    <span className="flex items-center gap-2 text-muted-foreground/50 text-[0.65rem] font-medium uppercase tracking-[0.12em]">
+                    <span className="flex items-center gap-2 text-muted-foreground/50 text-[0.65rem] font-medium uppercase tracking-[0.12em] font-sans">
                         <Calendar className="size-3 opacity-60" />
                         {new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(form.createdAt)}
                     </span>
 
                     <Link
                         href={`/dashboard/${form.id}`}
-                        className="text-[0.65rem] font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-[0.12em]"
+                        className="text-[0.65rem] font-medium text-primary hover:text-primary/80 transition-colors uppercase tracking-[0.12em] font-sans"
                     >
                         Ver Respuestas
                     </Link>

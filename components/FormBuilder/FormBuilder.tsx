@@ -183,7 +183,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             {/* Toolbar revisada - Pills/Chips modernos */}
             <div className="flex flex-col gap-4 py-8">
                 <div className="flex items-center gap-4">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Añadir Campo</span>
+                    <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Añadir Campo</span>
                     <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
                 </div>
 

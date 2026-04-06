@@ -96,6 +96,11 @@ export default async function DashboardPage() {
             </div>
 
             {/* estadisticas */}
+            <div className="flex items-center gap-4 py-10">
+                <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Estadísticas Globales</span>
+                <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
+            </div>
+            
             <StatisticList 
             totalForms={totalForms}
             totalSubmissions={totalSubmissions}
@@ -104,6 +109,11 @@ export default async function DashboardPage() {
             />
 
             {/* lista de formularios */}
+            <div className="flex items-center gap-4 py-10">
+                <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Mis Formularios</span>
+                <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
+            </div>
+
             {forms.length === 0 ? <FormEmpty /> :
                 (<div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {forms.map((form) => (
