@@ -47,3 +47,7 @@ o intentar arreglar el mpc usando groq
 ## Error en el MPC
 --> la ui no devuelve error cuando la solicitud falla, deberia personalizar los mensajes para hacerle
 --> saber al usuario que hizo mal, en caso de busquedas o creaciones
+
+## Improve UI
+--> agregar un boton con un icono de "tools" que sea un menú desplegable donde esten todas las herramientas disponibles
+--> considerar mapear los nombres de mis tools con unos mas amables al usurio
