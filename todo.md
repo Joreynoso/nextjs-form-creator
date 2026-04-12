@@ -43,3 +43,7 @@ o intentar arreglar el mpc usando groq
 ## Errir en la ui
 --> el chat debe permanercer con los chips igual que en el estado inicial, cuando hay mensajes.
 --> que cuando no hay mensajes.
+
+## Error en el MPC
+--> la ui no devuelve error cuando la solicitud falla, deberia personalizar los mensajes para hacerle
+--> saber al usuario que hizo mal, en caso de busquedas o creaciones

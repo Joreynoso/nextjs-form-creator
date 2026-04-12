@@ -9,7 +9,8 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { useUser } from "@clerk/nextjs"
-import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb, ExternalLink } from "lucide-react"
+import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb } from "lucide-react"
+import FormCard from '@/components/Chat/FormCard'
 import { useState, useRef, useEffect } from 'react'
 
 type ToolResult = {
@@ -114,7 +115,7 @@ export default function ChatPage() {
             </Breadcrumb>
 
             {/* Layout principal */}
-            <div className="max-w-6xl mx-auto w-full flex flex-col px-4 sm:px-6 md:px-0">
+            <div className="max-w-6xl mx-auto w-full flex flex-col">
 
                 {/* === ESTADO: SIN MENSAJES === */}
                 {!hasMessages && (
@@ -188,22 +189,8 @@ export default function ChatPage() {
                                     </div>
 
                                     {/* Tarjetas de formularios */}
-                                    {msg.toolResult?.name === 'findForm' && msg.toolResult.data.forms?.length > 0 && (
-                                        <div className="flex flex-col gap-2 mt-2 max-w-[90%] sm:max-w-[75%] w-full">
-                                            {msg.toolResult.data.forms.map((form: any) => (
-                                                <a
-                                                    key={form.id}
-                                                    href={form.editUrl}
-                                                    className="relative group rounded-xl border border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors px-5 py-3 flex flex-col gap-0.5"
-                                                >
-                                                    <ExternalLink className="absolute top-3 right-3 w-3.5 h-3.5 text-primary/60 group-hover:text-primary transition-colors" />
-                                                    <span className="text-sm font-medium text-primary">{form.name}</span>
-                                                    {form.description && (
-                                                        <span className="text-xs text-muted-foreground">{form.description}</span>
-                                                    )}
-                                                </a>
-                                            ))}
-                                        </div>
+                                    {msg.toolResult && (
+                                        <FormCard toolResult={msg.toolResult} />
                                     )}
                                 </div>
                             ))}

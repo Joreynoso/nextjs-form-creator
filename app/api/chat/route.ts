@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     // obtener doctor
     const doctor = await getOrCreateDoctor()  // ← guardamos doctor
- 
+
     // obtener mensajes del body
     const { messages } = await req.json()
 
@@ -84,6 +84,7 @@ export async function POST(req: Request) {
         toolResult: toolResults[0] ?? null
       })
     }
+
 
     // devolver respuesta normal
     return NextResponse.json({

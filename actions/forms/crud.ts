@@ -158,14 +158,46 @@ export async function updateForm(formId: string,
   }
 }
 
-export async function findForm(query: string, doctorId: string) {
+// export async function findForm(query: string, doctorId: string) {
+//   const forms = await prisma.form.findMany({
+//     where: {
+//       doctorId,
+//       name: {
+//         contains: query,
+//         mode: 'insensitive'
+//       }
+//     },
+//     select: {
+//       id: true,
+//       name: true,
+//       description: true,
+//       isPublicOpen: true,
+//     },
+//     take: 5
+//   })
+
+//   return {
+//     success: true,
+//     forms: forms.map(f => ({
+//       ...f,
+//       editUrl: `/dashboard/${f.id}/edit`,
+//     }))
+//   }
+// }
+
+export async function findForm(doctorId: string, query?: string) {
+
+  // si no hay query, buscar todos los formularios
+  // si hay query, buscar formularios que contengan la query
   const forms = await prisma.form.findMany({
     where: {
       doctorId,
-      name: {
-        contains: query,
-        mode: 'insensitive'
-      }
+      ...(query ? {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        }
+      } : {})
     },
     select: {
       id: true,
@@ -173,7 +205,8 @@ export async function findForm(query: string, doctorId: string) {
       description: true,
       isPublicOpen: true,
     },
-    take: 5
+    take: 10,
+    orderBy: { createdAt: 'desc' }
   })
 
   return {
