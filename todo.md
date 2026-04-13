@@ -8,15 +8,11 @@ para evitar que se envien nombres de pregunta vacios.
 -- > evitar el ratelimit para los envios de formularios, que no se puedan enviar milesa
 a la vez.
 
-
 ## Error en el dashboard
 --> las estadisticas no se muestran correctamente, hay que verificar que se esten mostrando las estadisticas del formulario correcto.
 
 ## Error en el dashboard
 --> Crear la barra lateral para el dashboard, que permita navegar entre los formularios, las estadisticas y las sumbissions.
-
-## Unificar el borde de todas mis cards para que sea el mismo
-y el diseño tenga coherencia en toda la pagina.
 
 ## Mejorar ui, crear el menu de acciones flotante para cuando el formulario
 sea demasiado largo, considerar la opción de guardar cambios también en ese
@@ -25,27 +21,13 @@ mismo menú flotante
 ## Error en el middleware de clerk,  '/api/chat(.*)' deberia ser privada
 pero si la coloco privada no puedo acceder.
 
-## Verificar o provar modelos con capas gratuitas o modelos de gemini que no tengan costo
-o intentar arreglar el mpc usando groq
-
-## Error en el chat
---> el nombre del usuario tarda un poco en mostrarse, esto no deberia ser asi, deberia mostrarse inmediatamente al cargar la pagina.
--->  const { user } = useUser()
--->  const firstName = user?.firstName
-
-## Errir en la ui
+## Error en la ui
 --> el chat debe permanercer con los chips igual que en el estado inicial, cuando hay mensajes.
 --> que cuando no hay mensajes.
 
 ## Error en el MPC
 --> la ui no devuelve error cuando la solicitud falla, deberia personalizar los mensajes para hacerle
 --> saber al usuario que hizo mal, en caso de busquedas o creaciones
-
-## Improve UI
---> agregar un boton con un icono de "tools" que sea un menú desplegable donde esten todas las herramientas disponibles, createForm, finForm. De momento solo esas dos, mapear los nombres para que queden mas amigables al usuario.
-
-## Ui general
---> redondear todos los botones de la página para conservar la coherencia.
 
 ## BUG: tool loop on short conversational replies
 ─────────────────────────────────────────────
@@ -64,3 +46,12 @@ Soluciones posibles:
 
 Severidad: Media — no rompe funcionalidad pero genera UX confusa.
 Archivo: app/api/chat/route.ts
+
+## Chat Page
+--> agregar una leyenda simple aclarando que el modelo puede cometer errores.
+--> verificar siempre que la información que devuelve sea correcta
+
+## Error en la Tool generateForm.tool
+--> no esta usando el type divisor para separar las preguntas por categoria,
+--> si le pido al modelo que haga unform con 10 preguntas sobre algo y 10 sobre otra, deberia
+agregar un separador para estos casos

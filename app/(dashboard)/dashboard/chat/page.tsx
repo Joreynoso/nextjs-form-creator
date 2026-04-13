@@ -109,7 +109,7 @@ export default function ChatPage() {
                         </div>
 
                         {/* Input prominente */}
-                        <div className="w-full max-w-4xl flex flex-col gap-3">
+                        <div className="w-full max-w-4xl flex flex-col gap-3 px-4 sm:px-0">
                             <div className="rounded-xl border border-border/50 bg-card flex items-end gap-2 p-2">
                                 <textarea
                                     ref={textareaRef}

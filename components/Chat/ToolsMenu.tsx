@@ -72,17 +72,17 @@ export default function ToolsMenu({ onSelect, disabled }: ToolsMenuProps) {
                 aria-haspopup="true"
                 aria-expanded={open}
                 className={[
-                    'flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-all',
+                    'flex items-center justify-center gap-1.5 rounded-lg px-2 sm:px-2.5 py-2 text-xs font-medium transition-all',
                     'border border-border/40 bg-muted/30 text-muted-foreground',
                     'hover:bg-muted/60 hover:text-foreground hover:border-border/70',
                     'disabled:opacity-40 disabled:cursor-not-allowed',
                     open ? 'bg-muted/60 text-foreground border-border/70' : '',
                 ].join(' ')}
             >
-                <Wrench className="w-3.5 h-3.5" />
+                <Wrench className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 <span className="hidden sm:inline">Herramientas</span>
                 <ChevronDown
-                    className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                    className={`hidden sm:block w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -90,7 +90,7 @@ export default function ToolsMenu({ onSelect, disabled }: ToolsMenuProps) {
             {open && (
                 <div
                     className={[
-                        'absolute bottom-full mb-2 left-0 z-50 min-w-[220px]',
+                        'absolute bottom-full mb-2 right-0 z-50 w-[260px] sm:w-[320px] max-w-[85vw]',
                         'rounded-xl border border-border/50 bg-card shadow-lg',
                         'overflow-hidden',
                         'animate-in fade-in-0 slide-in-from-bottom-2 duration-150',
