@@ -158,62 +158,93 @@ export async function updateForm(formId: string,
   }
 }
 
-// export async function findForm(query: string, doctorId: string) {
-//   const forms = await prisma.form.findMany({
-//     where: {
-//       doctorId,
-//       name: {
-//         contains: query,
-//         mode: 'insensitive'
-//       }
-//     },
-//     select: {
-//       id: true,
-//       name: true,
-//       description: true,
-//       isPublicOpen: true,
-//     },
-//     take: 5
-//   })
-
-//   return {
-//     success: true,
-//     forms: forms.map(f => ({
-//       ...f,
-//       editUrl: `/dashboard/${f.id}/edit`,
-//     }))
-//   }
-// }
-
 export async function findForm(doctorId: string, query?: string) {
-
-  // si no hay query, buscar todos los formularios
-  // si hay query, buscar formularios que contengan la query
+  // traer todos los formularios del doctor con fields
   const forms = await prisma.form.findMany({
-    where: {
-      doctorId,
-      ...(query ? {
-        name: {
-          contains: query,
-          mode: 'insensitive'
-        }
-      } : {})
-    },
+    where: { doctorId },
     select: {
       id: true,
       name: true,
       description: true,
       isPublicOpen: true,
+      fields: true,
     },
-    take: 10,
     orderBy: { createdAt: 'desc' }
+  })
+
+  // si no hay query devolver todos
+  if (!query) {
+    return {
+      success: true,
+      forms: forms.map(f => ({
+        id: f.id,
+        name: f.name,
+        description: f.description,
+        isPublicOpen: f.isPublicOpen,
+        editUrl: `/dashboard/${f.id}/edit`,
+      }))
+    }
+  }
+
+  // filtrar en JS con case insensitive — busca en nombre, descripción y labels de campos
+  const q = query.toLowerCase()
+  const filtered = forms.filter(f => {
+    const matchesName = f.name?.toLowerCase().includes(q)
+    const matchesDescription = f.description?.toLowerCase().includes(q)
+    const fields = f.fields as { label: string }[]
+    const matchesField = Array.isArray(fields) && fields.some(field =>
+      field.label?.toLowerCase().includes(q)
+    )
+    return matchesName || matchesDescription || matchesField
   })
 
   return {
     success: true,
-    forms: forms.map(f => ({
-      ...f,
+    forms: filtered.slice(0, 10).map(f => ({
+      id: f.id,
+      name: f.name,
+      description: f.description,
+      isPublicOpen: f.isPublicOpen,
       editUrl: `/dashboard/${f.id}/edit`,
     }))
+  }
+}
+
+export async function saveGeneratedForm(
+  title: string,
+  description: string,
+  fields: FormField[]
+) {
+  const { userId } = await auth()
+  if (!userId) {
+    return { success: false, message: 'No autorizado' }
+  }
+
+  const doctor = await getOrCreateDoctor()
+
+  const form = await prisma.form.create({
+    data: {
+      name: title,
+      description,
+      doctorId: doctor.id,
+      fields: fields as unknown as Prisma.InputJsonValue
+    }
+  })
+
+  if (!form) {
+    return { success: false, message: 'Error al guardar el formulario' }
+  }
+
+  revalidatePath('/dashboard')
+
+  return {
+    success: true,
+    message: 'Formulario guardado correctamente',
+    form: {
+      id: form.id,
+      name: form.name,
+      description: form.description ?? undefined,
+      editUrl: `/dashboard/${form.id}/edit`
+    }
   }
 }

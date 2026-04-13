@@ -158,7 +158,7 @@ flex items-center gap-1.5
 Patrón unificado para toda la app (sin respuestas, sin preguntas, etc.):
 
 ```jsx
-<div className="rounded-2xl border border-border/40 bg-gradient-to-b from-card to-muted/10 p-12 text-center">
+<div className="rounded-2xl border border-border/40 bg-linear-to-b from-card to-muted/10 p-12 text-center">
   <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-6">
     {/* Ícono contextual, tamaño 2rem, color text-muted-foreground */}
   </div>

@@ -1,15 +1,8 @@
 'use client'
 
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { useUser } from "@clerk/nextjs"
 import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb } from "lucide-react"
+import ToolsMenu from '@/components/Chat/ToolsMenu'
 import FormCard from '@/components/Chat/FormCard'
 import { useState, useRef, useEffect } from 'react'
 
@@ -74,6 +67,10 @@ export default function ChatPage() {
 
         } catch (error) {
             console.error('Error en chat:', error)
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: 'Error al procesar tu solicitud. Intenta nuevamente.',
+            }])
         } finally {
             setLoading(false)
         }
@@ -90,29 +87,9 @@ export default function ChatPage() {
     // hasMessages to check if there are messages
     const hasMessages = messages.length > 0
 
-    // suggestions
-    const suggestions = [
-        { label: "Analizar Respuestas", icon: ChartBar },
-        { label: "Crear preguntas", icon: PenLine },
-        { label: "Resumir datos", icon: FileText },
-        { label: "Sugerir formulario", icon: Lightbulb }
-    ]
-
     // render return
     return (
         <div className="w-full py-5">
-            {/* Breadcrumb — no tocar */}
-            <Breadcrumb className='mb-5'>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>Chat</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
 
             {/* Layout principal */}
             <div className="max-w-6xl mx-auto w-full flex flex-col">
@@ -143,6 +120,13 @@ export default function ChatPage() {
                                     disabled={loading}
                                     className="flex-1 bg-transparent border-none focus:outline-none resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto"
                                 />
+                                <ToolsMenu
+                                    onSelect={(prompt) => {
+                                        setInput(prompt)
+                                        textareaRef.current?.focus()
+                                    }}
+                                    disabled={loading}
+                                />
                                 <button
                                     onClick={sendMessage}
                                     disabled={loading || !input.trim()}
@@ -152,23 +136,6 @@ export default function ChatPage() {
                                 </button>
                             </div>
 
-                            {/* Chips de sugerencia */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 w-full mt-2">
-                                {suggestions.map((chip) => {
-                                    const Icon = chip.icon
-                                    return (
-                                        <button
-                                            key={chip.label}
-                                            onClick={() => setInput(chip.label)}
-                                            disabled={loading}
-                                            className="rounded-xl border border-border/30 bg-muted/20 px-3 py-1.5 text-base md:text-sm text-muted-foreground hover:bg-muted/40 transition-colors flex items-center justify-center gap-1.5 w-full"
-                                        >
-                                            <Icon className="w-3.5 h-3.5 text-muted-foreground" />
-                                            {chip.label}
-                                        </button>
-                                    )
-                                })}
-                            </div>
                         </div>
                     </div>
                 )}
@@ -207,6 +174,7 @@ export default function ChatPage() {
                             )}
                         </div>
 
+
                         {/* Input fijo al fondo */}
                         <div className="mt-auto pt-6 pb-2 border-t border-border/20 px-4 sm:px-0">
                             <div className="rounded-xl border border-border/50 bg-card flex items-end gap-2 p-2">
@@ -219,6 +187,13 @@ export default function ChatPage() {
                                     disabled={loading}
                                     className="flex-1 bg-transparent border-none focus:outline-none resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto"
                                 />
+                                <ToolsMenu
+                                    onSelect={(prompt) => {
+                                        setInput(prompt)
+                                        textareaRef.current?.focus()
+                                    }}
+                                    disabled={loading}
+                                />
                                 <button
                                     onClick={sendMessage}
                                     disabled={loading || !input.trim()}
@@ -226,24 +201,6 @@ export default function ChatPage() {
                                 >
                                     <ArrowUp className="w-4 h-4" />
                                 </button>
-                            </div>
-
-                            {/* Chips de sugerencia */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 w-full mt-2">
-                                {suggestions.map((chip) => {
-                                    const Icon = chip.icon
-                                    return (
-                                        <button
-                                            key={chip.label}
-                                            onClick={() => setInput(chip.label)}
-                                            disabled={loading}
-                                            className="rounded-xl border border-border/30 bg-muted/20 px-3 py-1.5 text-base md:text-sm text-muted-foreground hover:bg-muted/40 transition-colors flex items-center justify-center gap-1.5 w-full"
-                                        >
-                                            <Icon className="w-3.5 h-3.5 text-muted-foreground" />
-                                            {chip.label}
-                                        </button>
-                                    )
-                                })}
                             </div>
                         </div>
                     </div>

@@ -143,7 +143,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                 <Button
                     disabled={!isDirty || loading}
                     onClick={handleSave}
-                    className={`rounded-full px-6 transition-all duration-300 ${isDirty 
+                    className={`rounded-md px-6 transition-all duration-300 ${isDirty 
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30" 
                         : "bg-muted/10 text-muted-foreground/40 overflow-hidden"}`}
                 >

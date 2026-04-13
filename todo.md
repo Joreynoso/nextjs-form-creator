@@ -1,9 +1,5 @@
 ## 10. Validar errores usando zod primero y despues switch y case devolviendo objetos en los return de los sv actions.
 
-## UI ERRORS
---> Socluionar el color de los componentss de clerk auth, no esta tomando bien las clases gloables o las ignora.
---> implementar un dashboard con panel lateral, en el incluir las acciones del formBuilder como agregar preguntas
-
 ## Error en el form builder
 --> Averiguar como verificar en cada cambio que los campos no esten vacios, del lado del front y del backend, usando zod
 para evitar que se envien nombres de pregunta vacios.
@@ -12,15 +8,12 @@ para evitar que se envien nombres de pregunta vacios.
 -- > evitar el ratelimit para los envios de formularios, que no se puedan enviar milesa
 a la vez.
 
-## Error en FormPlayer
-Encountered two children with the same key, `Nueva opción`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
 
 ## Error en el dashboard
 --> las estadisticas no se muestran correctamente, hay que verificar que se esten mostrando las estadisticas del formulario correcto.
 
 ## Error en el dashboard
 --> Crear la barra lateral para el dashboard, que permita navegar entre los formularios, las estadisticas y las sumbissions.
-
 
 ## Unificar el borde de todas mis cards para que sea el mismo
 y el diseño tenga coherencia en toda la pagina.
@@ -49,5 +42,25 @@ o intentar arreglar el mpc usando groq
 --> saber al usuario que hizo mal, en caso de busquedas o creaciones
 
 ## Improve UI
---> agregar un boton con un icono de "tools" que sea un menú desplegable donde esten todas las herramientas disponibles
---> considerar mapear los nombres de mis tools con unos mas amables al usurio
+--> agregar un boton con un icono de "tools" que sea un menú desplegable donde esten todas las herramientas disponibles, createForm, finForm. De momento solo esas dos, mapear los nombres para que queden mas amigables al usuario.
+
+## Ui general
+--> redondear todos los botones de la página para conservar la coherencia.
+
+## BUG: tool loop on short conversational replies
+─────────────────────────────────────────────
+Descripción: El modelo reutiliza tools innecesariamente cuando el 
+usuario responde con mensajes cortos ("perfecto", "gracias", "ok") 
+después de una ejecución exitosa de tool.
+
+Causa: El historial enviado a Groq incluye mensajes con tool_calls 
+previos. El modelo interpreta ese contexto como señal para continuar 
+en modo agente en lugar de volver al modo conversacional.
+
+Soluciones posibles:
+  1. Instrucción explícita en system prompt (solución actual, frágil)
+  2. Detectar mensajes cortos antes de llamar a Groq y omitir tools
+  3. Limpiar tool_calls del historial antes de enviarlo
+
+Severidad: Media — no rompe funcionalidad pero genera UX confusa.
+Archivo: app/api/chat/route.ts

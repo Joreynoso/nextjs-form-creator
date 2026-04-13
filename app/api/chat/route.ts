@@ -12,13 +12,25 @@ const client = new Groq({
 // definir el modelo
 const MODEL = 'llama-3.3-70b-versatile'
 
+type FrontendMessage = {
+  role: string
+  content: string
+  toolResult?: {
+    name: string
+    data: unknown
+  }
+}
+
 // prompt del sistema
 const SYSTEM_PROMPT = `Eres un asistente para médicos y doctores. Tienes acceso a tools para gestionar formularios clínicos.
 REGLAS:
-- Cuando el doctor quiera crear un formulario, SIEMPRE usa la tool createForm. Nunca lo hagas en texto.
-- Cuando el doctor quiera buscar un formulario, SIEMPRE usa la tool findForm.
-- Extrae el título y descripción del mensaje del doctor de forma concisa.
-- Confirma al doctor cuando una acción se completó exitosamente.`
+- Cuando el doctor quiera crear un formulario VACÍO o en blanco sin preguntas, usa la tool createForm.
+- Cuando el doctor quiera crear o generar un formulario CON PREGUNTAS, sobre una temática, o con un número específico de preguntas, SIEMPRE usa la tool generateForm. NUNCA uses createForm para esto.
+- Cuando el doctor quiera buscar, listar o encontrar formularios, SIEMPRE usa la tool findForm.
+- Para findForm: extrae SOLO la palabra clave relevante, sin artículos ni preposiciones.
+- Extrae el título y descripción de forma concisa. Máximo 10 palabras para el título, 15 para la descripción.
+- Después de usar generateForm, confirma que se generó un PREVIEW para revisar, NO que se creó el formulario.
+- Responde siempre en texto plano, sin markdown, sin asteriscos, sin numeración especial.`
 
 // endpoint de chat
 export async function POST(req: Request) {
@@ -36,11 +48,17 @@ export async function POST(req: Request) {
     // obtener mensajes del body
     const { messages } = await req.json()
 
+    // limpiar propiedades que Groq no entiende
+    const cleanMessages = messages.map(({ role, content }: FrontendMessage) => ({
+      role,
+      content
+    }))
+
     // llamar a groq
     const response = await client.chat.completions.create({
       model: MODEL,
       temperature: 0.2,
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...cleanMessages],
       tools,
       tool_choice: 'auto',
     })
@@ -51,7 +69,7 @@ export async function POST(req: Request) {
 
     // verificar si hay tools
     if (toolCalls) {
-      messages.push(responseMessage)
+      cleanMessages.push(responseMessage)
 
       const toolResults: { name: string, data: any }[] = []
 
@@ -64,7 +82,7 @@ export async function POST(req: Request) {
         toolResults.push({ name: toolCall.function.name, data: result })
 
         // agregar tool result al historial
-        messages.push({
+        cleanMessages.push({
           role: 'tool',
           tool_call_id: toolCall.id,
           content: JSON.stringify(result),
@@ -75,7 +93,7 @@ export async function POST(req: Request) {
       const finalResponse = await client.chat.completions.create({
         model: MODEL,
         temperature: 0.2,
-        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...cleanMessages],
       })
 
       // devolver respuesta final
