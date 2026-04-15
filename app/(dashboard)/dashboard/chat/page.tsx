@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs"
 import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb } from "lucide-react"
 import ToolsMenu from '@/components/Chat/ToolsMenu'
 import FormCard from '@/components/Chat/FormCard'
-import WarningCard from '@/components/Chat/WarningCard'
+import Disclaimer from '@/components/Chat/Disclaimer'
 import { useState, useRef, useEffect } from 'react'
 
 type ToolResult = {
@@ -138,7 +138,7 @@ export default function ChatPage() {
                             </div>
 
                             {/* mensaje de información */}
-                            <WarningCard />
+                            <Disclaimer />
                         </div>
                     </div>
                 )}
@@ -206,7 +206,7 @@ export default function ChatPage() {
                             </div>
 
                             {/* mensaje de información */}
-                            <WarningCard />
+                            <Disclaimer />
                         </div>
                     </div>
                 )}
