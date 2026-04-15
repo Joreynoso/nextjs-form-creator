@@ -4,6 +4,7 @@ import { useUser } from "@clerk/nextjs"
 import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb } from "lucide-react"
 import ToolsMenu from '@/components/Chat/ToolsMenu'
 import FormCard from '@/components/Chat/FormCard'
+import WarningCard from '@/components/Chat/WarningCard'
 import { useState, useRef, useEffect } from 'react'
 
 type ToolResult = {
@@ -136,6 +137,8 @@ export default function ChatPage() {
                                 </button>
                             </div>
 
+                            {/* mensaje de información */}
+                            <WarningCard />
                         </div>
                     </div>
                 )}
@@ -174,7 +177,6 @@ export default function ChatPage() {
                             )}
                         </div>
 
-
                         {/* Input fijo al fondo */}
                         <div className="mt-auto pt-6 pb-2 border-t border-border/20 px-4 sm:px-0">
                             <div className="rounded-xl border border-border/50 bg-card flex items-end gap-2 p-2">
@@ -202,6 +204,9 @@ export default function ChatPage() {
                                     <ArrowUp className="w-4 h-4" />
                                 </button>
                             </div>
+
+                            {/* mensaje de información */}
+                            <WarningCard />
                         </div>
                     </div>
                 )}
