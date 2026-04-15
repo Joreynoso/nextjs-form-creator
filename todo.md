@@ -9,9 +9,6 @@ para evitar que se envien nombres de pregunta vacios.
 a la vez.
 
 ## Error en el dashboard
---> las estadisticas no se muestran correctamente, hay que verificar que se esten mostrando las estadisticas del formulario correcto.
-
-## Error en el dashboard
 --> Crear la barra lateral para el dashboard, que permita navegar entre los formularios, las estadisticas y las sumbissions.
 
 ## Mejorar ui, crear el menu de acciones flotante para cuando el formulario
@@ -20,10 +17,6 @@ mismo menú flotante
 
 ## Error en el middleware de clerk,  '/api/chat(.*)' deberia ser privada
 pero si la coloco privada no puedo acceder.
-
-## Error en la ui
---> el chat debe permanercer con los chips igual que en el estado inicial, cuando hay mensajes.
---> que cuando no hay mensajes.
 
 ## Error en el MPC
 --> la ui no devuelve error cuando la solicitud falla, deberia personalizar los mensajes para hacerle

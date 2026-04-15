@@ -44,19 +44,19 @@ export default async function DashboardPage() {
         }
     })
 
-    // total de formularios activos
-    const totalActiveForms = await prisma.form.count({
+    // total de formularios abiertos (públicos)
+    const totalOpenForms = await prisma.form.count({
         where: {
             doctorId: doctor.id,
-            isActive: true
+            isPublicOpen: true
         }
     })
 
-    // total de formularios inactivos
-    const totalInactiveForms = await prisma.form.count({
+    // total de formularios cerrados (privados)
+    const totalClosedForms = await prisma.form.count({
         where: {
             doctorId: doctor.id,
-            isActive: false
+            isPublicOpen: false
         }
     })
 
@@ -104,8 +104,8 @@ export default async function DashboardPage() {
             <StatisticList 
             totalForms={totalForms}
             totalSubmissions={totalSubmissions}
-            totalActiveForms={totalActiveForms}
-            totalInactiveForms={totalInactiveForms}
+            totalActiveForms={totalOpenForms}
+            totalInactiveForms={totalClosedForms}
             />
 
             {/* lista de formularios */}

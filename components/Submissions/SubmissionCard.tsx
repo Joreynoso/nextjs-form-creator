@@ -1,12 +1,13 @@
-import { FormWithSubmissions, FormField } from "@/types/form.types"
+import { Form, FormField } from "@/types/form.types"
 import { FormResponse, SubmissionStatusInfo } from "@/types/submission.types"
 import { FormSubmission } from '@/lib/generated/prisma'
 import SubmissionActions from "./SubmissionActions"
 
 interface SubmissionCardProps {
     sub: FormSubmission
-    form: FormWithSubmissions
+    form: Form
     index: number
+    totalSubmissions: number
     status: SubmissionStatusInfo
     responses: FormResponse | null
     date: string
@@ -14,7 +15,7 @@ interface SubmissionCardProps {
 
 const isCompleted = (label: string) => label === "✓ Completado"
 
-export default function SubmissionCard({ sub, form, index, status, responses, date }: SubmissionCardProps) {
+export default function SubmissionCard({ sub, form, index, totalSubmissions, status, responses, date }: SubmissionCardProps) {
     const completed = isCompleted(status.label)
     const fields = (form.fields as unknown as FormField[]).map(f => ({ id: f.id, label: f.label }))
 
@@ -34,7 +35,7 @@ export default function SubmissionCard({ sub, form, index, status, responses, da
                 {/* Left: número + badge */}
                 <div className="flex items-center gap-2.5 min-w-0">
                     <span className="font-mono text-xs text-muted-foreground tabular-nums shrink-0">
-                        #{form.submissions.length - index}
+                        {totalSubmissions > 0 ? `#${totalSubmissions - index}` : ""}
                     </span>
                     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium leading-none shrink-0 ${status.class}`}>
                         {status.label}

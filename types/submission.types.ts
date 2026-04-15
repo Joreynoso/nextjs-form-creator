@@ -26,4 +26,3 @@ export type FieldValue =
   | null
   | undefined
 
-export type answerValue = string | number | boolean | string[] | null | undefined

@@ -39,6 +39,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
             setTimeout(() => setCopied(false), 2000)
         } catch {
             // clipboard no disponible
+            toast.error("No se pudo copiar el contenido, portapapeles deshabilitado")
         }
     }
 
@@ -67,7 +68,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
         <div className="flex items-center gap-0.5">
 
             {/* Copiar JSON — solo si hay respuestas */}
-            {canCopy && (
+            {canCopy && responses && Object.keys(responses).length > 0 && (
                 <Button
                     variant="ghost"
                     size="sm"

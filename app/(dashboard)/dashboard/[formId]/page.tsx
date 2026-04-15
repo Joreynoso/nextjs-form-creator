@@ -17,6 +17,9 @@ import { expireOldSubmissions } from "@/actions/forms/submissions"
 import getSubmissionStatus from '@/lib/utils'
 import SubmissionCard from '@/components/Submissions/SubmissionCard'
 import { FormResponse } from "@/types/submission.types"
+import { Form } from "@/types/form.types"
+import StatisticCard from "@/components/Dashboard/StatisticCard"
+import { Send, CheckCircle2, Clock, XCircle } from "lucide-react"
 
 interface Props {
     params: Promise<{ formId: string }>
@@ -36,24 +39,30 @@ export default async function FormDetailPage({ params }: Props) {
     // Expirar submissions viejas de ESTE form
     await expireOldSubmissions(formId)
 
-    // Cargar el form sin basura
+    // Cargar el form (sin todas las submissions de golpe para optimizar)
     const form = await prisma.form.findUnique({
-        where: { id: formId },
-        include: {
-            submissions: {
-                orderBy: {
-                    createdAt: "desc"
-                }
-            }
-        }
+        where: { id: formId }
     })
 
     if (!form || form.doctorId !== doctor.id) {
         notFound()
     }
 
-    const completedCount = form.submissions.filter(s => s.status === "completed").length
+    // Estadísticas del formulario en particular
+    const [totalSub, completedSub, pendingSub, expiredSub] = await Promise.all([
+        prisma.formSubmission.count({ where: { formId } }),
+        prisma.formSubmission.count({ where: { formId, status: "completed" } }),
+        prisma.formSubmission.count({ where: { formId, status: "pending" } }),
+        prisma.formSubmission.count({ where: { formId, status: "expired" } }),
+    ])
 
+    // Cargar las submissions reales para la lista (paginado o limitado si fuera necesario, por ahora mantenemos la lista)
+    const submissions = await prisma.formSubmission.findMany({
+        where: { formId },
+        orderBy: { createdAt: "desc" }
+    })
+
+    // render return
     return (
         <div className="w-full py-5">
 
@@ -74,29 +83,40 @@ export default async function FormDetailPage({ params }: Props) {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            {/* Header con nombre + contador */}
-            <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
-                <div>
-                    <h1 className="font-serif text-2xl text-foreground">{form.name}</h1>
-                    {form.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{form.description}</p>
-                    )}
-                </div>
-                {form.submissions.length > 0 && (
-                    <div className="flex items-center gap-1.5 text-[0.8rem] font-sans text-muted-foreground">
-                        <span>{completedCount} completada{completedCount !== 1 ? "s" : ""}</span>
-                        <span>de</span>
-                        <span>{form.submissions.length} enviada{form.submissions.length !== 1 ? "s" : ""}</span>
-                    </div>
-                )}
+            {/* Estadísticas Visuales del Formulario */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                <StatisticCard
+                    title="Total de Envíos"
+                    value={totalSub.toString()}
+                    description="Intentos totales recibidos"
+                    icon={Send}
+                />
+                <StatisticCard
+                    title="Completados"
+                    value={completedSub.toString()}
+                    description="Respuestas finalizadas"
+                    icon={CheckCircle2}
+                />
+                <StatisticCard
+                    title="Pendientes"
+                    value={pendingSub.toString()}
+                    description="En proceso de llenado"
+                    icon={Clock}
+                />
+                <StatisticCard
+                    title="Expirados"
+                    value={expiredSub.toString()}
+                    description="No completados a tiempo"
+                    icon={XCircle}
+                />
             </div>
 
             {/* Submissions o estado vacío */}
-            {form.submissions.length === 0 ? (
+            {submissions.length === 0 ? (
                 <EmptySubmission />
             ) : (
                 <div className="flex flex-col gap-4">
-                    {form.submissions.map((sub, index) => {
+                    {submissions.map((sub, index) => {
                         const status = getSubmissionStatus(sub.status)
                         const responses = sub.responses as FormResponse | null
                         const date = new Date(sub.createdAt).toLocaleDateString("es-AR", {
@@ -108,8 +128,9 @@ export default async function FormDetailPage({ params }: Props) {
                             <SubmissionCard
                                 key={sub.id}
                                 sub={sub}
-                                form={form}
+                                form={form as unknown as Form}
                                 index={index}
+                                totalSubmissions={totalSub}
                                 status={status}
                                 responses={responses}
                                 date={date}

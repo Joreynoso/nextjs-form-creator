@@ -30,15 +30,15 @@ export default function StatisticList({
                 icon={Send}
             />
             <StatisticCard
-                title="Formularios Activos"
+                title="Formularios Abiertos"
                 value={totalActiveForms.toString()}
-                description="Formularios visibles para pacientes"
+                description="Visibles para pacientes"
                 icon={CheckCircle2}
             />
             <StatisticCard
-                title="Formularios Inactivos"
+                title="Formularios Cerrados"
                 value={totalInactiveForms.toString()}
-                description="Formularios pausados o en borrador"
+                description="Pausados o privados"
                 icon={XCircle}
             />
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 // import componentes
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FormField, FieldType, Form } from '@/types/form.types'
 import { Button } from '../ui/button'
 import { updateForm } from '@/actions/forms/crud'
@@ -17,7 +17,8 @@ import {
     CheckSquare,
     Hash,
     Minus,
-    Plus
+    Plus,
+    ArrowUp
 } from 'lucide-react'
 import { FieldAddButton } from './toolbar/FieldAddButton'
 import FieldCard from './fields/FieldCard'
@@ -40,6 +41,29 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
     const [description, setDescription] = useState(form?.description ?? "")
     const [fields, setFields] = useState<FormField[]>(initialFields ?? [])
     const [activeFieldId, setActiveFieldId] = useState<string | null>(null)
+    const [showScrollTop, setShowScrollTop] = useState(false)
+
+    // effect to handle scroll for floating button
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 400) {
+                setShowScrollTop(true)
+            } else {
+                setShowScrollTop(false)
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll)
+        return () => window.removeEventListener("scroll", handleScroll)
+    }, [])
+
+    // scroll to top handler
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        })
+    }
 
     // states para verificar si hubo cambios o no
     const [originalName, setOriginalName] = useState(form?.name ?? "")
@@ -255,6 +279,21 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                     </div>
                 )}
             </div>
+
+            {/* Floating Scroll to Top Button */}
+            <button
+                onClick={scrollToTop}
+                className={`fixed bottom-8 right-8 z-50 p-4 rounded-full bg-primary/90 text-primary-foreground shadow-2xl backdrop-blur-md border border-primary/20 transition-all duration-500 hover:scale-110 active:scale-95 group ${
+                    showScrollTop 
+                        ? "opacity-100 translate-y-0 pointer-events-auto" 
+                        : "opacity-0 translate-y-12 pointer-events-none"
+                }`}
+            >
+                <div className="relative overflow-hidden">
+                    <ArrowUp className="size-6 transition-all duration-300 group-hover:-translate-y-1" />
+                    <div className="absolute inset-0 bg-white/20 translate-y-10 group-hover:translate-y-0 transition-transform duration-500 rounded-full blur-xl" />
+                </div>
+            </button>
         </div>
     )
 }
