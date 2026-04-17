@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from 'uuid'
+import Groq from 'groq-sdk'
 import { FormField } from '@/types/form.types'
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export const generateFormTool = {
   type: 'function' as const,
   function: {
     name: 'generateForm',
-    description: 'Genera una lista de preguntas para un formulario clínico. DEBES generar tú mismo los campos en el parámetro fields basándote en el topic y questionCount. NO guarda nada, solo genera un preview para que el doctor revise.', parameters: {
+    description: 'Genera un formulario clínico con preguntas basándose en una temática. NO guarda nada, solo genera un preview para que el doctor revise.',
+    parameters: {
       type: 'object',
       properties: {
         title: {
@@ -20,61 +24,62 @@ export const generateFormTool = {
         },
         topic: {
           type: 'string',
-          description: 'Temática o especialidad médica del formulario',
+          description: 'Temática o especialidad del formulario',
           maxLength: 100
         },
         questionCount: {
           type: 'number',
-          description: 'Cantidad de preguntas a generar, entre 5 y 20',
-        },
-        fields: {
-          type: 'array',
-          description: 'OBLIGATORIO: Generá vos mismo este array con las preguntas del formulario. Usá variedad de tipos: text, number, textarea, select, radio, checkbox, section.',
-          items: {
-            type: 'object',
-            properties: {
-              type: {
-                type: 'string',
-                enum: ['text', 'number', 'textarea', 'select', 'radio', 'checkbox', 'section'],
-                description: 'Tipo de campo'
-              },
-              label: {
-                type: 'string',
-                description: 'Texto de la pregunta o etiqueta del campo'
-              },
-              placeholder: {
-                type: 'string',
-                description: 'Texto de ayuda dentro del campo, solo para text, number, textarea'
-              },
-              options: {
-                type: 'array',
-                items: { type: 'string' },
-                description: 'Opciones para select, radio o checkbox'
-              },
-              required: {
-                type: 'boolean',
-                description: 'Si el campo es obligatorio'
-              }
-            },
-            required: ['type', 'label'],
-            additionalProperties: false
-          }
+          description: 'Cantidad de preguntas interactivas a generar entre 5 y 20. Los campos "section" son separadores adicionales y NO cuentan.',
         }
       },
-      required: ['title', 'description', 'topic', 'fields'],
+      required: ['title', 'description', 'topic', 'questionCount'],
       additionalProperties: false
     }
   },
-  execute: async ({ title, description, topic, fields }: {
+  execute: async ({ title, description, topic, questionCount }: {
     title: string
     description: string
     topic: string
-
-    // omit sirve para decir que no se espera el id
-    fields: Omit<FormField, 'id'>[]
+    questionCount: number
   }) => {
-    // agregar id único a cada campo
-    const fieldsWithIds: FormField[] = fields.map(field => ({
+
+    // llamada dedicada a Groq para generar los campos
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      temperature: 0.4,
+      response_format: { type: 'json_object' },
+      messages: [
+        {
+          role: 'system',
+          content: `Eres un experto en formularios clínicos. Generás arrays de preguntas en formato JSON.
+Tipos disponibles: text, number, textarea, select, radio, checkbox, section.
+- "section" es un separador visual entre grupos, NO cuenta como pregunta interactiva.
+- select, radio y checkbox DEBEN tener un array "options" con al menos 2 opciones.
+- Respondé SOLO con JSON válido, sin texto adicional.`
+        },
+        {
+          role: 'user',
+          content: `Generá exactamente ${questionCount} preguntas interactivas sobre "${topic}".
+Usá variedad de tipos. Si hay múltiples subtemas, separalos con campos "section".
+Respondé con este formato exacto:
+{
+  "fields": [
+    { "type": "section", "label": "Datos personales" },
+    { "type": "text", "label": "Nombre completo", "required": true },
+    { "type": "number", "label": "Edad", "required": false },
+    { "type": "select", "label": "Objetivo principal", "options": ["Perder peso", "Ganar masa", "Mantener peso"], "required": true },
+    { "type": "textarea", "label": "Observaciones adicionales", "required": false }
+  ]
+}`
+        }
+      ]
+    })
+
+    const content = response.choices[0].message.content ?? '{}'
+    const parsed = JSON.parse(content)
+    const rawFields: Omit<FormField, 'id'>[] = parsed.fields ?? []
+
+    const fieldsWithIds: FormField[] = rawFields.map(field => ({
       ...field,
       id: uuidv4()
     }))

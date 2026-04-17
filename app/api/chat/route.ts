@@ -76,6 +76,7 @@ export async function POST(req: Request) {
       // ejecutar tools
       for (const toolCall of toolCalls) {
         const args = JSON.parse(toolCall.function.arguments)
+        console.log('tool args completos:', JSON.stringify(args, null, 2))  // ← agregá esto
         const executor = toolExecutors[toolCall.function.name]  // ← enrutamiento automático
         const result = await executor(args, doctor.id)
 

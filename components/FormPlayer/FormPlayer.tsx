@@ -6,6 +6,7 @@ import FieldRenderer from "./FieldRenderer"
 import { FormField } from "@/types/form.types"
 import { validateField } from "@/lib/validators/submission.validator"
 import { ArrowRight, ArrowLeft, Check, PartyPopper } from "lucide-react"
+import { toast } from "sonner"
 
 
 interface FormPlayerProps {
@@ -32,7 +33,7 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
         )
     }
 
-    // guard: terminado (Rediseñado para estilo Typeform)
+    // guard: terminado 
     if (isFinished) {
         return (
             <div className="max-w-xl mx-auto px-6 min-h-[80vh] flex flex-col justify-center items-center text-center animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -53,8 +54,6 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
     const isLast = step === fields.length - 1
 
     if (!currentField) return null
-
-
 
     async function handleNext() {
 
@@ -98,6 +97,7 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
 
         } catch {
             setError("No se pudo enviar el formulario")
+            toast.error('Error al enviar el formulario')
         } finally {
             setLoading(false)
         }
@@ -145,6 +145,18 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
                     )}
 
                     <div className="flex items-center gap-3 mt-10">
+                        {step > 0 && (
+                            <Button
+                                variant="ghost"
+                                size="lg"
+                                onClick={handleBack}
+                                disabled={loading}
+                                className="text-foreground/80 hover:text-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 border border-transparent hover:border-border hover:bg-accent/40"
+                            >
+                                <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
+                            </Button>
+                        )}
+
                         <Button
                             size="lg"
                             onClick={handleNext}
@@ -159,17 +171,6 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
                                 <span className="flex items-center gap-2">Siguiente <ArrowRight className="w-4 h-4" /></span>
                             )}
                         </Button>
-
-                        {step > 0 && (
-                            <Button
-                                variant="ghost"
-                                onClick={handleBack}
-                                disabled={loading}
-                                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                            >
-                                <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Atrás
-                            </Button>
-                        )}
                     </div>
                 </div>
             </div>

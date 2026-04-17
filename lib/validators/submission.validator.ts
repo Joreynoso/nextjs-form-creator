@@ -1,8 +1,8 @@
 import { FormField } from "@/types/form.types"
-import type { answerValue, FormResponse } from "@/types/submission.types"
+import type { FieldValue, FormResponse } from "@/types/submission.types"
 
 // Valida un solo campo (útil para el step-by-step en frontend)
-export function validateField(field: FormField, value: answerValue): boolean {
+export function validateField(field: FormField, value: FieldValue): boolean {
     if (!field.required) return true
 
     if (field.type === "checkbox") {

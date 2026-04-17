@@ -1,3 +1,5 @@
+'use client'
+
 import { ClipboardList, Link2, Sliders, BarChart2, ToggleRight, LayoutDashboard } from 'lucide-react'
 
 export const features = [
@@ -16,26 +18,26 @@ export const features = [
     {
         id: 3,
         icon: Sliders,
-        title: 'Campos completamente configurables',
-        description: 'Personalizá cada campo: etiqueta, tipo, opciones predefinidas, respuesta libre y obligatoriedad, todo desde el editor visual.'
+        title: 'Lógica condicional',
+        description: 'Mostrá u ocultá preguntas dependiendo de las respuestas previas para mantener el formulario relevante.'
     },
     {
         id: 4,
         icon: BarChart2,
-        title: 'Respuestas organizadas',
-        description: 'Todas las respuestas de tus pacientes quedan guardadas en tu dashboard, ordenadas por formulario y fecha, listas para revisar o exportar.'
+        title: 'Insights y estadísticas',
+        description: 'Analizá las respuestas de todos tus pacientes en un dashboard claro para tomar decisiones basadas en datos reales.'
     },
     {
         id: 5,
         icon: ToggleRight,
-        title: 'Control de acceso al formulario',
-        description: 'Activá o desactivá el acceso público a cada formulario con un solo clic. Controlás exactamente quién puede responder y cuándo.'
+        title: 'Control de privacidad total',
+        description: 'Activá o desactivá tus formularios con un clic. Decidí cuándo un formulario está disponible y cuándo deja de recibir respuestas.'
     },
     {
         id: 6,
         icon: LayoutDashboard,
-        title: 'Dashboard centralizado',
-        description: 'Gestioná todos tus formularios desde un solo lugar. Visualizá el estado de cada uno, editá su contenido y accedé a las respuestas al instante.'
+        title: 'Secciones organizadas',
+        description: 'Estructurá los formularios largos en bloques o secciones lógicas para que el paciente no se abrume y mejore la tasa de completado.'
     }
 ]
 
@@ -51,12 +53,12 @@ export default function CardsHome() {
                     return (
                         <div
                             key={feature.id}
-                            className="relative bg-linear-to-br from-card to-muted/10 border border-border/40 p-10 rounded-2xl text-center flex flex-col justify-center items-center h-full"
+                            className="group relative bg-card hover:bg-muted/5 border border-border/40 hover:border-primary/30 p-10 rounded-2xl text-center flex flex-col justify-center items-center h-full transition-all duration-300"
                         >
-                            <div className='aspect-square w-14 h-14 mx-auto bg-muted/20 rounded-full flex justify-center items-center mb-6 transition-transform duration-500'>
-                                <Icon className='w-7 h-7 text-primary/60' />
+                            <div className='w-14 h-14 mx-auto bg-background text-muted-foreground border border-border/50 rounded-full flex justify-center items-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-500 shadow-sm'>
+                                <Icon className='w-7 h-7' />
                             </div>
-                            <h2 className='font-serif text-xl tracking-tight text-foreground mb-3'>{feature.title}</h2>
+                            <h2 className='font-serif text-xl tracking-tight text-foreground mb-3 group-hover:text-primary transition-colors duration-300'>{feature.title}</h2>
                             <p className='text-muted-foreground/70 text-sm leading-relaxed font-sans'>{feature.description}</p>
                         </div>
                     )

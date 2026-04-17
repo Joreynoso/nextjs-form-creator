@@ -18,7 +18,7 @@ export default function StatisticCard({
     }
 }) {
     return (
-        <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[160px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
+        <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-card p-6 min-h-[160px] shadow-sm backdrop-blur-sm transition-all duration-300">
 
             <div className="space-y-3">
                 <div className="flex items-start justify-between">

@@ -18,8 +18,8 @@ export default function DeleteDialog({ open, onConfirm, isDeleting, onClose, tit
 
     // render return
     return (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm px-5 animate-in fade-in duration-300'>
-            <div className='bg-linear-to-br from-card to-muted/10 border border-border/40 p-10 rounded-[2rem] max-w-md w-full animate-in zoom-in-95 duration-300 backdrop-blur-2xl'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-[oklch(0.2225_0.0098_52.9636)]/60 backdrop-blur-md px-5 animate-in fade-in duration-300'>
+            <div className='bg-card border border-border/40 p-10 rounded-[2.5rem] max-w-md w-full animate-in zoom-in-95 duration-300 shadow-2xl transition-all'>
 
                 <div className='flex flex-col items-center text-center space-y-5'>
                     <div className="relative group">

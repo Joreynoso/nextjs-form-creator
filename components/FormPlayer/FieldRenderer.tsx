@@ -3,18 +3,24 @@
 import { FormField } from '@/types/form.types'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import type { answerValue } from '@/types/submission.types'
+import type { FieldValue } from '@/types/submission.types'
 
 interface Props {
   field: FormField
-  value: answerValue
-  onChange: (value: answerValue) => void
+  value: FieldValue
+  onChange: (value: FieldValue) => void
 }
 
 export default function FieldRenderer({ field, value, onChange }: Props) {
 
-  const inputBaseClasses = "w-full bg-transparent border-b-2 border-primary/20 focus:border-primary outline-none py-2 text-xl font-serif transition-all placeholder:text-muted-foreground/30"
+  const inputBaseClasses = "w-full bg-transparent border-b-2 border-primary/20 focus:border-primary outline-none py-2 text-xl font-sans font-normal transition-all placeholder:text-muted-foreground/30 placeholder:font-sans placeholder:font-normal"
 
+  // type section
+  if (field.type === "section") {
+    return null
+  }
+
+  // type text
   if (field.type === "text") {
     return (
       <input
@@ -26,6 +32,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     )
   }
 
+  // type numbre
   if (field.type === "number") {
     return (
       <input
@@ -38,6 +45,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     )
   }
 
+  // type textarea
   if (field.type === "textarea") {
     return (
       <textarea
@@ -49,6 +57,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     )
   }
 
+  // type radio
   if (field.type === "radio") {
     return (
       <div className="grid gap-2.5 max-w-md">
@@ -90,6 +99,7 @@ export default function FieldRenderer({ field, value, onChange }: Props) {
     )
   }
 
+  // type checkbox
   if (field.type === "checkbox") {
     const arr: string[] = Array.isArray(value) ? value : []
 

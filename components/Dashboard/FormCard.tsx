@@ -124,18 +124,18 @@ export default function FormCard({ form }: FormCardProps) {
 
     return (
         <>
-            <div className="relative flex-1 flex flex-col justify-between border border-border/40 rounded-2xl bg-linear-to-br from-card to-muted/10 p-6 min-h-[180px] shadow-sm hover:shadow-md transition-[box-shadow,background-color,border-color] duration-300 backdrop-blur-sm">
+            <div className="group relative flex-1 flex flex-col justify-between border border-border/40 hover:border-primary/30 has-[button[data-state=open]]:border-primary/30 rounded-2xl bg-card hover:bg-muted/5 has-[button[data-state=open]]:bg-muted/5 p-6 min-h-[180px] shadow-sm transition-all duration-300 backdrop-blur-sm">
 
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
-                        <p className='text-foreground line-clamp-1 font-serif text-xl font-medium' style={{ textWrap: 'balance' }}>{form.name}</p>
+                        <p className='text-foreground line-clamp-1 font-serif text-xl font-medium group-hover:text-primary group-has-[button[data-state=open]]:text-primary transition-colors duration-300' style={{ textWrap: 'balance' }}>{form.name}</p>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant={'ghost'}
                                     size="icon-xs"
-                                    className='absolute top-3 right-3 opacity-70 hover:opacity-100'
+                                    className='absolute top-3 right-3 opacity-70 hover:opacity-100 data-[state=open]:opacity-100 data-[state=open]:text-primary'
                                     aria-label="Opciones del formulario"
                                 >
                                     <EllipsisVertical />
