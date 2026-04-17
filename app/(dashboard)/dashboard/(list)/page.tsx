@@ -98,7 +98,7 @@ export default async function DashboardPage() {
             {/* estadisticas */}
             <div className="flex items-center gap-4 py-10">
                 <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Estadísticas Globales</span>
-                <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
+                <div className="h-px w-full bg-border/20" />
             </div>
             
             <StatisticList 
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
             {/* lista de formularios */}
             <div className="flex items-center gap-4 py-10">
                 <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Mis Formularios</span>
-                <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
+                <div className="h-px w-full bg-border/20" />
             </div>
 
             {forms.length === 0 ? <FormEmpty /> :

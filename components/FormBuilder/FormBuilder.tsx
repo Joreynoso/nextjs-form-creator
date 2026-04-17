@@ -208,7 +208,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             <div className="flex flex-col gap-4 py-8">
                 <div className="flex items-center gap-4">
                     <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Añadir Campo</span>
-                    <div className="h-px w-full bg-linear-to-r from-border/40 to-transparent" />
+                    <div className="h-px w-full bg-border/20" />
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">

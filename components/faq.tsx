@@ -30,25 +30,25 @@ export default function FAQ() {
     setOpenIndex(openIndex === index ? null : index)
   }
 
-  return (
+ return (
     <section className="w-full max-w-4xl mx-auto py-24 px-6">
       <div className="text-center mb-16">
-        <h2 className="font-serif text-3xl md:text-5xl tracking-tight text-foreground mb-4 italic"> Preguntas Frecuentes</h2>
+        <h2 className="font-serif text-3xl md:text-5xl tracking-tight text-foreground mb-4 italic">Preguntas Frecuentes</h2>
         <p className="text-muted-foreground font-sans text-sm tracking-widest uppercase">Todo lo que necesitas saber</p>
       </div>
 
       <div className="space-y-4">
         {faqs.map((faq, index) => (
-          <div 
+          <div
             key={index}
             className={cn(
-              "group rounded-2xl border border-border/40 transition-all duration-300 overflow-hidden",
-              openIndex === index ? "bg-muted/10 border-primary/20" : "bg-card hover:bg-muted/5"
+              "group border rounded-lg px-4 transition-all duration-300 overflow-hidden",
+              openIndex === index ? "bg-muted/20 border-border" : "bg-muted/20 border-border"
             )}
           >
             <button
               onClick={() => toggle(index)}
-              className="w-full px-8 py-6 flex items-center justify-between text-left transition-all"
+              className="w-full px-4 py-6 flex items-center justify-between text-left transition-all"
             >
               <span className={cn(
                 "font-serif text-lg md:text-xl tracking-tight transition-colors duration-300",
@@ -57,7 +57,7 @@ export default function FAQ() {
                 {faq.question}
               </span>
               <div className={cn(
-                "shrink-0 p-2 rounded-full border border-border/50 group-hover:border-primary/30 transition-all duration-300",
+                "shrink-0 p-2 rounded-full border border-border/50 transition-all duration-300",
                 openIndex === index ? "bg-primary text-primary-foreground border-primary rotate-180" : "bg-background text-muted-foreground"
               )}>
                 {openIndex === index ? (
@@ -67,14 +67,14 @@ export default function FAQ() {
                 )}
               </div>
             </button>
-            <div 
+            <div
               className={cn(
                 "grid transition-all duration-300 ease-in-out",
                 openIndex === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
               )}
             >
               <div className="overflow-hidden">
-                <div className="px-8 pb-8 text-muted-foreground font-sans leading-relaxed text-sm md:text-base border-t border-border/10 pt-4 max-w-3xl">
+                <div className="px-4 pb-6 text-muted-foreground font-sans leading-relaxed text-sm md:text-base">
                   {faq.answer}
                 </div>
               </div>

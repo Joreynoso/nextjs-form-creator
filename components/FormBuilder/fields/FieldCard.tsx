@@ -105,7 +105,7 @@ export default function FieldCard({
           )}
 
         {field.type === "section" && (
-          <div className="h-px w-full bg-linear-to-r from-transparent via-border/40 to-transparent my-4" />
+          <div className="h-px w-full bg-border/20 my-4" />
         )}
       </div>
 

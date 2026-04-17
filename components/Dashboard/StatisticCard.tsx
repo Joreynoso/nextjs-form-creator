@@ -18,11 +18,11 @@ export default function StatisticCard({
     }
 }) {
     return (
-        <div className="relative flex flex-col justify-between border border-border/40 rounded-2xl bg-card p-6 min-h-[160px] shadow-sm backdrop-blur-sm transition-all duration-300">
+        <div className="group relative flex flex-col justify-between border border-border rounded-2xl bg-card/50 hover:bg-card p-6 min-h-[160px] hover:shadow-lg backdrop-blur-sm transition-all duration-300">
 
             <div className="space-y-3">
                 <div className="flex items-start justify-between">
-                    <h3 className="text-[0.65rem] font-medium text-muted-foreground/80 uppercase tracking-[0.12em] flex items-center gap-1.5 font-sans">
+                    <h3 className="text-[0.65rem] font-medium text-muted-foreground uppercase tracking-[0.12em] flex items-center gap-1.5 font-sans">
                         <Icon className="size-3 opacity-70" />
                         {title}
                     </h3>
@@ -44,14 +44,14 @@ export default function StatisticCard({
                     <p className="text-[2.5rem] font-serif font-medium text-foreground tracking-tight leading-none mb-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
                         {value}
                     </p>
-                    <p className="text-sm text-muted-foreground/80 line-clamp-1 font-sans">
+                    <p className="text-sm text-muted-foreground/70 line-clamp-1 font-sans">
                         {description}
                     </p>
                 </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-border/10 flex items-center justify-between">
-                <span className="text-muted-foreground/40 text-[0.65rem] font-medium uppercase tracking-[0.12em] font-sans">
+                <span className="text-muted-foreground/50 text-[0.65rem] font-medium uppercase tracking-[0.12em] font-sans">
                     Datos actualizados
                 </span>
                 <TrendingUp className="size-3 text-primary/40" />
