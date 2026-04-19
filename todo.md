@@ -1,46 +1,32 @@
-## 10. Validar errores usando zod primero y despues switch y case devolviendo objetos en los return de los sv actions.
+# 📝 NexJS Form Creator - TODO & Backlog
 
-## Error en el form builder
---> Averiguar como verificar en cada cambio que los campos no esten vacios, del lado del front y del backend, usando zod
-para evitar que se envien nombres de pregunta vacios.
+## 🔒 ERRORES DE SEGURIDAD CRÍTICOS (Alta Prioridad)
 
-## Error en las sumbissions
--- > evitar el ratelimit para los envios de formularios, que no se puedan enviar milesa
-a la vez.
+### 1. Falta de Rate Limiting (Agotamiento de cuota y DDoS)
+- [ ] **Submissions (Respuestas):** Falla crítica de seguridad al no limitar la cantidad de respuestas que se pueden enviar a `/api/public/submissions/[token]`. Un atacante puede enviar miles de respuestas por minuto inundando la base de datos de "basura".
+- [ ] **Chat IA:** Falta límite de llamadas a los endpoints del modelo. Si se deja libre, un usuario podría causar cobros masivos usando el modelo repetidamente.
+- **Solución propuesta:** Implementar Upstash Redis para crear límites de uso por IP/Usuario.
 
-## Error en el dashboard
---> Crear la barra lateral para el dashboard, que permita navegar entre los formularios, las estadisticas y las sumbissions.
+### 2. Endpoints Privados Expuestos (Auth Bypass)
+- [ ] **Ruta `/api/chat(.*)` en el Middleware:** Clerk no está protegiendo actualmente esta ruta correctamente ("si la coloco privada no puedo acceder"). Esto puede permitir que personas no autenticadas accedan a la interfaz LLM del sistema.
+- **Solución propuesta:** Revisar cómo se pasan las credenciales o cookies en la petición `fetch` desde el cliente al endpoint `/api/chat` para que el `authMiddleware` de Clerk las reconozca.
 
-## Mejorar ui, crear el menu de acciones flotante para cuando el formulario
-sea demasiado largo, considerar la opción de guardar cambios también en ese
-mismo menú flotante
+### 3. Validaciones Inseguras del Server-Side y Payload (Inyección y Corrupción Omitidas)
+- [ ] **Form Builder:** El JSON de `fields` que viaja al servidor no se somete a validación estricta Zod en el backend, confiando ciegamente en lo que envía la UI. Un usuario malintencionado podría interceptar la request HTTP y enviar JSON malformado o ejecutar XSS (Cross Site Scripting) inyectando etiquetas `<script>` en el label del field.
+- [ ] **Acciones Generales:** 10. Validar errores usando `zod` siempre como **primera capa** bloqueante y usar el patrón `switch`/`case` seguro devolviendo objetos tipados en los return de los server actions.
 
-## Error en el middleware de clerk,  '/api/chat(.*)' deberia ser privada
-pero si la coloco privada no puedo acceder.
+---
 
-## Error en el MPC
---> la ui no devuelve error cuando la solicitud falla, deberia personalizar los mensajes para hacerle
---> saber al usuario que hizo mal, en caso de busquedas o creaciones
+## 🛠️ UI & Experiencia de Usuario (Mejoras Pendientes)
 
-## BUG: tool loop on short conversational replies
-─────────────────────────────────────────────
-Descripción: El modelo reutiliza tools innecesariamente cuando el 
-usuario responde con mensajes cortos ("perfecto", "gracias", "ok") 
-después de una ejecución exitosa de tool.
+- [ ] **Avisos UI en Server Actions (MPC):** La interfaz muchas veces no devuelve feedback de error cuando la request en servidor falla. Se deben personalizar mensajes de tipo Toast para avisar al usuario por qué falló algo (ej. fallos en búsqueda o creaciones).
+- [ ] **Dashboard Navigation:** Crear una barra o Sidebar que agilice mejor la vista entre formularios, estadísticas crudas y submissions (respuestas individuales detalladas).
+- [ ] **Menú Flotante de Acciones Rápida (Form Builder):** En formularios inmensamente largos, considerar incluir la opción de "Guardar Cambios" y el status de `isDirty` dentro del menú circular/flotante para que el usuario no deba hacer scroll constantemente al footer/top.
 
-Causa: El historial enviado a Groq incluye mensajes con tool_calls 
-previos. El modelo interpreta ese contexto como señal para continuar 
-en modo agente en lugar de volver al modo conversacional.
+---
 
-Soluciones posibles:
-  1. Instrucción explícita en system prompt (solución actual, frágil)
-  2. Detectar mensajes cortos antes de llamar a Groq y omitir tools
-  3. Limpiar tool_calls del historial antes de enviarlo
+## 🧠 Lógica e IA (Modelos)
 
-Severidad: Media — no rompe funcionalidad pero genera UX confusa.
-Archivo: app/api/chat/route.ts
-
-## Error en la Tool generateForm.tool
---> no esta usando el type divisor para separar las preguntas por categoria,
---> si le pido al modelo que haga unform con 10 preguntas sobre algo y 10 sobre otra, deberia
-agregar un separador para estos casos
+- [ ] **Bug: Tool Loop (Generación de Chat):**  El modelo en ciertas situaciones se cicla usando tools sin justificación si el usuario responde con mensajes cortos después de ejecutar una herramienta exitosamente.
+  - *Causa:*  El historial enviado retiene los tool_calls previos forzando al modelo continuar con esa inercia. (Ref: `app/api/chat/route.ts`).
+- [ ] **Generación de UI con Formularios largos:** La tool de `generateForm` olvida utilizar el type de campo `"section"` (Divisor) a menos que se le fuerce mucho. Si un doctor le pide 10 preguntas organizadas, el modelo debería intercalarlas automáticamente con secciones para categorizar visualmente en UI.

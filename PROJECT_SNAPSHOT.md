@@ -52,6 +52,7 @@ nexjs-form-creator/
 │   │   └── index.ts              # Export centralizado (Barrel)
 │   ├── FormPlayer/               # Motor de visualización (Step-by-step UI)
 │   ├── Submissions/              # Visualización de respuestas y tablas
+│   ├── Chat/                     # Interfaz de IA Conversacional para creación (ToolsMenu, etc.)
 │   ├── Hero/                     # Componentes de la Landing
 │   ├── providers/                # Wrappers (ThemeProvider, etc.)
 │   ├── navbar.tsx / footer.tsx   # Navegación global
@@ -143,10 +144,12 @@ Ahora modularizadas en dominios específicos para mayor mantenibilidad e inyecci
 |---|---|
 | Autenticación Doctor (Clerk) | ✅ Completado |
 | CRUD de Formularios | ✅ Completado |
-| Editor de Campos (JSON) | ✅ Funcional |
+| Editor de Campos (Minimalist UI) | ✅ Completado |
+| Diseño "Editorial Noir" (Unificado) | ✅ Completado |
+| Creador IA de Formularios (Chat + Tools) | ✅ Completado |
 | Vista Pública (FormPlayer) | ✅ Completado |
 | Gestión de Respuestas (Submissions) | ✅ Funcional |
-| Estadísticas en Dashboard | ✅ Básico |
+| Estadísticas en Dashboard | ✅ Completado |
 | Soporte Dark/Light Mode | ✅ Implementado |
 | Multilenguaje (Doctor/Paciente) | 🟡 En progreso |
 | Exportación a PDF/CSV | ❌ Pendiente |
