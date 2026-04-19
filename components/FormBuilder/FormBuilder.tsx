@@ -114,7 +114,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
         const newField: FormField = {
             id: crypto.randomUUID(),
             type,
-            label: "Nueva pregunta",
+            label: type === "section" ? "Nueva Sección" : "Nueva pregunta",
             required: false,
             ...(type === "select" ||
                 type === "radio" ||
@@ -149,7 +149,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             <div className="flex items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-3">
                     {isDirty ? (
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 transition-all duration-500">
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 border border-primary/20 transition-all duration-500">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -157,7 +157,7 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                             <span className="text-[11px] font-medium text-primary uppercase tracking-wider">Cambios sin guardar</span>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/30 border border-border/20">
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary/30 border border-border/20">
                             <Check className="size-3 text-muted-foreground/80" />
                             <span className="text-[11px] font-medium text-muted-foreground/80 uppercase tracking-wider">Guardado</span>
                         </div>

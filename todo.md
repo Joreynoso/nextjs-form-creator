@@ -44,10 +44,3 @@ Archivo: app/api/chat/route.ts
 --> no esta usando el type divisor para separar las preguntas por categoria,
 --> si le pido al modelo que haga unform con 10 preguntas sobre algo y 10 sobre otra, deberia
 agregar un separador para estos casos
-
-## BUG: back button missing in manual form creation
-─────────────────────────────────────────────────
-El botón "atrás" aparece cuando el formulario se crea desde el chat
-pero no cuando se crea manualmente desde el FormBuilder.
-Revisar: qué prop o estado controla la visibilidad del botón.
-Archivo: components/FormBuilder/

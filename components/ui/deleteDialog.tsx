@@ -19,7 +19,7 @@ export default function DeleteDialog({ open, onConfirm, isDeleting, onClose, tit
     // render return
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-[oklch(0.2225_0.0098_52.9636)]/60 backdrop-blur-md px-5 animate-in fade-in duration-300'>
-            <div className='bg-card border border-border/40 p-10 rounded-3xl max-w-md w-full animate-in zoom-in-95 duration-300 shadow-2xl shadow-primary/5 transition-all'>
+            <div className='bg-card border border-border p-10 rounded-2xl max-w-md w-full animate-in zoom-in-95 duration-300 shadow-2xl shadow-primary/5 transition-all'>
 
                 <div className='flex flex-col items-center text-center space-y-5'>
                     <div className="relative group">
@@ -42,7 +42,7 @@ export default function DeleteDialog({ open, onConfirm, isDeleting, onClose, tit
                         variant='ghost'
                         onClick={onClose}
                         disabled={isDeleting}
-                        className='w-full sm:w-auto h-11 hover:bg-muted/10 transition-all font-bold text-[0.7rem] uppercase tracking-[0.12em] text-muted-foreground/40 hover:text-foreground px-8 rounded-xl'
+                        className='w-full sm:w-auto h-11 hover:bg-muted/10 hover:border hover:border-border transition-all font-bold text-[0.7rem] uppercase tracking-[0.12em] text-muted-foreground/40 hover:text-foreground px-8 rounded-xl'
                     >
                         Cancelar
                     </Button>
@@ -51,7 +51,7 @@ export default function DeleteDialog({ open, onConfirm, isDeleting, onClose, tit
                         variant='default'
                         onClick={() => onConfirm()}
                         disabled={isDeleting}
-                        className='w-full sm:w-auto h-11 font-bold text-[0.7rem] uppercase tracking-[0.12em] px-8 active:scale-95 transition-transform rounded-xl bg-destructive/90 hover:bg-destructive text-destructive-foreground'
+                        className='box-border w-full sm:w-auto h-11 font-bold text-[0.7rem] uppercase tracking-[0.12em] px-8 active:scale-95 transition-transform rounded-xl bg-destructive/90 hover:bg-destructive text-destructive-foreground'
                     >
                         {isDeleting ? (
                             <span className="flex items-center gap-2">

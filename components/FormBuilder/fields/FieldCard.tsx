@@ -1,9 +1,7 @@
 import { FormField } from '@/types/form.types'
 import { Button } from '@/components/ui/button'
-import { Trash2, Asterisk } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-const fielCardStyle = "bg-card relative flex flex-col p-8 gap-4 border transition-all duration-500 rounded-3xl animate-in fade-in zoom-in-95"
 
 interface FieldCardProps {
   field: FormField
@@ -32,119 +30,108 @@ export default function FieldCard({
     onChange({ ...field, options: newOptions })
   }
 
-  // render return
   return (
     <div
       onClick={onSelect}
       className={cn(
-        fielCardStyle,
+        "flex flex-col gap-6 rounded-2xl border bg-card py-6 text-card-foreground shadow-sm transition-all cursor-pointer",
         isActive
-          ? "border-primary/40 bg-muted/5 shadow-2xl shadow-primary/5 -translate-y-1"
-          : "border-border/40 hover:bg-muted/5 hover:border-primary/20 cursor-pointer"
+          ? "border-l-4 border-l-primary border-t-border border-r-border border-b-border shadow-md"
+          : "border-border hover:border-input"
       )}
     >
-      {/* Label & Title — Contraste mejorado */}
-      <div className="flex flex-col gap-2 focus-within:opacity-100 transition-opacity">
-        <label className="text-[10px] font-sans font-bold text-primary tracking-[0.2em] mb-1">Pregunta</label>
+      {/* Question Header */}
+      <div className="grid gap-2 px-6">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+          {field.type === "section" ? "Título de Sección" : "Pregunta"} {field.required && <span className="text-destructive">*</span>}
+        </label>
         <input
-          className="w-full font-serif text-2xl md:text-3xl outline-none bg-transparent text-foreground placeholder:text-muted-foreground/30 selection:bg-primary/20 transition-all border-b border-foreground/5 focus:border-primary/20 pb-2"
+          className="w-full font-serif text-2xl md:text-3xl outline-none bg-transparent text-foreground placeholder:text-muted-foreground/20 transition-all tracking-tight border-b border-b-transparent focus:border-primary/60 pb-2"
           value={field.label}
-          placeholder="Escribe tu pregunta aquí..."
-          onChange={(e) =>
-            onChange({ ...field, label: e.target.value })
-          }
+          placeholder={field.type === "section" ? "Nombre de la sección..." : "Escribe tu pregunta..."}
+          onChange={(e) => onChange({ ...field, label: e.target.value })}
+          onClick={(e) => e.stopPropagation()}
         />
       </div>
 
-      {/* Render según tipo — Contraste de respuesta +20% */}
-      <div className="pt-4">
+      {/* Content — Always visible and stable */}
+      <div className="px-6 flex flex-col gap-5">
         {field.type === "text" && (
-          <div className="w-full bg-muted/5 border border-border/20 rounded-xl py-3.5 px-5 text-sm text-muted-foreground/50 italic font-sans tracking-wide">
-            Escribe aquí la respuesta corta...
+          <div className="h-10 w-full rounded-md border border-input bg-muted/20 px-3 py-2 text-sm text-muted-foreground/60 shadow-xs italic font-sans flex items-center">
+            Respuesta corta...
           </div>
         )}
 
         {field.type === "number" && (
-          <div className="w-full bg-muted/5 border border-border/20 rounded-xl py-3.5 px-5 text-sm text-muted-foreground/50 italic font-sans tracking-wide">
+          <div className="h-10 w-full rounded-md border border-input bg-muted/20 px-3 py-2 text-sm text-muted-foreground/60 shadow-xs italic font-sans flex items-center">
             0.00
           </div>
         )}
 
         {field.type === "textarea" && (
-          <div className="w-full bg-muted/5 border border-border/20 rounded-xl py-5 px-5 text-sm text-muted-foreground/50 italic font-sans tracking-wide min-h-[100px]">
-            Escribe aquí la respuesta extensa...
+          <div className="w-full rounded-md border border-input bg-muted/20 px-3 py-2 text-sm text-muted-foreground/60 shadow-xs italic font-sans min-h-24">
+            Respuesta extensa...
           </div>
         )}
 
-        {(field.type === "select" ||
-          field.type === "radio" ||
-          field.type === "checkbox") && (
-            <div className="space-y-3">
-              {field.options?.map((opt, i) => (
-                <div key={i} className="flex items-center gap-3 group/option">
-                  <div className="size-4 rounded-full border border-border/20 bg-muted/5 group-focus-within/option:border-primary/50 transition-colors" />
-                  <input
-                    className="w-full bg-transparent border-b border-border/10 focus:border-primary/40 outline-none p-1 text-sm text-foreground transition-all placeholder:text-muted-foreground/30 font-sans"
-                    value={opt}
-                    onChange={(e) => updateOptions(i, e.target.value)}
-                  />
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  addOption()
-                }}
-                className="mt-2 text-[11px] font-medium text-primary/70 hover:text-primary transition-colors flex items-center gap-1.5 px-1 underline-offset-4 hover:underline"
-              >
-                + Agregar opción
-              </button>
-            </div>
-          )}
-
-        {field.type === "section" && (
-          <div className="h-px w-full bg-border/20 my-4" />
+        {(field.type === "select" || field.type === "radio" || field.type === "checkbox") && (
+          <div className="grid gap-4">
+            {field.options?.map((opt, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div className="size-4 shrink-0 rounded-full border border-input bg-transparent" />
+                <input
+                  className="flex-1 bg-transparent border-b border-muted focus:border-primary outline-none py-1 text-base text-foreground transition-all placeholder:text-muted-foreground/40 font-sans"
+                  value={opt}
+                  onChange={(e) => updateOptions(i, e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); addOption() }}
+              className="text-xs font-semibold text-primary/60 hover:text-primary transition-colors flex items-center gap-2 mt-1"
+            >
+              <div className="size-4 rounded-md border border-primary/20 flex items-center justify-center text-[10px] bg-primary/5">+</div>
+              Añadir opción
+            </button>
+          </div>
         )}
+
+        {/* No hay más contenido para sección, las líneas divisorias se eliminaron por request */}
       </div>
 
-      {/* Footer Actions - Rediseñados */}
-      <div className="flex items-center justify-between pt-6 mt-4 border-t border-border/5">
-        <div className="flex items-center gap-3">
+      {/* Footer — Stable and clear action toggle */}
+      <div className="flex items-center justify-between px-6 py-4 mt-2">
+        <div className="flex items-center gap-4">
           {field.type !== "section" && (
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                onChange({ ...field, required: !field.required })
-              }}
-              className={`flex items-center gap-2.5 px-4 py-2 rounded-full transition-all duration-300 text-[10px] font-bold tracking-widest uppercase border ${field.required
-                ? "bg-primary/10 border-primary/20 text-primary shadow-sm shadow-primary/5"
-                : "bg-muted/5 border-border/10 text-muted-foreground/40 hover:bg-muted/10 hover:text-muted-foreground/60"
-                }`}
+              onClick={(e) => { e.stopPropagation(); onChange({ ...field, required: !field.required }) }}
+              className={cn(
+                "group flex items-center gap-2.5 px-4 py-2 rounded-md border text-[10px] font-bold uppercase tracking-widest transition-all shadow-sm",
+                field.required 
+                  ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/10" 
+                  : "bg-muted/30 border-border text-muted-foreground/40 hover:text-foreground hover:bg-muted/50 hover:border-muted-foreground/60"
+              )}
             >
-              <div className={`size-1.5 rounded-full transition-all duration-500 ${field.required ? "bg-primary scale-110" : "bg-muted-foreground/20"}`} />
-              Requerido
+              <div className={cn(
+                "size-2 rounded-full transition-all",
+                field.required ? "bg-primary-foreground" : "bg-muted-foreground/30 group-hover:bg-muted-foreground/50"
+              )} />
+              Marcar como obligatorio
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Delete icon-only */}
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete()
-            }}
-            className="text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors rounded-full size-9 p-0"
-            title="Eliminar pregunta"
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => { e.stopPropagation(); onDelete() }}
+          className="size-8 rounded-md text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all"
+        >
+          <Trash2 className="size-4" />
+        </Button>
       </div>
     </div>
   )

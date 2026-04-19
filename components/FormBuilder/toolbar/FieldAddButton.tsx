@@ -12,7 +12,7 @@ export function FieldAddButton({ icon, label, onClick }: FieldAddButtonProps) {
             variant="ghost"
             size="sm"
             onClick={onClick}
-            className="flex items-center gap-2.5 h-10 px-4 bg-muted/10 border border-border/10 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/70 hover:text-primary transition-all duration-300 rounded-full group shadow-xs"
+            className="flex items-center gap-2.5 h-10 px-4 bg-muted/10 border border-border/10 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/70 hover:text-primary transition-all duration-300 rounded-md group shadow-xs"
         >
             <div className="opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">
                 {icon}

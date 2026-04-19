@@ -27,7 +27,7 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
         })
         : []
     return (
-        <div className="rounded-2xl border border-border/40 bg-card overflow-hidden transition-shadow hover:shadow-md">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden transition-shadow hover:shadow-md">
 
             {/* ── Header ─────────────────────────────────────────── */}
             <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-muted/15">

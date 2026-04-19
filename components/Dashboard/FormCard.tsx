@@ -124,11 +124,16 @@ export default function FormCard({ form }: FormCardProps) {
 
     return (
         <>
-            <div className="group relative flex-1 flex flex-col justify-between border border-border rounded-2xl bg-card/50 hover:bg-card has-[button[data-state=open]]:bg-card p-6 min-h-[180px] hover:shadow-lg transition-all duration-300 backdrop-blur-sm">
+            <div className={cn(
+                "group relative flex-1 flex flex-col justify-between border rounded-2xl p-7 min-h-[180px] transition-all duration-300",
+                isPublicOpen
+                    ? "border-border bg-card/50 hover:bg-card hover:shadow-lg has-[button[data-state=open]]:bg-card"
+                    : "border-border bg-muted/5 opacity-80 grayscale-[0.4] contrast-[0.9] hover:bg-muted/10"
+            )}>
 
                 <div className="space-y-3">
                     <div className="flex justify-between items-start pr-8">
-                        <p className='text-foreground line-clamp-1 font-serif text-xl font-medium' style={{ textWrap: 'balance' }}>{form.name}</p>
+                        <p className='text-foreground line-clamp-1 font-serif text-xl font-medium tracking-tight' style={{ textWrap: 'balance' }}>{form.name}</p>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -171,7 +176,7 @@ export default function FormCard({ form }: FormCardProps) {
                         </DropdownMenu>
                     </div>
 
-                    <p className='text-muted-foreground/70 text-sm line-clamp-2 leading-snug font-sans'>
+                    <p className='text-muted-foreground/70 text-sm line-clamp-2 leading-relaxed font-sans'>
                         {form.description || "Sin descripción"}
                     </p>
 
@@ -202,7 +207,7 @@ export default function FormCard({ form }: FormCardProps) {
                             size="xs"
                             onClick={handleCopyLink}
                             disabled={!isPublicOpen}
-                            className="h-6 text-[11px] text-muted-foreground hover:text-primary gap-1 px-1.5 font-medium"
+                            className="h-6 text-[11px] text-muted-foreground/60 hover:text-primary hover:bg-primary/10 gap-1.5 px-2 font-medium transition-colors"
                         >
                             <Copy className="size-3" />
                             Copiar link

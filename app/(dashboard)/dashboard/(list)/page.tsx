@@ -60,14 +60,16 @@ export default async function DashboardPage() {
         }
     })
 
-    // buscar formularios
+    // buscar formularios y ordenar primero
+    // Los formularios que tengan isPublicOpen en true deben aparecer primero
     const forms = await prisma.form.findMany({
         where: {
             doctorId: doctor.id
         },
-        orderBy: {
-            createdAt: "desc"
-        }
+        orderBy: [
+            { isPublicOpen: "desc" },
+            { createdAt: "desc" }
+        ]
     })
 
     // render return
