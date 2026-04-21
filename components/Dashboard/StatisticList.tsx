@@ -32,7 +32,7 @@ export default function StatisticList({
             <StatisticCard
                 title="Formularios Abiertos"
                 value={totalActiveForms.toString()}
-                description="Visibles para pacientes"
+                description="Disponibles para responder"
                 icon={CheckCircle2}
             />
             <StatisticCard

@@ -3,11 +3,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+import { motion } from 'framer-motion'
+
 export default function Hero() {
   return (
     <div className="relative flex min-h-[calc(100vh-125px)] items-center justify-center overflow-hidden px-6 bg-background">
-
-
 
       {/* Border Top Divider (para sustituir la malla si queda muy vacío) */}
       <div className="absolute top-0 left-0 w-full h-px bg-border/20" />

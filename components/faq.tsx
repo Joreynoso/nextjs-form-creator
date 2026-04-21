@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     question: "¿Cómo funciona?",
-    answer: "Creá tu formulario agregando y configurando campos desde el editor visual. Una vez listo, activá el acceso público y compartí el link con tus pacientes o clientes. Las respuestas llegan directo a tu dashboard."
+    answer: "Creá tu formulario agregando y configurando campos desde el editor visual. Una vez listo, activá el acceso público y compartí el link con tu audiencia o clientes. Las respuestas llegan directo a tu dashboard."
   },
   {
     question: "¿Cómo completan el formulario mis clientes?",

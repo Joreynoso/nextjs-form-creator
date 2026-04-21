@@ -88,7 +88,7 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
                 <p className="px-4 sm:px-5 py-4 text-sm text-muted-foreground font-sans italic">
                     {completed
                         ? "Esta respuesta no contiene campos con datos."
-                        : "El paciente aún no ha completado este formulario."}
+                        : "El usuario aún no ha completado este formulario."}
                 </p>
             )}
         </div>

@@ -6,14 +6,14 @@ export const features = [
     {
         id: 1,
         icon: ClipboardList,
-        title: 'Formularios clínicos a medida',
-        description: 'Creá formularios de anamnesis o evaluación con campos dinámicos: texto, número, selección, casillas y más, sin necesidad de código.'
+        title: 'Formularios a medida',
+        description: 'Creá formularios de encuestas, evaluación o registros con campos dinámicos: texto, número, selección, casillas y más, sin necesidad de código.'
     },
     {
         id: 2,
         icon: Link2,
-        title: 'Links únicos para pacientes',
-        description: 'Generá un link personalizado para cada formulario y enviáselo al paciente. Ellos completan desde cualquier dispositivo, sin cuenta ni instalación.'
+        title: 'Links únicos para usuarios',
+        description: 'Generá un link personalizado para cada formulario y compartilo fácilmente. Los encuestados completan desde cualquier dispositivo, sin cuenta ni instalación.'
     },
     {
         id: 3,
@@ -25,7 +25,7 @@ export const features = [
         id: 4,
         icon: BarChart2,
         title: 'Insights y estadísticas',
-        description: 'Analizá las respuestas de todos tus pacientes en un dashboard claro para tomar decisiones basadas en datos reales.'
+        description: 'Analizá todas las respuestas recibidas en un dashboard claro para tomar decisiones basadas en datos reales.'
     },
     {
         id: 5,
@@ -37,7 +37,7 @@ export const features = [
         id: 6,
         icon: LayoutDashboard,
         title: 'Secciones organizadas',
-        description: 'Estructurá los formularios largos en bloques o secciones lógicas para que el paciente no se abrume y mejore la tasa de completado.'
+        description: 'Estructurá los formularios largos en bloques o secciones lógicas para que el encuestado no se abrume y mejore la tasa de completado.'
     }
 ]
 
