@@ -51,10 +51,12 @@ export default function FormCard({ toolResult }: FormCardProps) {
     const [saving, setSaving] = useState(false)
     const [savedForm, setSavedForm] = useState<Form | null>(null)
     const [cancelled, setCancelled] = useState(false)
+    const [saveError, setSaveError] = useState<string | null>(null)
 
     const handleSave = async () => {
         if (!toolResult.data.title || !toolResult.data.fields) return
         setSaving(true)
+        setSaveError(null)
         try {
             const result = await saveGeneratedForm(
                 toolResult.data.title,
@@ -63,9 +65,12 @@ export default function FormCard({ toolResult }: FormCardProps) {
             )
             if (result.success && result.form) {
                 setSavedForm(result.form)
+            } else {
+                setSaveError('No se pudo guardar el formulario. El contenido generado no es compatible. Intentá generarlo nuevamente.')
             }
         } catch (error) {
             console.error('Error al guardar:', error)
+            setSaveError('Ocurrió un error inesperado. Por favor, intentá de nuevo.')
         } finally {
             setSaving(false)
         }
@@ -141,6 +146,14 @@ export default function FormCard({ toolResult }: FormCardProps) {
                         <span className="text-sm font-medium text-primary">{savedForm.name}</span>
                         <span className="text-xs text-muted-foreground">Formulario guardado correctamente</span>
                     </Link>
+                )}
+
+                {/* Error al guardar */}
+                {saveError && (
+                    <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive/80">
+                        <span className="shrink-0 mt-0.5">⚠️</span>
+                        <span>{saveError}</span>
+                    </div>
                 )}
 
                 {/* Botón guardar */}

@@ -7,6 +7,9 @@ import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/actions/doctors/sync"
 import { FormField } from '@/types/form.types'
 
+// import validadores
+import { validateFormFields } from '@/lib/validators/form.validator'
+
 export async function createEmptyForm() {
   const { userId } = await auth()
 
@@ -126,6 +129,15 @@ export async function updateForm(formId: string,
     }
   }
 
+  // validamos los campos antes de guardar
+  const validation = validateFormFields(fields)
+  if (!validation.success) {
+    return {
+      success: false,
+      message: validation.error
+    }
+  }
+
   const doctor = await getOrCreateDoctor()
 
   const form = await prisma.form.update({
@@ -136,7 +148,7 @@ export async function updateForm(formId: string,
     data: {
       name,
       description,
-      fields: fields as unknown as Prisma.InputJsonValue
+      fields: validation.data as unknown as Prisma.InputJsonValue
     }
   })
 
@@ -222,12 +234,21 @@ export async function saveGeneratedForm(
 
   const doctor = await getOrCreateDoctor()
 
+  // validamos los campos antes de guardar
+  const validation = validateFormFields(fields)
+  if (!validation.success) {
+    return {
+      success: false,
+      message: validation.error
+    }
+  }
+
   const form = await prisma.form.create({
     data: {
       name: title,
       description,
       doctorId: doctor.id,
-      fields: fields as unknown as Prisma.InputJsonValue
+      fields: validation.data as unknown as Prisma.InputJsonValue
     }
   })
 

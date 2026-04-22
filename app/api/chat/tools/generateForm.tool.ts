@@ -36,6 +36,7 @@ export const generateFormTool = {
       additionalProperties: false
     }
   },
+
   execute: async ({ title, description, topic, questionCount }: {
     title: string
     description: string
@@ -76,8 +77,14 @@ Respondé con este formato exacto:
     })
 
     const content = response.choices[0].message.content ?? '{}'
-    const parsed = JSON.parse(content)
-    const rawFields: Omit<FormField, 'id'>[] = parsed.fields ?? []
+    let parsed: { fields?: unknown[] }
+    try {
+      parsed = JSON.parse(content)
+    } catch {
+      return { success: false, error: 'La respuesta de la IA no pudo procesarse. Intentá de nuevo.' }
+    }
+
+    const rawFields: Omit<FormField, 'id'>[] = (parsed.fields ?? []) as Omit<FormField, 'id'>[]
 
     const fieldsWithIds: FormField[] = rawFields.map(field => ({
       ...field,
