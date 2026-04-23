@@ -1,8 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import FormPlayer from '@/components/FormPlayer/FormPlayer'
 import FormDisabled from '@/components/FormPlayer/FormDisabled'
-import { nanoid } from 'nanoid'
-import { FormField, FieldType, Form } from '@/types/form.types'
+import { FormField } from '@/types/form.types'
 
 export default async function FormPage({ params }: { params: Promise<{ token: string }> }) {
 
@@ -32,25 +31,12 @@ export default async function FormPage({ params }: { params: Promise<{ token: st
     return <FormDisabled message="Este formulario aún no está listo, contacte al profesional" />
   }
 
-  // Crear submission automáticamente
-  const submission = await prisma.formSubmission.create({
-    data: {
-      token: nanoid(),
-      formId: form.id,
-      doctorId: form.doctorId
-    }
-  })
-
-  if (!submission) {
-    return <FormDisabled message="No se pudo iniciar el formulario" />
-  }
-
-  // Pasar token REAL al player
+  // NO creamos submission aquí — se crea solo cuando el usuario envía sus respuestas
   return (
     <div className="w-full py-5">
       <FormPlayer
         fields={fields as unknown as FormField[]}
-        submissionToken={submission.token}
+        formPublicToken={token}
       />
     </div>
   )

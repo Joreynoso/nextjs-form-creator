@@ -151,5 +151,3 @@ Ahora modularizadas en dominios específicos para mayor mantenibilidad e inyecci
 | Gestión de Respuestas (Submissions) | ✅ Funcional |
 | Estadísticas en Dashboard | ✅ Completado |
 | Soporte Dark/Light Mode | ✅ Implementado |
-| Multilenguaje (Doctor/Paciente) | 🟡 En progreso |
-| Exportación a PDF/CSV | ❌ Pendiente |

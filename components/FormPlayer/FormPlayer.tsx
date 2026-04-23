@@ -11,12 +11,12 @@ import { toast } from "sonner"
 
 interface FormPlayerProps {
     fields: FormField[]
-    submissionToken: string
+    formPublicToken: string
 }
 
 type asnwerValue = string | number | boolean | string[] | undefined | null
 
-export default function FormPlayer({ fields, submissionToken }: FormPlayerProps) {
+export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps) {
 
     const [step, setStep] = useState(0)
     const [answers, setAnswers] = useState<Record<string, asnwerValue>>({})
@@ -79,7 +79,7 @@ export default function FormPlayer({ fields, submissionToken }: FormPlayerProps)
 
             setLoading(true)
 
-            const res = await fetch(`/api/public/submissions/${submissionToken}`, {
+            const res = await fetch(`/api/public/forms/${formPublicToken}/submit`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
