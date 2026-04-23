@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from '../ui/button'
 import FieldRenderer from "./FieldRenderer"
 import { FormField } from "@/types/form.types"
@@ -23,6 +24,17 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
     const [error, setError] = useState<string | null>(null)
     const [isFinished, setIsFinished] = useState(false)
     const [loading, setLoading] = useState(false)
+
+    const currentField = fields?.[step]
+    const isLast = fields ? step === fields.length - 1 : false
+
+    const setValue = useCallback((value: asnwerValue) => {
+        if (!currentField) return;
+        setAnswers(prev => ({
+            ...prev,
+            [currentField.id]: value
+        }))
+    }, [currentField?.id])
 
     // guard: sin preguntas
     if (!fields || fields.length === 0) {
@@ -49,9 +61,6 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
             </div>
         )
     }
-
-    const currentField = fields[step]
-    const isLast = step === fields.length - 1
 
     if (!currentField) return null
 
@@ -109,71 +118,72 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
         setStep(prev => Math.max(prev - 1, 0))
     }
 
-    function setValue(value: asnwerValue) {
-        setAnswers(prev => ({
-            ...prev,
-            [currentField.id]: value
-        }))
-    }
-
     return (
         <div className="max-w-xl mx-auto px-6 py-10 min-h-[80vh] flex flex-col justify-center">
 
-            <div key={step} className="animate-in fade-in slide-in-from-bottom-5 duration-500 fill-mode-both">
-                <div className="flex items-start gap-3 mb-6">
-                    <span className="flex items-center justify-center min-w-6 h-6 bg-primary text-primary-foreground text-[10px] rounded-sm mt-1.5 font-mono">
-                        {step + 1}
-                    </span>
-                    <h2 className="text-2xl font-serif text-foreground/90 leading-snug">
-                        {currentField.label}
-                        {currentField.required && <span className="text-primary ml-1">*</span>}
-                    </h2>
-                </div>
+            <AnimatePresence mode="wait">
+                <motion.div 
+                    key={step}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                    <div className="flex items-start gap-3 mb-6">
+                        <span className="flex items-center justify-center min-w-6 h-6 bg-primary text-primary-foreground text-[10px] rounded-sm mt-1.5 font-mono">
+                            {step + 1}
+                        </span>
+                        <h2 className="text-2xl font-serif text-foreground/90 leading-snug">
+                            {currentField.label}
+                            {currentField.required && <span className="text-primary ml-1">*</span>}
+                        </h2>
+                    </div>
 
-                <div className="pl-9">
-                    <FieldRenderer
-                        field={currentField}
-                        value={answers[currentField.id]}
-                        onChange={setValue}
-                    />
+                    <div className="pl-9">
+                        <FieldRenderer
+                            field={currentField}
+                            value={answers[currentField.id]}
+                            onChange={setValue}
+                        />
 
-                    {error && (
-                        <p className="text-destructive text-sm mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
-                            <span className="w-1 h-1 rounded-full bg-destructive" />
-                            {error}
-                        </p>
-                    )}
-
-                    <div className="flex items-center gap-3 mt-10">
-                        {step > 0 && (
-                            <Button
-                                variant="ghost"
-                                size="lg"
-                                onClick={handleBack}
-                                disabled={loading}
-                                className="text-foreground/80 hover:text-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 border border-transparent hover:border-border hover:bg-accent/40"
-                            >
-                                <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
-                            </Button>
+                        {error && (
+                            <p className="text-destructive text-sm mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                                <span className="w-1 h-1 rounded-full bg-destructive" />
+                                {error}
+                            </p>
                         )}
 
-                        <Button
-                            size="lg"
-                            onClick={handleNext}
-                            disabled={loading}
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 shadow-md shadow-primary/10"
-                        >
-                            {loading ? (
-                                "Enviando..."
-                            ) : isLast ? (
-                                <span className="flex items-center gap-2">Finalizar <Check className="w-4 h-4" /></span>
-                            ) : (
-                                <span className="flex items-center gap-2">Siguiente <ArrowRight className="w-4 h-4" /></span>
+                        <div className="flex items-center gap-3 mt-10">
+                            {step > 0 && (
+                                <Button
+                                    variant="ghost"
+                                    size="lg"
+                                    onClick={handleBack}
+                                    disabled={loading}
+                                    className="text-foreground/80 hover:text-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 border border-transparent hover:border-border hover:bg-accent/40"
+                                >
+                                    <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
+                                </Button>
                             )}
-                        </Button>
+
+                            <Button
+                                size="lg"
+                                onClick={handleNext}
+                                disabled={loading}
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 shadow-md shadow-primary/10"
+                            >
+                                {loading ? (
+                                    "Enviando..."
+                                ) : isLast ? (
+                                    <span className="flex items-center gap-2">Finalizar <Check className="w-4 h-4" /></span>
+                                ) : (
+                                    <span className="flex items-center gap-2">Siguiente <ArrowRight className="w-4 h-4" /></span>
+                                )}
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </AnimatePresence>
 
             {/* Progress indicator */}
             <div className="fixed bottom-0 left-0 w-full h-0.5 bg-border/20">

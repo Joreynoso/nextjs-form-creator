@@ -22,6 +22,28 @@
 - [ ] **Avisos UI en Server Actions (MPC):** La interfaz muchas veces no devuelve feedback de error cuando la request en servidor falla. Se deben personalizar mensajes de tipo Toast para avisar al usuario por qué falló algo (ej. fallos en búsqueda o creaciones).
 - [ ] **Dashboard Navigation:** Crear una barra o Sidebar que agilice mejor la vista entre formularios, estadísticas crudas y submissions (respuestas individuales detalladas).
 - [ ] **Menú Flotante de Acciones Rápida (Form Builder):** En formularios inmensamente largos, considerar incluir la opción de "Guardar Cambios" y el status de `isDirty` dentro del menú circular/flotante para que el usuario no deba hacer scroll constantemente al footer/top.
+- [ ] **Buscador de Submissions (Respuestas):** Implementar un buscador global dentro de los formularios para encontrar respuestas específicas. (Ver estrategias de implementación abajo).
+
+---
+
+## 🔍 Estrategias de Implementación: Buscador de Submissions
+
+**Opción A: Búsqueda Local (Client-Side) - *Ideal para formularios con pocas respuestas***
+- Consiste en descargar todas las submissions del formulario y filtrarlas con JavaScript en el navegador usando un `input`.
+- **Ventajas:** Extremadamente rápido (búsqueda instantánea), fácil de implementar sin tocar Prisma, la UI se siente ágil.
+- **Desventajas:** No escala. Si el formulario tiene 10,000 respuestas, colapsará la memoria del navegador del usuario.
+
+**Opción B: Búsqueda Nativa SQL sobre JSON (Server-Side) - *Ideal y robusto***
+- Crear un `Server Action` que reciba el string de búsqueda y use consultas crudas (Raw SQL) en Prisma para buscar dentro de la columna JSONB. Ej: `SELECT * FROM "FormSubmission" WHERE "responses"::text ILIKE '%busqueda%'`.
+- **Ventajas:** Robusto, soporta paginación, puede manejar millones de respuestas sin saturar el cliente.
+- **Desventajas:** Requiere escribir SQL directo (ya que Prisma no tiene un operador `search` profundo para JSON nativo muy amigable), un poco de latencia de red.
+
+**Opción C: Motor de Búsqueda Externo (Algolia / MeiliSearch)**
+- Sincronizar las respuestas hacia un motor especializado cada vez que alguien envía un formulario.
+- **Ventajas:** Búsqueda difusa (tolera errores ortográficos), autocompletado avanzado, súper potente.
+- **Desventajas:** "Overkill" (demasiado complejo) para el estado actual del proyecto, requiere otra base de datos y manejar sincronización.
+
+*Recomendación:* Empezar por la **Opción A** si actualmente muestras todas las respuestas de una vez. Si ya tienes implementada paginación desde el backend, ir directamente por la **Opción B**.
 
 ---
 
