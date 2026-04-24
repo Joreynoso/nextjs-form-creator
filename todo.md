@@ -1,19 +1,19 @@
 # 📝 NexJS Form Creator - TODO & Backlog
 
-## 🔒 ERRORES DE SEGURIDAD CRÍTICOS (Alta Prioridad)
+## 🔒 Errores de Seguridad Críticos (Alta Prioridad)
 
 ### 1. Falta de Rate Limiting (Agotamiento de cuota y DDoS)
 - [ ] **Submissions (Respuestas):** Falla crítica de seguridad al no limitar la cantidad de respuestas que se pueden enviar a `/api/public/submissions/[token]`. Un atacante puede enviar miles de respuestas por minuto inundando la base de datos de "basura".
 - [ ] **Chat IA:** Falta límite de llamadas a los endpoints del modelo. Si se deja libre, un usuario podría causar cobros masivos usando el modelo repetidamente.
-- **Solución propuesta:** Implementar Upstash Redis para crear límites de uso por IP/Usuario.
+- [ ] **Solución:** Implementar Upstash Redis para crear límites de uso por IP/Usuario.
 
 ### 2. Endpoints Privados Expuestos (Auth Bypass)
 - [ ] **Ruta `/api/chat(.*)` en el Middleware:** Clerk no está protegiendo actualmente esta ruta correctamente ("si la coloco privada no puedo acceder"). Esto puede permitir que personas no autenticadas accedan a la interfaz LLM del sistema.
-- **Solución propuesta:** Revisar cómo se pasan las credenciales o cookies en la petición `fetch` desde el cliente al endpoint `/api/chat` para que el `authMiddleware` de Clerk las reconozca.
+- [ ] **Solución:** Revisar cómo se pasan las credenciales o cookies en la petición `fetch` desde el cliente al endpoint `/api/chat` para que el `authMiddleware` de Clerk las reconozca.
 
 ### 3. Validaciones Inseguras del Server-Side y Payload (Inyección y Corrupción Omitidas)
 - [ ] **Form Builder:** El JSON de `fields` que viaja al servidor no se somete a validación estricta Zod en el backend, confiando ciegamente en lo que envía la UI. Un usuario malintencionado podría interceptar la request HTTP y enviar JSON malformado o ejecutar XSS (Cross Site Scripting) inyectando etiquetas `<script>` en el label del field.
-- [ ] **Acciones Generales:** 10. Validar errores usando `zod` siempre como **primera capa** bloqueante y usar el patrón `switch`/`case` seguro devolviendo objetos tipados en los return de los server actions.
+- [ ] **Acciones Generales:** Validar errores usando `zod` siempre como **primera capa** bloqueante y usar el patrón `switch`/`case` seguro devolviendo objetos tipados en los return de los server actions.
 
 ---
 
@@ -21,37 +21,18 @@
 
 - [ ] **Avisos UI en Server Actions (MPC):** La interfaz muchas veces no devuelve feedback de error cuando la request en servidor falla. Se deben personalizar mensajes de tipo Toast para avisar al usuario por qué falló algo (ej. fallos en búsqueda o creaciones).
 - [ ] **Dashboard Navigation:** Crear una barra o Sidebar que agilice mejor la vista entre formularios, estadísticas crudas y submissions (respuestas individuales detalladas).
-- [ ] **Menú Flotante de Acciones Rápida (Form Builder):** En formularios inmensamente largos, considerar incluir la opción de "Guardar Cambios" y el status de `isDirty` dentro del menú circular/flotante para que el usuario no deba hacer scroll constantemente al footer/top.
+- [ ] **Menú Flotante de Acciones Rápidas (Form Builder):** En formularios inmensamente largos, considerar incluir la opción de "Guardar Cambios" y el status de `isDirty` dentro del menú circular/flotante para que el usuario no deba hacer scroll constantemente al footer/top.
 - [ ] **Buscador de Submissions (Respuestas):** Implementar un buscador global dentro de los formularios para encontrar respuestas específicas. (Ver estrategias de implementación abajo).
-
----
-
-## 🔍 Estrategias de Implementación: Buscador de Submissions
-
-**Opción A: Búsqueda Local (Client-Side) - *Ideal para formularios con pocas respuestas***
-- Consiste en descargar todas las submissions del formulario y filtrarlas con JavaScript en el navegador usando un `input`.
-- **Ventajas:** Extremadamente rápido (búsqueda instantánea), fácil de implementar sin tocar Prisma, la UI se siente ágil.
-- **Desventajas:** No escala. Si el formulario tiene 10,000 respuestas, colapsará la memoria del navegador del usuario.
-
-**Opción B: Búsqueda Nativa SQL sobre JSON (Server-Side) - *Ideal y robusto***
-- Crear un `Server Action` que reciba el string de búsqueda y use consultas crudas (Raw SQL) en Prisma para buscar dentro de la columna JSONB. Ej: `SELECT * FROM "FormSubmission" WHERE "responses"::text ILIKE '%busqueda%'`.
-- **Ventajas:** Robusto, soporta paginación, puede manejar millones de respuestas sin saturar el cliente.
-- **Desventajas:** Requiere escribir SQL directo (ya que Prisma no tiene un operador `search` profundo para JSON nativo muy amigable), un poco de latencia de red.
-
-**Opción C: Motor de Búsqueda Externo (Algolia / MeiliSearch)**
-- Sincronizar las respuestas hacia un motor especializado cada vez que alguien envía un formulario.
-- **Ventajas:** Búsqueda difusa (tolera errores ortográficos), autocompletado avanzado, súper potente.
-- **Desventajas:** "Overkill" (demasiado complejo) para el estado actual del proyecto, requiere otra base de datos y manejar sincronización.
-
-*Recomendación:* Empezar por la **Opción A** si actualmente muestras todas las respuestas de una vez. Si ya tienes implementada paginación desde el backend, ir directamente por la **Opción B**.
 
 ---
 
 ## 🧠 Lógica e IA (Modelos)
 
-- [ ] **Bug: Tool Loop (Generación de Chat):**  El modelo en ciertas situaciones se cicla usando tools sin justificación si el usuario responde con mensajes cortos después de ejecutar una herramienta exitosamente.
-  - *Causa:*  El historial enviado retiene los tool_calls previos forzando al modelo continuar con esa inercia. (Ref: `app/api/chat/route.ts`).
+- [ ] **Bug: Tool Loop (Generación de Chat):** El modelo en ciertas situaciones se cicla usando tools sin justificación si el usuario responde con mensajes cortos después de ejecutar una herramienta exitosamente.
+  - *Causa:* El historial enviado retiene los tool_calls previos forzando al modelo continuar con esa inercia. (Ref: `app/api/chat/route.ts`).
 - [ ] **Generación de UI con Formularios largos:** La tool de `generateForm` olvida utilizar el type de campo `"section"` (Divisor) a menos que se le fuerce mucho. Si un usuario le pide 10 preguntas organizadas, el modelo debería intercalarlas automáticamente con secciones para categorizar visualmente en UI.
+- [x] **Fuga de información de Herramientas (Prompt Engineering):** El modelo expone los nombres técnicos de sus tools (createForm, generateForm, findForm). Se debe modificar el prompt del sistema para que nunca exponga los nombres reales de las funciones o herramientas, sino que use un lenguaje natural y descriptivo para el usuario.
+- [ ] **Nombres de acciones de formulario:** Los nombres actuales de las acciones del formulario son poco claros para el usuario final. Deben actualizarse para ser más amigables y descriptivas.
 
 ---
 
@@ -59,3 +40,24 @@
 
 - [ ] **Refactorizar `getOrCreateDoctor`:** Cambiar el nombre de la función para que tenga coherencia con el nuevo enfoque general (ej. `getOrCreateUser` o `getOrCreateOwner`), y no se limite al nicho médico.
 - [ ] **Modelos de Prisma y Base de Datos:** Cambiar los nombres de las propiedades y relaciones en los modelos de Prisma que actualmente usan términos médicos (ej. `doctor`, `patient`) para que sigan este nuevo enfoque general aplicable a cualquier usuario.
+
+---
+
+## 🔍 Estrategias de Implementación: Buscador de Submissions
+
+> **Opción A: Búsqueda Local (Client-Side) - *Ideal para formularios con pocas respuestas***
+> - Consiste en descargar todas las submissions del formulario y filtrarlas con JavaScript en el navegador usando un `input`.
+> - **Ventajas:** Extremadamente rápido (búsqueda instantánea), fácil de implementar sin tocar Prisma, la UI se siente ágil.
+> - **Desventajas:** No escala. Si el formulario tiene 10,000 respuestas, colapsará la memoria del navegador del usuario.
+> 
+> **Opción B: Búsqueda Nativa SQL sobre JSON (Server-Side) - *Ideal y robusto***
+> - Crear un `Server Action` que reciba el string de búsqueda y use consultas crudas (Raw SQL) en Prisma para buscar dentro de la columna JSONB. Ej: `SELECT * FROM "FormSubmission" WHERE "responses"::text ILIKE '%busqueda%'`.
+> - **Ventajas:** Robusto, soporta paginación, puede manejar millones de respuestas sin saturar el cliente.
+> - **Desventajas:** Requiere escribir SQL directo (ya que Prisma no tiene un operador `search` profundo para JSON nativo muy amigable), un poco de latencia de red.
+> 
+> **Opción C: Motor de Búsqueda Externo (Algolia / MeiliSearch)**
+> - Sincronizar las respuestas hacia un motor especializado cada vez que alguien envía un formulario.
+> - **Ventajas:** Búsqueda difusa (tolera errores ortográficos), autocompletado avanzado, súper potente.
+> - **Desventajas:** "Overkill" (demasiado complejo) para el estado actual del proyecto, requiere otra base de datos y manejar sincronización.
+> 
+> *Recomendación:* Empezar por la **Opción A** si actualmente muestras todas las respuestas de una vez. Si ya tienes implementada paginación desde el backend, ir directamente por la **Opción B**.

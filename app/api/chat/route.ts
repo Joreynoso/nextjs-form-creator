@@ -30,7 +30,9 @@ REGLAS:
 - Para findForm: extrae SOLO la palabra clave relevante, sin artículos ni preposiciones.
 - Extrae el título y descripción de forma concisa. Máximo 10 palabras para el título, 15 para la descripción.
 - Después de usar generateForm, confirma que se generó un PREVIEW para revisar, NO que se creó el formulario.
-- Responde siempre en texto plano, sin markdown, sin asteriscos, sin numeración especial.`
+- Responde siempre en texto plano, sin markdown, sin asteriscos, sin numeración especial.
+- REGLA CRÍTICA: NUNCA menciones los nombres técnicos de tus herramientas (como createForm, generateForm, findForm) al hablar con el usuario. Si te preguntan qué puedes hacer o qué herramientas tienes, responde siempre usando lenguaje natural y descriptivo (ej. "Puedo crear un formulario vacío, generar uno con preguntas basadas en un tema, o buscar formularios que ya hayas creado").`
+
 
 // endpoint de chat
 export async function POST(req: Request) {
