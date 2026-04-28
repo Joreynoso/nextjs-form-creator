@@ -40,3 +40,23 @@
 
 - [ ] **Refactorizar `getOrCreateDoctor`:** Cambiar el nombre de la función para que tenga coherencia con el nuevo enfoque general (ej. `getOrCreateUser` o `getOrCreateOwner`), y no se limite al nicho médico.
 - [ ] **Modelos de Prisma y Base de Datos:** Cambiar los nombres de las propiedades y relaciones en los modelos de Prisma que actualmente usan términos médicos (ej. `doctor`, `patient`) para que sigan este nuevo enfoque general aplicable a cualquier usuario.
+
+
+## ⚙️ Configuración & Compilación (Errores Pre-existentes TypeScript)
+
+Estos errores aparecen al ejecutar `npx tsc --noEmit` y se deben a que las rutas `@/` (path aliases) no se resuelven correctamente:
+
+| # | Archivo | Error |
+|---|---------|-------|
+| 1 | `app/api/chat/route.ts:4` | `Cannot find module '@/actions/doctors/sync'` |
+| 2 | `app/api/chat/tools/createForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` |
+| 3 | `app/api/chat/tools/findForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` |
+| 4 | `app/api/chat/tools/generateForm.tool.ts:3` | `Cannot find module '@/types/form.types'` |
+
+**Causa probable:** El `tsconfig.json` no tiene configurado correctamente el path alias `@/*` para que apunte al directorio correcto.
+
+**Plan de corrección:**
+1. Verificar que `tsconfig.json` tenga `paths` configurado correctamente (ej: `"@/*": ["./*"]` o `"@/*": ["src/*"]`)
+2. Verificar que `next.config.js` (o `next.config.ts`) tenga `experimental.serverComponentsExternalPackages` o `transpilePackages` si es necesario
+3. Confirmar que los módulos existen en las rutas esperadas
+4. Ajustar imports si las rutas físicas son diferentes
