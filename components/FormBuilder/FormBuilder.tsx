@@ -213,8 +213,8 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
 
                 <div className="flex flex-wrap items-center gap-3">
                     <FieldAddButton
-                        icon={<Type className="size-4" />}
-                        label="Texto"
+                        icon={<Type className="size-4 border border-border" />}
+                        label="Respuesta corta"
                         onClick={() => addField("text")}
                     />
                     <FieldAddButton
@@ -224,27 +224,27 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
                     />
                     <FieldAddButton
                         icon={<AlignLeft className="size-4" />}
-                        label="Largo"
+                        label="Párrafo"
                         onClick={() => addField("textarea")}
                     />
                     <FieldAddButton
                         icon={<ListFilter className="size-4" />}
-                        label="Selección"
+                        label="Desplegable"
                         onClick={() => addField("select")}
                     />
                     <FieldAddButton
                         icon={<CircleDot className="size-4" />}
-                        label="Radio"
+                        label="Opción múltiple"
                         onClick={() => addField("radio")}
                     />
                     <FieldAddButton
                         icon={<CheckSquare className="size-4" />}
-                        label="Check"
+                        label="Casillas"
                         onClick={() => addField("checkbox")}
                     />
                     <FieldAddButton
                         icon={<Minus className="size-4" />}
-                        label="Divisor"
+                        label="Separador"
                         onClick={() => addField("section")}
                     />
                 </div>

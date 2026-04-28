@@ -42,8 +42,8 @@ export default function FAQ() {
           <div
             key={index}
             className={cn(
-              "group border rounded-lg px-4 transition-all duration-300 overflow-hidden",
-              openIndex === index ? "bg-muted/20 border-border" : "bg-muted/20 border-border"
+              "group border rounded-lg px-4 transition-all duration-300 overflow-hidden hover:bg-card hover:shadow-lg",
+              openIndex === index ? "bg-card border-border shadow-lg" : "bg-muted/20 border-border"
             )}
           >
             <button
@@ -57,8 +57,10 @@ export default function FAQ() {
                 {faq.question}
               </span>
               <div className={cn(
-                "shrink-0 p-2 rounded-full border border-border/50 transition-all duration-300",
-                openIndex === index ? "bg-primary text-primary-foreground border-primary rotate-180" : "bg-background text-muted-foreground"
+                "shrink-0 p-2 rounded-full border transition-all duration-500 shadow-sm",
+                openIndex === index 
+                  ? "bg-primary text-primary-foreground border-primary rotate-180" 
+                  : "bg-background text-muted-foreground border-border/50 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary"
               )}>
                 {openIndex === index ? (
                   <Minus className="w-4 h-4" />
