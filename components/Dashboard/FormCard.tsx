@@ -128,7 +128,7 @@ export default function FormCard({ form }: FormCardProps) {
                 "group relative flex-1 flex flex-col justify-between border rounded-2xl p-7 min-h-[180px] transition-all duration-300",
                 isPublicOpen
                     ? "border-border bg-card/50 hover:bg-card hover:shadow-lg has-[button[data-state=open]]:bg-card"
-                    : "border-border bg-muted/5 opacity-80 grayscale-[0.4] contrast-[0.9] hover:bg-muted/10"
+                    : "border-border bg-muted/5 hover:bg-muted/10"
             )}>
 
                 <div className="space-y-3">

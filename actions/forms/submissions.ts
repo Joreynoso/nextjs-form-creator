@@ -7,55 +7,63 @@ import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/actions/doctors/sync"
 
 export async function expireOldSubmissions(formId: string) {
-
-  const expired = await prisma.formSubmission.updateMany({
-    where: {
-      formId,
-      status: SubmissionStatus.pending,
-      createdAt: {
-        lt: new Date(Date.now() - 1000 * 60 * 30) // 30 minutos
+  try {
+    const expired = await prisma.formSubmission.updateMany({
+      where: {
+        formId,
+        status: SubmissionStatus.pending,
+        createdAt: {
+          lt: new Date(Date.now() - 1000 * 60 * 30)
+        }
+      },
+      data: {
+        status: SubmissionStatus.expired
       }
-    },
-    data: {
-      status: SubmissionStatus.expired
-    }
-  })
+    })
 
-  return {
-    success: true,
-    count: expired.count
+    return {
+      success: true,
+      count: expired.count
+    }
+  } catch (error) {
+    console.error("expireOldSubmissions error:", error)
+    return {
+      success: false,
+      message: "Error inesperado. Intenta de nuevo.",
+      count: 0
+    }
   }
 }
 
 export async function deleteSubmission(submissionId: string, formId: string) {
-
+  try {
     const { userId } = await auth()
 
     if (!userId) {
-        return {
-          success: false,
-          message: "No autorizado"
-        }
+      return {
+        success: false,
+        message: "No autorizado"
+      }
     }
 
     const doctor = await getOrCreateDoctor()
 
     const submission = await prisma.formSubmission.findUnique({
-        where: { id: submissionId },
-        include: {
-            form: true
-        }
+      where: { id: submissionId },
+      include: {
+        form: true
+      }
     })
 
     if (!submission || submission.form.doctorId !== doctor.id) {
-        return {
-          success: false,
-          message: "No autorizado"
-        }
+      return {
+        success: false,
+        message: "No autorizado"
+      }
     }
 
     await prisma.formSubmission.delete({
-        where: { id: submissionId }
+      where: { id: submissionId }
     })
 
     revalidatePath(`/dashboard/${formId}`)
@@ -63,5 +71,12 @@ export async function deleteSubmission(submissionId: string, formId: string) {
     return {
       success: true,
       message: "Respuesta eliminada correctamente"
-    } 
+    }
+  } catch (error) {
+    console.error("deleteSubmission error:", error)
+    return {
+      success: false,
+      message: "Error inesperado. Intenta de nuevo."
+    }
+  }
 }

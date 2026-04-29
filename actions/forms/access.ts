@@ -8,78 +8,88 @@ import { nanoid } from "nanoid"
 import { PublicAccessResult } from '@/types/form.types'
 
 export async function enablePublicAccess(formId: string): Promise<PublicAccessResult> {
-  const { userId } = await auth()
+  try {
+    const { userId } = await auth()
 
-  if (!userId) {
-    return { success: false, message: "No autorizado" }
-  }
-
-  const doctor = await getOrCreateDoctor()
-
-  const form = await prisma.form.findFirst({
-    where: {
-      id: formId,
-      doctorId: doctor.id
+    if (!userId) {
+      return { success: false, message: "No autorizado" }
     }
-  })
 
-  if (!form) {
-    return { success: false, message: "Form not found" }
-  }
+    const doctor = await getOrCreateDoctor()
 
-  const token = form.publicToken ?? nanoid(16)
+    const form = await prisma.form.findFirst({
+      where: {
+        id: formId,
+        doctorId: doctor.id
+      }
+    })
 
-  const updated = await prisma.form.update({
-    where: { id: formId },
-    data: {
-      publicToken: token,
-      isPublicOpen: true
+    if (!form) {
+      return { success: false, message: "Form not found" }
     }
-  })
 
-  revalidatePath(`/dashboard`)
-  revalidatePath(`/dashboard/${formId}`)
+    const token = form.publicToken ?? nanoid(16)
 
-  return {
-    success: true,
-    isPublicOpen: updated.isPublicOpen,
-    token: updated.publicToken
+    const updated = await prisma.form.update({
+      where: { id: formId },
+      data: {
+        publicToken: token,
+        isPublicOpen: true
+      }
+    })
+
+    revalidatePath(`/dashboard`)
+    revalidatePath(`/dashboard/${formId}`)
+
+    return {
+      success: true,
+      isPublicOpen: updated.isPublicOpen,
+      token: updated.publicToken
+    }
+  } catch (error) {
+    console.error("enablePublicAccess error:", error)
+    return { success: false, message: "Error inesperado. Intenta de nuevo." }
   }
 }
 
 export async function disablePublicAccess(formId: string): Promise<PublicAccessResult> {
-  const { userId } = await auth()
+  try {
+    const { userId } = await auth()
 
-  if (!userId) {
-    return { success: false, message: "No autorizado" }
-  }
-
-  const doctor = await getOrCreateDoctor()
-
-  const form = await prisma.form.findFirst({
-    where: {
-      id: formId,
-      doctorId: doctor.id
+    if (!userId) {
+      return { success: false, message: "No autorizado" }
     }
-  })
 
-  if (!form) {
-    return { success: false, message: "Form not found" }
-  }
+    const doctor = await getOrCreateDoctor()
 
-  const updated = await prisma.form.update({
-    where: { id: formId },
-    data: {
-      isPublicOpen: false
+    const form = await prisma.form.findFirst({
+      where: {
+        id: formId,
+        doctorId: doctor.id
+      }
+    })
+
+    if (!form) {
+      return { success: false, message: "Form not found" }
     }
-  })
 
-  revalidatePath(`/dashboard`)
-  revalidatePath(`/dashboard/${formId}`)
+    const updated = await prisma.form.update({
+      where: { id: formId },
+      data: {
+        isPublicOpen: false
+      }
+    })
 
-  return {
-    success: true,
-    isPublicOpen: updated.isPublicOpen,
-    token: updated.publicToken
+    revalidatePath(`/dashboard`)
+    revalidatePath(`/dashboard/${formId}`)
+
+    return {
+      success: true,
+      isPublicOpen: updated.isPublicOpen,
+      token: updated.publicToken
+    }
+  } catch (error) {
+    console.error("disablePublicAccess error:", error)
+    return { success: false, message: "Error inesperado. Intenta de nuevo." }
   }
 }

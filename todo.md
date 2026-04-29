@@ -1,5 +1,7 @@
 # 📝 NexJS Form Creator - TODO & Backlog
 
+## 🔍 Verificación de cambios en editor
+
 ## 🔒 Errores de Seguridad Críticos (Alta Prioridad)
 
 ### 1. Falta de Rate Limiting (Agotamiento de cuota y DDoS)
@@ -44,19 +46,22 @@
 
 ## ⚙️ Configuración & Compilación (Errores Pre-existentes TypeScript)
 
-Estos errores aparecen al ejecutar `npx tsc --noEmit` y se deben a que las rutas `@/` (path aliases) no se resuelven correctamente:
+Estos errores aparecen al ejecutar `npx tsc --noEmit`:
 
-| # | Archivo | Error |
-|---|---------|-------|
-| 1 | `app/api/chat/route.ts:4` | `Cannot find module '@/actions/doctors/sync'` |
-| 2 | `app/api/chat/tools/createForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` |
-| 3 | `app/api/chat/tools/findForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` |
-| 4 | `app/api/chat/tools/generateForm.tool.ts:3` | `Cannot find module '@/types/form.types'` |
+| # | Archivo | Error | Estado |
+|---|---------|-------|--------|
+| 1 | `app/api/forms/route.ts:32` | `Property 'errors' does not exist on type 'ZodError'` | ✅ Solucionado (Se usó `.format()`) |
+| 2 | `app/api/chat/route.ts:4` | `Cannot find module '@/actions/doctors/sync'` | ✅ Solucionado (Paths tsconfig correctos) |
+| 3 | `app/api/chat/tools/createForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` | ✅ Solucionado |
+| 4 | `app/api/chat/tools/findForm.tool.ts:1` | `Cannot find module '@/actions/forms/crud'` | ✅ Solucionado |
+| 5 | `app/api/chat/tools/generateForm.tool.ts:3` | `Cannot find module '@/types/form.types'` | ✅ Solucionado |
 
-**Causa probable:** El `tsconfig.json` no tiene configurado correctamente el path alias `@/*` para que apunte al directorio correcto.
+**Causa explicada:** 
+1. El error del módulo alias `@/*` ocurría porque probablemente `tsconfig.json` o el cache de TS no resolvía las rutas desde la raíz (`./*`). Actualmente el alias `@/*`: `["./*"]` funciona correctamente y los módulos existen en sus respectivas rutas.
+2. El error de `ZodError` ocurría porque la propiedad directa `.errors` puede fallar en la inferencia estricta de TypeScript dependiendo de la versión de Zod. La mejor práctica es utilizar el método `validation.error.format()` o `validation.error.flatten()` provistos por Zod.
 
-**Plan de corrección:**
-1. Verificar que `tsconfig.json` tenga `paths` configurado correctamente (ej: `"@/*": ["./*"]` o `"@/*": ["src/*"]`)
-2. Verificar que `next.config.js` (o `next.config.ts`) tenga `experimental.serverComponentsExternalPackages` o `transpilePackages` si es necesario
-3. Confirmar que los módulos existen en las rutas esperadas
-4. Ajustar imports si las rutas físicas son diferentes
+**Plan de corrección ejecutado:**
+1. ✅ Verificado que `tsconfig.json` tiene `paths` configurado correctamente.
+2. ✅ Verificadas las rutas físicas de los módulos (`actions/` y `types/`).
+3. ✅ Modificado `app/api/forms/route.ts` para utilizar `validation.error.format()` en lugar de `.errors`.
+4. ✅ Ejecutado `npx tsc --noEmit` con 0 errores resultantes.
