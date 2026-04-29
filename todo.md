@@ -2,6 +2,94 @@
 
 ## 🔍 Verificación de cambios en editor
 
+## ⚡ Rendimiento & Optimización (Análisis de Rendimiento)
+
+### Problemas de Alta Prioridad (Mayor Impacto)
+
+#### 1. N+1 Queries en el Dashboard
+- **Archivo:** `app\(dashboard)\dashboard\(list)\page.tsx:32-73`
+- **Problema:** Se ejecutan 5 consultas secuenciales a la base de datos (totalForms, totalSubmissions, totalOpenForms, totalClosedForms, findMany forms).
+- **Por qué pasa:** El código hace múltiples llamadas a Prisma de manera secuencial cuando podría usar `Promise.all()`.
+- **Impacto:** Alto - cada consulta añade latencia y bloquea el render.
+- **Solución:** Usar `Promise.all()` para ejecutar consultas en paralelo o usar `groupBy` para obtener统计数据 en una sola query.
+
+#### 2. Carga de submissions sin paginación
+- **Archivo:** `app\(dashboard)\dashboard\[formId]\page.tsx:60-63`
+- **Problema:** `findMany` carga todas las submissions sin límite, causando timeouts con muchos datos.
+- **Por qué pasa:** No hay paginación ni límite en la consulta.
+- **Impacto:** Alto - puede causar timeouts en bases de datos con muchos datos.
+- **Solución:** Implementar paginación con `take: 20` y `skip`.
+
+#### 3. Uso de `window` en FormBuilder (Hydration Risk)
+- **Archivo:** `components\FormBuilder\FormBuilder.tsx:49,56,57,62`
+- **Problema:** `window.scrollY`, `window.addEventListener`, `window.scrollTo` ejecutándose durante el render inicial.
+- **Por qué pasa:** Código dentro de `useEffect` pero la verificación inicial `window.scrollY > 400` se ejecuta antes del mount.
+- **Impacto:** Medio - puede causar errores de hidratación o problemas en build estático.
+- **Solución:** Usar estado inicial `false` para `showScrollTop` o verificar dentro del efecto.
+
+#### 4. JSON.stringify en cada render (Sin memoización)
+- **Archivo:** `components\FormBuilder\FormBuilder.tsx:76-77`
+- **Problema:** `const fieldsChanged = JSON.stringify(fields) !== JSON.stringify(originalFields)` se recalcula en cada render.
+- **Por qué pasa:** No se usa `useMemo` para memoizar esta comparación.
+- **Impacto:** Medio - degradación notable con muchos campos.
+- **Solución:** Envolver en `useMemo(() => ..., [fields, originalFields])`.
+
+---
+
+### Problemas de Prioridad Media
+
+#### 5. Falta de AbortController en Chat
+- **Archivo:** `app\(dashboard)\dashboard\chat\page.tsx:55-58`
+- **Problema:** El fetch no tiene forma de cancelarse si el componente se desmonta.
+- **Por qué pasa:** No se implementa el patrón de `AbortController`.
+- **Impacto:** Medio - puede causar "Can't perform a React state update on unmounted component".
+- **Solución:** Usar `useEffect` con `AbortController`.
+
+#### 6. Falta de useCallback en handlers de FormPlayer
+- **Archivo:** `components\FormPlayer\FormPlayer.tsx:67,115`
+- **Problema:** `handleNext` y `handleBack` se recrean en cada render.
+- **Por qué pasa:** Solo `setValue` usa `useCallback`, los otros handlers no.
+- **Impacto:** Medio-Bajo - puede causar re-renders innecesarios.
+- **Solución:** Envolver en `useCallback` con sus dependencias.
+
+#### 7. Datos innecesarios en query de edición
+- **Archivo:** `app\(dashboard)\dashboard\[formId]\edit\page.tsx:21-30`
+- **Problema:** La consulta incluye `submissions` que no se usan en la página de edición.
+- **Por qué pasa:** Código copiado de otra página que no se limpió.
+- **Impacto:** Bajo - datos innecesarios traídos de la DB.
+- **Solución:** Eliminar el `include: { submissions }`.
+
+---
+
+### Problemas de Prioridad Baja
+
+#### 8. Console.log en producción
+- **Archivo:** `components\FormBuilder\FormBuilder.tsx:95`
+- **Problema:** `console.log('result', result)` queda en código de producción.
+- **Solución:** Eliminar o usar debug condicional.
+
+#### 9. Iconos recreados en cada render
+- **Archivo:** `components\FormBuilder\FormBuilder.tsx:131-142`
+- **Problema:** `checkSaved` y `unsaveAlert` se recrean en cada render.
+- **Solución:** Mover fuera del componente o usar `useMemo`.
+
+#### 10. ThemeProvider wrapper innecesario
+- **Archivo:** `components\themeprovider.tsx:1-11`
+- **Problema:** Wrapper innecesario cuando `next-themes` puede usarse directamente.
+- **Solución:** Eliminar el wrapper y usar `next-themes` directamente en el layout.
+
+#### 11. SizeScreenHelper en producción
+- **Archivo:** `components\screensizehelper.tsx:1-17`
+- **Problema:** Helper de desarrollo dejado en código de producción.
+- **Solución:** Condicionar con `process.env.NODE_ENV === 'development'`.
+
+#### 12. window.location hardcodeado
+- **Archivo:** `components\Dashboard\FormCard.tsx:117`
+- **Problema:** `const link = \`${window.location.origin}/form/${publicToken}\`` no es idiomático.
+- **Solución:** Usar variable de entorno `NEXT_PUBLIC_VERCEL_URL`.
+
+---
+
 ## 🔒 Errores de Seguridad Críticos (Alta Prioridad)
 
 ### 1. Falta de Rate Limiting (Agotamiento de cuota y DDoS)

@@ -32,6 +32,18 @@ export default function ChatPage() {
     // ref for auto-resize textarea
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+    // ref for abort controller
+    const abortControllerRef = useRef<AbortController | null>(null)
+
+    // cleanup: abortar requests pendientes al desmontar
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort()
+            }
+        }
+    }, [])
+
     // auto-resize effect
     useEffect(() => {
         if (textareaRef.current) {
@@ -44,6 +56,15 @@ export default function ChatPage() {
     const sendMessage = async () => {
         if (!input.trim() || loading) return
 
+        // Cancelar request anterior si existe
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort()
+        }
+
+        // Crear nuevo controller
+        const controller = new AbortController()
+        abortControllerRef.current = controller
+
         const userMessage: Message = { role: 'user', content: input }
         const updatedMessages = [...messages, userMessage]
 
@@ -55,10 +76,14 @@ export default function ChatPage() {
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: updatedMessages })
+                body: JSON.stringify({ messages: updatedMessages }),
+                signal: controller.signal
             })
 
             const data = await response.json()
+
+            // Verificar si la request fue cancelada antes de setear
+            if (controller.signal.aborted) return
 
             setMessages(prev => [...prev, {
                 role: 'assistant',
@@ -67,6 +92,9 @@ export default function ChatPage() {
             }])
 
         } catch (error) {
+            // Ignorar errores de cancelación
+            if (error instanceof Error && error.name === 'AbortError') return
+
             console.error('Error en chat:', error)
             setMessages(prev => [...prev, {
                 role: 'assistant',

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check, Trash2 } from 'lucide-react'
+import { Copy, Check, Trash2, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { deleteSubmission } from '@/actions/forms/submissions'
 import { toast } from 'sonner'
@@ -66,6 +66,17 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
 
     return (
         <div className="flex items-center gap-0.5">
+
+            {/* Exportar PDF */}
+            <Button
+                variant="ghost"
+                size="sm"
+                title="Exportar a PDF"
+                className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all"
+            >
+                <FileText className="size-3.5 shrink-0" />
+                <span className="hidden sm:inline">PDF</span>
+            </Button>
 
             {/* Copiar JSON — solo si hay respuestas */}
             {canCopy && responses && Object.keys(responses).length > 0 && (

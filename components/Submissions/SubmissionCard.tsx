@@ -37,7 +37,7 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
 
             {/* ── Header ─────────────────────────────────────────── */}
             <div 
-                className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-muted/15 cursor-pointer hover:bg-muted/30 transition-colors select-none"
+                className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-muted/30 cursor-pointer hover:bg-muted/40 transition-colors select-none"
                 onClick={() => setIsOpen(!isOpen)}
             >
 
@@ -46,7 +46,7 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
                     <button className="p-0.5 hover:bg-muted rounded-md text-muted-foreground transition-colors">
                         <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
                     </button>
-                    <span className="font-mono text-xs text-muted-foreground tabular-nums shrink-0">
+                    <span className="font-mono text-xs text-foreground tabular-nums shrink-0 font-medium">
                         {totalSubmissions > 0 ? `#${totalSubmissions - index}` : ""}
                     </span>
                     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium leading-none shrink-0 ${status.class}`}>
@@ -59,7 +59,7 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
                     className="flex items-center gap-1 sm:gap-2 ml-auto"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <time className="hidden sm:block text-xs text-muted-foreground font-sans tabular-nums">
+                    <time className="hidden sm:block text-xs text-foreground font-sans tabular-nums font-medium">
                         {date}
                     </time>
                     <SubmissionActions
@@ -74,12 +74,12 @@ export default function SubmissionCard({ sub, form, index, totalSubmissions, sta
 
             {/* ── Date (mobile only) ─────────────────────────────── */}
             <div className="sm:hidden px-4 pt-2.5 pb-2 border-b border-border/10">
-                <time className="text-xs text-muted-foreground font-sans tabular-nums">{date}</time>
+                <time className="text-xs text-foreground font-sans tabular-nums font-medium">{date}</time>
             </div>
 
             {/* ── Body ───────────────────────────────────────────── */}
             {isOpen && (
-                <div className="animate-in slide-in-from-top-2 fade-in duration-200">
+                <div className="bg-card/50 hover:bg-card backdrop-blur-sm transition-all duration-300 animate-in slide-in-from-top-2 fade-in">
                     {completed && responses && filledFields.length > 0 ? (
                         <dl className="divide-y divide-border/20">
                             {filledFields.map(field => {

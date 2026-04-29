@@ -19,14 +19,7 @@ export default async function EditFormPage(props: Props) {
     const doctor = await getOrCreateDoctor()
 
     const form = await prisma.form.findUnique({
-        where: { id: formId },
-        include: {
-            submissions: {
-                orderBy: {
-                    createdAt: "desc"
-                }
-            }
-        }
+        where: { id: formId }
     })
 
     if (!form || form.doctorId !== doctor.id) {

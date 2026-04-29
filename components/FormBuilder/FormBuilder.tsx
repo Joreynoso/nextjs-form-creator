@@ -53,6 +53,9 @@ export default function FormBuilder({ initialFields, form }: FormBuilderProps) {
             }
         }
 
+        // Verificar scroll inmediatamente al mount
+        handleScroll()
+
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])

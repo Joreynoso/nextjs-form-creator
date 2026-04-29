@@ -28,49 +28,40 @@ export default async function DashboardPage() {
 
     const doctor = await getOrCreateDoctor()
 
-    // estadisticas
-    const totalForms = await prisma.form.count({
-        where: {
-            doctorId: doctor.id
-        }
-    })
-
-    // total de envios
-    const totalSubmissions = await prisma.formSubmission.count({
-        where: {
-            form: {
-                doctorId: doctor.id
+    // Ejecutar todas las consultas en paralelo para optimizar rendimiento
+    const [
+        formCounts,
+        totalSubmissions,
+        forms
+    ] = await Promise.all([
+        // Grupo de formularios por isPublicOpen (1 consulta en lugar de 2)
+        prisma.form.groupBy({
+            by: ['isPublicOpen'],
+            where: { doctorId: doctor.id },
+            _count: true
+        }),
+        // Total de submissions
+        prisma.formSubmission.count({
+            where: {
+                form: {
+                    doctorId: doctor.id
+                }
             }
-        }
-    })
+        }),
+        // Lista de formularios ordenada
+        prisma.form.findMany({
+            where: { doctorId: doctor.id },
+            orderBy: [
+                { isPublicOpen: "desc" },
+                { createdAt: "desc" }
+            ]
+        })
+    ])
 
-    // total de formularios abiertos (públicos)
-    const totalOpenForms = await prisma.form.count({
-        where: {
-            doctorId: doctor.id,
-            isPublicOpen: true
-        }
-    })
-
-    // total de formularios cerrados (privados)
-    const totalClosedForms = await prisma.form.count({
-        where: {
-            doctorId: doctor.id,
-            isPublicOpen: false
-        }
-    })
-
-    // buscar formularios y ordenar primero
-    // Los formularios que tengan isPublicOpen en true deben aparecer primero
-    const forms = await prisma.form.findMany({
-        where: {
-            doctorId: doctor.id
-        },
-        orderBy: [
-            { isPublicOpen: "desc" },
-            { createdAt: "desc" }
-        ]
-    })
+    // Calcular total de formularios y abiertos/cerrados desde el groupBy
+    const totalForms = formCounts.reduce((acc, curr) => acc + curr._count, 0)
+    const totalOpenForms = formCounts.find(g => g.isPublicOpen === true)?._count ?? 0
+    const totalClosedForms = formCounts.find(g => g.isPublicOpen === false)?._count ?? 0
 
     // render return
     return (
