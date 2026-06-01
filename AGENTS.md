@@ -16,3 +16,5 @@ Una vez hayas comprendido las reglas de desarrollo, utiliza los siguientes docum
 3.  **[Esquema de Base de Datos y Tipos (docs/schema.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/schema.md)**: Modelos de Prisma ORM, relaciones y contratos TypeScript.
 4.  **[Funcionalidades del Sistema (docs/features.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/features.md)**: Detalle del comportamiento esperado por cada módulo (Auth, Dashboard, FormBuilder, IA, FormPlayer, Submissions).
 5.  **[Reporte de Mejoras y Errores (docs/improvements.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/improvements.md)**: Plan de acción sobre bugs detectados, vulnerabilidades de seguridad a corregir, problemas de rendimiento y estrategias de simplificación.
+6.  **[Optimización y Seguridad del Chat/MPC (docs/mpc_improvements.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/mpc_improvements.md)**: Reporte y propuestas de mejora sobre seguridad, estabilidad del tool calling, consumo de tokens y tipado del módulo de IA.
+
