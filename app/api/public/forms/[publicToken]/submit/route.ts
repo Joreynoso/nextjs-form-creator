@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { nanoid } from 'nanoid'
 import { SubmissionResponsesSchema } from '@/lib/schemas/submission.schema'
+import { rateLimit, getClientIp } from '@/lib/rate-limiter'
 
 export async function POST(
   request: Request,
@@ -9,6 +10,16 @@ export async function POST(
 ) {
   try {
     const { publicToken } = await context.params
+
+    // rate limiting: 5 requests por minuto por IP
+    const ip = getClientIp(request)
+    const limit = rateLimit(`submit:${publicToken}:${ip}`, 5, 60 * 1000)
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.resetIn / 1000)) } }
+      )
+    }
 
     // Buscar el formulario por publicToken
     const form = await prisma.form.findUnique({

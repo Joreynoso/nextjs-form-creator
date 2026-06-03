@@ -2,6 +2,7 @@ import Groq from 'groq-sdk'
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getOrCreateDoctor } from '@/actions/doctors/sync'
+import { rateLimit } from '@/lib/rate-limiter'
 import { tools, toolExecutors } from './tools'  // ← único import de tools
 
 // instanciar groq
@@ -49,6 +50,15 @@ export async function POST(req: Request) {
     const { userId } = await auth()
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // rate limiting: 20 requests por minuto por usuario
+    const limit = rateLimit(`chat:${userId}`, 20, 60 * 1000)
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.resetIn / 1000)) } }
+      )
     }
 
     // obtener doctor

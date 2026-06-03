@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { SubmissionResponsesSchema } from "@/lib/schemas/submission.schema"
 import { validateSubmission } from "@/lib/validators/submission.validator"
+import { rateLimit, getClientIp } from "@/lib/rate-limiter"
 import { FormField } from "@/types/form.types"
 
 export async function GET(req: Request, { params }: { params: Promise<{ token: string }> }) {
@@ -65,6 +66,16 @@ export async function POST(
     try {
 
         const token = (await context.params).token
+
+        // rate limiting: 5 requests por minuto por IP
+        const ip = getClientIp(request)
+        const limit = rateLimit(`submissions:${token}:${ip}`, 5, 60 * 1000)
+        if (!limit.success) {
+            return NextResponse.json(
+                { error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
+                { status: 429, headers: { 'Retry-After': String(Math.ceil(limit.resetIn / 1000)) } }
+            )
+        }
 
         const submission = await prisma.formSubmission.findUnique({
             where: { token },

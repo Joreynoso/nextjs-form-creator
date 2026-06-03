@@ -98,6 +98,12 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
                 })
             })
 
+            if (res.status === 429) {
+                setError("Has enviado demasiadas solicitudes. Espera un minuto e intenta de nuevo.")
+                toast.error('Demasiadas solicitudes. Intenta de nuevo en un minuto.')
+                return
+            }
+
             if (!res.ok) {
                 throw new Error()
             }

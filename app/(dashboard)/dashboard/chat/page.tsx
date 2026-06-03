@@ -80,10 +80,25 @@ export default function ChatPage() {
                 signal: controller.signal
             })
 
-            const data = await response.json()
-
-            // Verificar si la request fue cancelada antes de setear
             if (controller.signal.aborted) return
+
+            if (response.status === 429) {
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: 'Has enviado demasiados mensajes. Espera un minuto e intenta de nuevo.',
+                }])
+                return
+            }
+
+            if (!response.ok) {
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: 'Error al procesar tu solicitud. Intenta nuevamente.',
+                }])
+                return
+            }
+
+            const data = await response.json()
 
             setMessages(prev => [...prev, {
                 role: 'assistant',

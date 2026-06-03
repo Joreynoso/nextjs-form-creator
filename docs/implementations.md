@@ -110,3 +110,65 @@ Se actualizó `createRouteMatcher` en `middleware.ts`:
 ### Verificación
 
 - `tsc --noEmit`: Sin errores
+
+---
+
+## Implementación 5 — Rate limiting in-memory
+
+**Fecha**: 2026-06-03
+**Referencia**: `docs/improvements.md` — Sección 1 (Seguridad), punto "Ausencia de Rate Limiting"
+**Archivos creados/modificados**: 4 (`lib/rate-limiter.ts` creado, 3 API routes actualizados)
+
+### Problema
+
+Los endpoints públicos de envío de formularios y el chat de IA no tenían límite de peticiones, permitiendo abuso (DDoS, consumo de créditos de Groq, llenado de DB con submissions falsas).
+
+### Solución
+
+1. **`lib/rate-limiter.ts`**: Rate limiter in-memory con:
+   - Store basado en `Map<string, { count, resetAt }>`
+   - Limpieza periódica cada 5 minutos para evitar memory leaks
+   - Helper `getClientIp()` para extraer IP del request desde headers estándar (`x-forwarded-for`, `x-real-ip`, `cf-connecting-ip`)
+
+2. **`app/api/chat/route.ts`**: 20 requests/minuto por `userId`
+
+3. **`app/api/public/submissions/[token]/route.ts`**: 5 requests/minuto por IP + token
+
+4. **`app/api/public/forms/[publicToken]/submit/route.ts`**: 5 requests/minuto por IP + publicToken
+
+### Verificación
+
+- `tsc --noEmit`: Sin errores
+- Prueba unitaria del rate limiter: límite de 3 requests, el 4to es bloqueado correctamente, diferentes IPs tienen contadores independientes
+
+---
+
+## Implementación 6 — Feedback visual para rate limiting
+
+**Fecha**: 2026-06-03
+**Referencia**: `docs/improvements.md` — Sección 1 (Seguridad)
+**Archivos modificados**: 2
+
+### Problema
+
+Cuando el rate limiter bloqueaba una petición (429), el usuario solo recibía un JSON crudo sin feedback visual. El FormPlayer mostraba "No se pudo enviar el formulario" genérico, y el chat mostraba "Error al procesar tu solicitud". Sin indicación de que debía esperar.
+
+### Solución
+
+1. **`components/FormPlayer/FormPlayer.tsx`**: Detección específica de `res.status === 429`. Muestra mensaje claro: "Has enviado demasiadas solicitudes. Espera un minuto e intenta de nuevo." con toast y error inline.
+
+2. **`app/(dashboard)/dashboard/chat/page.tsx`**: Se agregó:
+   - Verificación de `response.ok` antes de parsear JSON (evita errores silenciosos)
+   - Detección de 429 con mensaje específico: "Has enviado demasiados mensajes. Espera un minuto e intenta de nuevo."
+   - Manejo de `!response.ok` genérico para otros errores HTTP
+
+### Límites aplicados
+
+| Endpoint | Límite | Clave |
+|----------|--------|-------|
+| `POST /api/chat` | 20 req/min | `userId` |
+| `POST /api/public/*` | 5 req/min | IP + token |
+
+### Verificación
+
+- `tsc --noEmit`: Sin errores
