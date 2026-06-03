@@ -47,3 +47,5 @@ next-env.d.ts
 # local notes
 todo.md
 vulnerabilities.md
+
+.vercel

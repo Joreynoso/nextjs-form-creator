@@ -36,8 +36,8 @@ export default function RootLayout({
       <body className={`${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <ClerkProviderWithTheme>
