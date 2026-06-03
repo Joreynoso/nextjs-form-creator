@@ -28,6 +28,10 @@ export default async function DashboardPage() {
 
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+        redirect("/unauthorized")
+    }
+
     // Ejecutar todas las consultas en paralelo para optimizar rendimiento
     const [
         formCounts,

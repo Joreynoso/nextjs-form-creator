@@ -54,6 +54,10 @@ export async function POST(req: Request) {
     // obtener doctor
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     // obtener mensajes del body
     const { messages } = await req.json()
 

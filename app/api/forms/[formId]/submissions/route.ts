@@ -16,6 +16,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ formId:
         }
 
         const doctor = await getOrCreateDoctor()
+
+        if (!doctor) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            )
+        }
+
         const { formId } = await params
 
         // Buscar el formulario

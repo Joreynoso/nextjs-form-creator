@@ -17,6 +17,10 @@ export async function enablePublicAccess(formId: string): Promise<PublicAccessRe
 
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
+
     const form = await prisma.form.findFirst({
       where: {
         id: formId,
@@ -61,6 +65,10 @@ export async function disablePublicAccess(formId: string): Promise<PublicAccessR
     }
 
     const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
 
     const form = await prisma.form.findFirst({
       where: {

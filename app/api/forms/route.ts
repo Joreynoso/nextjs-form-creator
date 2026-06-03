@@ -21,6 +21,13 @@ export async function POST(req: Request) {
     // Obtener doctor
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
     // Leer body
     const body = await req.json()
 

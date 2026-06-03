@@ -23,6 +23,10 @@ export async function createEmptyForm() {
 
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
+
     const form = await prisma.form.create({
       data: {
         name: "Formulario sin título",
@@ -67,6 +71,10 @@ export async function createForm(title: string, description: string) {
     }
 
     const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
 
     const form = await prisma.form.create({
       data: {
@@ -163,6 +171,10 @@ export async function updateForm(formId: string,
     }
 
     const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
 
     const form = await prisma.form.update({
       where: {
@@ -271,6 +283,10 @@ export async function saveGeneratedForm(
     }
 
     const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+      return { success: false, message: 'No autorizado' }
+    }
 
     const validation = validateFormFields(fields)
     if (!validation.success) {

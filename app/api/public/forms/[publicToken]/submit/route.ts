@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { nanoid } from 'nanoid'
+import { SubmissionResponsesSchema } from '@/lib/schemas/submission.schema'
 
 export async function POST(
   request: Request,
@@ -30,8 +31,12 @@ export async function POST(
     const body = await request.json()
     const { responses } = body
 
-    if (!responses || typeof responses !== 'object') {
-      return NextResponse.json({ error: 'Respuestas inválidas' }, { status: 400 })
+    const parsed = SubmissionResponsesSchema.safeParse(responses)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Respuestas inválidas', details: parsed.error.issues },
+        { status: 400 }
+      )
     }
 
     // Crear y completar la submission en una sola operación atómica
@@ -40,7 +45,7 @@ export async function POST(
         token: nanoid(),
         formId: form.id,
         doctorId: form.doctorId,
-        responses,
+        responses: parsed.data,
         status: 'completed',
         completedAt: new Date()
       }

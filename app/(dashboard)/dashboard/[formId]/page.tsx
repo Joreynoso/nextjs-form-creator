@@ -43,6 +43,10 @@ export default async function FormDetailPage({ params, searchParams }: Props) {
 
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+        redirect("/unauthorized")
+    }
+
     // Expirar submissions viejas de ESTE form
     await expireOldSubmissions(formId)
 

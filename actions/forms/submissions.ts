@@ -48,6 +48,10 @@ export async function deleteSubmission(submissionId: string, formId: string) {
 
     const doctor = await getOrCreateDoctor()
 
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
+
     const submission = await prisma.formSubmission.findUnique({
       where: { id: submissionId },
       include: {

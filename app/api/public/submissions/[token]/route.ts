@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { SubmissionResponsesSchema } from "@/lib/schemas/submission.schema"
 import { validateSubmission } from "@/lib/validators/submission.validator"
 import { FormField } from "@/types/form.types"
 
@@ -104,15 +105,16 @@ export async function POST(
         const body = await request.json()
         const { responses } = body
 
-        if (!responses) {
+        const parsed = SubmissionResponsesSchema.safeParse(responses)
+        if (!parsed.success) {
             return NextResponse.json(
-                { error: "Missing responses" },
+                { error: "Respuestas inválidas", details: parsed.error.issues },
                 { status: 400 }
             )
         }
 
         const fields = submission.form.fields as unknown as FormField[]
-        const validation = validateSubmission(fields, responses)
+        const validation = validateSubmission(fields, parsed.data)
 
         if (!validation.isValid) {
             return NextResponse.json(
@@ -124,7 +126,7 @@ export async function POST(
         const updatedSubmission = await prisma.formSubmission.update({
             where: { token },
             data: {
-                responses,
+                responses: parsed.data,
                 status: "completed",
                 completedAt: new Date()
             }

@@ -8,7 +8,7 @@ export async function getOrCreateDoctor() {
     const user = await currentUser();
 
     if (!user) {
-      throw new Error('No autenticado');
+      return null;
     }
 
     let doctor = await prisma.doctor.findUnique({
@@ -29,6 +29,6 @@ export async function getOrCreateDoctor() {
     return doctor;
   } catch (error) {
     console.error("getOrCreateDoctor error:", error)
-    throw new Error('Error al obtener usuario. Intenta de nuevo.');
+    return null;
   }
 }

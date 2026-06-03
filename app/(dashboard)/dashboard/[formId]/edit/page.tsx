@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 // import getOrCreateDoctor
 import { getOrCreateDoctor } from "@/actions/doctors/sync";
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { FormBuilder } from '@/components/FormBuilder';
 import { FormField } from '@/types/form.types';
 
@@ -17,6 +17,10 @@ export default async function EditFormPage(props: Props) {
     const { formId } = await props.params
 
     const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+        redirect("/unauthorized")
+    }
 
     const form = await prisma.form.findUnique({
         where: { id: formId }

@@ -6,7 +6,9 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/about',
   '/',
-  '/api/chat(.*)',
+  '/unauthorized',
+  '/form(.*)',
+  '/api/public(.*)',
 ])
 
 // middleware
