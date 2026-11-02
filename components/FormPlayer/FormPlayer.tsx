@@ -166,7 +166,7 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
                                     size="lg"
                                     onClick={handleBack}
                                     disabled={loading}
-                                    className="text-foreground/80 hover:text-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 border border-transparent hover:border-border hover:bg-accent/40"
+                                    className="px-6 text-base transition-all active:scale-95 border border-transparent hover:border-border"
                                 >
                                     <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
                                 </Button>
@@ -176,7 +176,7 @@ export default function FormPlayer({ fields, formPublicToken }: FormPlayerProps)
                                 size="lg"
                                 onClick={handleNext}
                                 disabled={loading}
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-5 text-base rounded-md transition-all active:scale-95 shadow-md shadow-primary/10"
+                                className="px-6 text-base transition-all active:scale-95 shadow-md shadow-primary/10"
                             >
                                 {loading ? (
                                     "Enviando..."

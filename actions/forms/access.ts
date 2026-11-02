@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/actions/doctors/sync"
 import { nanoid } from "nanoid"
 import { PublicAccessResult } from '@/types/form.types'
+import { getActionErrorMessage } from '@/lib/action-errors'
 
 export async function enablePublicAccess(formId: string): Promise<PublicAccessResult> {
   try {
@@ -29,7 +30,10 @@ export async function enablePublicAccess(formId: string): Promise<PublicAccessRe
     })
 
     if (!form) {
-      return { success: false, message: "Form not found" }
+      return {
+        success: false,
+        message: "No se encontró el formulario o no tienes permisos para modificarlo."
+      }
     }
 
     const token = form.publicToken ?? nanoid(16)
@@ -51,8 +55,13 @@ export async function enablePublicAccess(formId: string): Promise<PublicAccessRe
       token: updated.publicToken
     }
   } catch (error) {
-    console.error("enablePublicAccess error:", error)
-    return { success: false, message: "Error inesperado. Intenta de nuevo." }
+    return {
+      success: false,
+      message: getActionErrorMessage(error, {
+        action: "activar el acceso público del formulario",
+        logContext: "enablePublicAccess"
+      })
+    }
   }
 }
 
@@ -78,7 +87,10 @@ export async function disablePublicAccess(formId: string): Promise<PublicAccessR
     })
 
     if (!form) {
-      return { success: false, message: "Form not found" }
+      return {
+        success: false,
+        message: "No se encontró el formulario o no tienes permisos para modificarlo."
+      }
     }
 
     const updated = await prisma.form.update({
@@ -97,7 +109,12 @@ export async function disablePublicAccess(formId: string): Promise<PublicAccessR
       token: updated.publicToken
     }
   } catch (error) {
-    console.error("disablePublicAccess error:", error)
-    return { success: false, message: "Error inesperado. Intenta de nuevo." }
+    return {
+      success: false,
+      message: getActionErrorMessage(error, {
+        action: "desactivar el acceso público del formulario",
+        logContext: "disablePublicAccess"
+      })
+    }
   }
 }

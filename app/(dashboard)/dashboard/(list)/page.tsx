@@ -1,4 +1,5 @@
 // import breadcrumb components
+import { Suspense } from "react"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -17,9 +18,21 @@ import FormEmpty from '@/components/Dashboard/FormEmpty'
 import FormCard from '@/components/Dashboard/FormCard'
 import CreateFormButton from '@/components/Dashboard/createFormButton'
 import StatisticList from '@/components/Dashboard/StatisticList'
+import { DashboardFirstVisitGate } from '@/components/Dashboard/DashboardFirstVisitGate'
+import { Spinner } from '@/components/ui/spinner'
+import { getFormCardTones } from '@/lib/form-tones'
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
+    return (
+        <DashboardFirstVisitGate>
+            <Suspense fallback={<Spinner />}>
+                <DashboardContent />
+            </Suspense>
+        </DashboardFirstVisitGate>
+    )
+}
 
+async function DashboardContent() {
     const { userId } = await auth()
 
     if (!userId) {
@@ -62,6 +75,8 @@ export default async function DashboardPage() {
         })
     ])
 
+    const formTones = getFormCardTones(forms)
+
     // Calcular total de formularios y abiertos/cerrados desde el groupBy
     const totalForms = formCounts.reduce((acc, curr) => acc + curr._count, 0)
     const totalOpenForms = formCounts.find(g => g.isPublicOpen === true)?._count ?? 0
@@ -97,12 +112,12 @@ export default async function DashboardPage() {
                 <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-primary/60 whitespace-nowrap">Estadísticas Globales</span>
                 <div className="h-px w-full bg-border/20" />
             </div>
-            
-            <StatisticList 
-            totalForms={totalForms}
-            totalSubmissions={totalSubmissions}
-            totalActiveForms={totalOpenForms}
-            totalInactiveForms={totalClosedForms}
+
+            <StatisticList
+                totalForms={totalForms}
+                totalSubmissions={totalSubmissions}
+                totalActiveForms={totalOpenForms}
+                totalInactiveForms={totalClosedForms}
             />
 
             {/* lista de formularios */}
@@ -114,7 +129,7 @@ export default async function DashboardPage() {
             {forms.length === 0 ? <FormEmpty /> :
                 (<div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {forms.map((form) => (
-                        <FormCard key={form.id} form={form} />
+                        <FormCard key={form.id} form={form} toneIndex={formTones.get(form.id)} />
                     ))}
                 </div>)}
         </div>

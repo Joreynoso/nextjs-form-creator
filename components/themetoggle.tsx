@@ -28,7 +28,7 @@ export function ModeToggle() {
     // Mostrar un placeholder mientras se monta el componente
     if (!mounted) {
         return (
-            <Button variant="secondary" size="icon" className="w-full md:w-[35px]" disabled>
+            <Button variant="secondary" size="icon" disabled>
                 <Sun className="h-[1.2rem] w-[1.2rem] opacity-50" />
                 <span className="sr-only">Loading theme</span>
             </Button>
@@ -43,7 +43,7 @@ export function ModeToggle() {
             variant="secondary"
             size="icon"
             onClick={toggleTheme}
-            className="w-full md:w-[35px] relative overflow-hidden transition-all hover:scale-110 active:scale-95"
+            className="relative overflow-hidden transition-all hover:scale-110 active:scale-95"
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
         >
             {isDark ? (

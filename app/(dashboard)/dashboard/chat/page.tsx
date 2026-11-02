@@ -5,6 +5,7 @@ import { ArrowUp, ChartBar, PenLine, FileText, Lightbulb } from "lucide-react"
 import ToolsMenu from '@/components/Chat/ToolsMenu'
 import FormCard from '@/components/Chat/FormCard'
 import Disclaimer from '@/components/Chat/Disclaimer'
+import { Textarea } from '@/components/ui/textarea'
 import { useState, useRef, useEffect } from 'react'
 
 type ToolResult = {
@@ -155,14 +156,14 @@ export default function ChatPage() {
                         {/* Input prominente */}
                         <div className="w-full max-w-4xl flex flex-col gap-3 sm:px-0">
                             <div className="rounded-xl border border-border/50 bg-card flex items-end gap-2 p-2">
-                                <textarea
+                                <Textarea
                                     ref={textareaRef}
                                     value={input}
                                     onChange={e => setInput(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                     placeholder="Escribe tu consulta..."
                                     disabled={loading}
-                                    className="flex-1 bg-transparent border-none focus:outline-none resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto"
+                                    className="flex-1 bg-transparent border-none focus:outline-none focus-visible:ring-0 resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto disabled:bg-transparent"
                                 />
                                 <ToolsMenu
                                     onSelect={(prompt) => {
@@ -223,14 +224,14 @@ export default function ChatPage() {
                         {/* Input fijo al fondo */}
                         <div className="mt-auto pt-6 pb-2 border-t border-border/20 px-4 sm:px-0">
                             <div className="rounded-xl border border-border/50 bg-card flex items-end gap-2 p-2">
-                                <textarea
+                                <Textarea
                                     ref={textareaRef}
                                     value={input}
                                     onChange={e => setInput(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                     placeholder="Escribe tu consulta..."
                                     disabled={loading}
-                                    className="flex-1 bg-transparent border-none focus:outline-none resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto"
+                                    className="flex-1 bg-transparent border-none focus:outline-none focus-visible:ring-0 resize-none text-base leading-7 text-foreground placeholder:text-muted-foreground/50 placeholder:italic py-3 px-4 min-h-[44px] max-h-[200px] overflow-y-auto disabled:bg-transparent"
                                 />
                                 <ToolsMenu
                                     onSelect={(prompt) => {

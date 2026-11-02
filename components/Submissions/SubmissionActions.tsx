@@ -47,6 +47,11 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
         try {
             setIsDeleting(true)
             const result = await deleteSubmission(submissionId, formId)
+            if (!result.success) {
+                toast.error(result.message)
+                return result
+            }
+
             setOpen(false)
             toast.success(result.message)
             return result
@@ -72,7 +77,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
                 variant="ghost"
                 size="sm"
                 title="Exportar a PDF"
-                className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all"
+                className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
             >
                 <FileText className="size-3.5 shrink-0" />
                 <span className="hidden sm:inline">PDF</span>
@@ -85,7 +90,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
                     size="sm"
                     onClick={handleCopy}
                     title="Copiar respuestas como JSON"
-                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all"
+                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
                 >
                     {copied ? (
                         <>
@@ -108,7 +113,7 @@ export default function SubmissionActions({ responses = {}, fields = [], canCopy
                     size="sm"
                     onClick={() => setOpen(true)}
                     title="Eliminar respuesta"
-                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+                    className="h-7 w-7 sm:w-auto sm:px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 >
                     <Trash2 className="size-3.5 shrink-0" />
                     <span className="hidden sm:inline">Eliminar</span>

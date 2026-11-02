@@ -15,7 +15,10 @@ export default function CreateFormButton() {
   function handleCreate() {
     startTransition(async () => {
       const { data: id, message } = await createEmptyForm()
-      if (!id) return
+      if (!id) {
+        toast.error(message)
+        return
+      }
       toast.success(message)
       router.push(`/dashboard/${id}/edit`)
     })
@@ -25,7 +28,6 @@ export default function CreateFormButton() {
     <Button
       onClick={handleCreate}
       disabled={isPending}
-      className="bg-primary text-primary-foreground px-4 py-2 rounded-md"
     >
       {isPending ? "Creando…" : "Crear formulario"}
     </Button>

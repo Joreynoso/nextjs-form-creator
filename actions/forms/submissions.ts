@@ -5,6 +5,7 @@ import { SubmissionStatus } from "@/lib/generated/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { getOrCreateDoctor } from "@/actions/doctors/sync"
+import { getActionErrorMessage } from "@/lib/action-errors"
 
 export async function expireOldSubmissions(formId: string) {
   try {
@@ -26,10 +27,12 @@ export async function expireOldSubmissions(formId: string) {
       count: expired.count
     }
   } catch (error) {
-    console.error("expireOldSubmissions error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo.",
+      message: getActionErrorMessage(error, {
+        action: "actualizar las respuestas pendientes",
+        logContext: "expireOldSubmissions"
+      }),
       count: 0
     }
   }
@@ -77,10 +80,12 @@ export async function deleteSubmission(submissionId: string, formId: string) {
       message: "Respuesta eliminada correctamente"
     }
   } catch (error) {
-    console.error("deleteSubmission error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo."
+      message: getActionErrorMessage(error, {
+        action: "eliminar la respuesta",
+        logContext: "deleteSubmission"
+      })
     }
   }
 }

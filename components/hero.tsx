@@ -15,15 +15,11 @@ export default function Hero() {
       <div className="max-w-4xl text-center">
 
         {/* Badge */}
-        <Badge
-          asChild
-          variant="outline"
-          className="rounded-md border-border bg-background backdrop-blur-sm px-4 py-1 transition-colors hover:bg-background"
-        >
-          <Link href="#" className="flex items-center gap-2 text-xs font-medium uppercase tracking-tight">
-            <Sparkles className="size-3 text-primary" />
+        <Badge asChild variant="yellow" className="px-4 py-1.5">
+          <Link href="#" className="flex items-center gap-2 text-micro-uppercase">
+            <Sparkles className="size-3.5 text-on-yellow" />
             <span>¡Lanzamiento v1.0.0!</span>
-            <ArrowRight className="size-3" />
+            <ArrowRight className="size-3.5" />
           </Link>
         </Badge>
 
@@ -47,7 +43,7 @@ export default function Hero() {
           <Link href="/dashboard">
             <Button
               size="lg"
-              className="px-10 text-base font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+              className="px-10 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
             >
               Empezar ahora
               <ArrowRight className="ml-2 size-4" />

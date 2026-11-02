@@ -9,6 +9,8 @@ import { FormField } from '@/types/form.types'
 
 // import validadores
 import { validateFormFields } from '@/lib/validators/form.validator'
+import { FormNameSchema } from '@/lib/schemas/form.schema'
+import { getActionErrorMessage } from '@/lib/action-errors'
 
 export async function createEmptyForm() {
   try {
@@ -51,10 +53,12 @@ export async function createEmptyForm() {
       data: form.id
     }
   } catch (error) {
-    console.error("createEmptyForm error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo."
+      message: getActionErrorMessage(error, {
+        action: "crear el formulario",
+        logContext: "createEmptyForm"
+      })
     }
   }
 }
@@ -100,10 +104,12 @@ export async function createForm(title: string, description: string) {
       data: form.id
     }
   } catch (error) {
-    console.error("createForm error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo."
+      message: getActionErrorMessage(error, {
+        action: "crear el formulario",
+        logContext: "createForm"
+      })
     }
   }
 }
@@ -139,10 +145,12 @@ export async function deleteForm(id: string) {
       message: "Formulario eliminado correctamente"
     }
   } catch (error) {
-    console.error("deleteForm error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo."
+      message: getActionErrorMessage(error, {
+        action: "eliminar el formulario",
+        logContext: "deleteForm"
+      })
     }
   }
 }
@@ -205,10 +213,87 @@ export async function updateForm(formId: string,
       form: form
     }
   } catch (error) {
-    console.error("updateForm error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo."
+      message: getActionErrorMessage(error, {
+        action: "actualizar el formulario",
+        logContext: "updateForm"
+      })
+    }
+  }
+}
+
+export async function renameForm(formId: string, name: string) {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "No autorizado"
+      }
+    }
+
+    const parsedName = FormNameSchema.safeParse(name)
+
+    if (!parsedName.success) {
+      return {
+        success: false,
+        message: parsedName.error.issues[0]?.message ?? "Nombre inválido"
+      }
+    }
+
+    const doctor = await getOrCreateDoctor()
+
+    if (!doctor) {
+      return { success: false, message: "No autorizado" }
+    }
+
+    const existingForm = await prisma.form.findFirst({
+      where: {
+        id: formId,
+        doctorId: doctor.id
+      },
+      select: {
+        id: true
+      }
+    })
+
+    if (!existingForm) {
+      return {
+        success: false,
+        message: "Formulario no encontrado"
+      }
+    }
+
+    const form = await prisma.form.update({
+      where: {
+        id: existingForm.id
+      },
+      data: {
+        name: parsedName.data
+      }
+    })
+
+    revalidatePath("/dashboard")
+    revalidatePath(`/dashboard/${formId}`)
+    revalidatePath(`/dashboard/${formId}/edit`)
+
+    return {
+      success: true,
+      message: "Nombre actualizado correctamente",
+      form: {
+        id: form.id,
+        name: form.name
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: getActionErrorMessage(error, {
+        action: "actualizar el nombre del formulario",
+        logContext: "renameForm"
+      })
     }
   }
 }
@@ -262,10 +347,12 @@ export async function findForm(doctorId: string, query?: string) {
       }))
     }
   } catch (error) {
-    console.error("findForm error:", error)
     return {
       success: false,
-      message: "Error inesperado. Intenta de nuevo.",
+      message: getActionErrorMessage(error, {
+        action: "cargar los formularios",
+        logContext: "findForm"
+      }),
       forms: []
     }
   }
@@ -322,7 +409,12 @@ export async function saveGeneratedForm(
       }
     }
   } catch (error) {
-    console.error("saveGeneratedForm error:", error)
-    return { success: false, message: "Error inesperado. Intenta de nuevo." }
+    return {
+      success: false,
+      message: getActionErrorMessage(error, {
+        action: "guardar el formulario",
+        logContext: "saveGeneratedForm"
+      })
+    }
   }
 }

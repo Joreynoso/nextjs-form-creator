@@ -7,14 +7,14 @@ export default function DashboardLayout({
     children: React.ReactNode
 }) {
     return (
-        <>
+        <div className="flex min-h-dvh flex-col">
             <Navbar />
 
-            <main className="flex-1 w-full flex  mx-auto min-h-[calc(100vh-64px)] px-4 xl:px-0 max-w-7xl">
+            <main className="mx-auto flex w-full max-w-7xl flex-1 px-4 xl:px-0">
                 {children}
             </main>
 
             <Footer />
-        </>
+        </div>
     )
 }

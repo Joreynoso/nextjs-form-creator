@@ -19,6 +19,13 @@ export const FormFieldSchema = z.object({
 // validacion de un array de campos
 export const FormFieldsSchema = z.array(FormFieldSchema)
 
+// validacion del nombre del formulario
+export const FormNameSchema = z
+  .string()
+  .trim()
+  .min(1, 'El nombre es requerido')
+  .max(120, 'El nombre no puede superar los 120 caracteres')
+
 // exportamos el tipo de dato
 export type FormFieldInput = z.infer<typeof FormFieldSchema>
 

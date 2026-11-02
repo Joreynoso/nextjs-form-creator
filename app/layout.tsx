@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Source_Serif_4, JetBrains_Mono } from "next/font/google"
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
 import { ThemeProvider } from "next-themes"
@@ -7,10 +7,10 @@ import { Toaster } from '@/components/ui/sonner'
 import SizeScreenHelper from '@/components/screensizehelper'
 import ClerkProviderWithTheme from "@/components/providers/ClerkProviderWithTheme"
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 })
 
@@ -32,11 +32,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}>
+    <html
+      lang="en"
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
         >

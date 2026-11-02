@@ -18,4 +18,5 @@ Una vez hayas comprendido las reglas de desarrollo, utiliza los siguientes docum
 5.  **[Reporte de Mejoras y Errores (docs/improvements.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/improvements.md)**: Plan de acción sobre bugs detectados, vulnerabilidades de seguridad a corregir, problemas de rendimiento y estrategias de simplificación.
 6.  **[Optimización y Seguridad del Chat/MPC (docs/mpc_improvements.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/mpc_improvements.md)**: Reporte y propuestas de mejora sobre seguridad, estabilidad del tool calling, consumo de tokens y tipado del módulo de IA.
 7.  **[Registro de Implementaciones (docs/implementations.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/implementations.md)**: Bitácora cronológica de cada implementación, corrección o mejora realizada en el proyecto.
+8.  **[Sistema de Diseño Objetivo (docs/design-system.md)](file:///h:/01_%20Ato/05_NEXTJS/nexjs-form-creator/docs/design-system.md)**: Guía visual objetivo (tokens, tipografía, componentes, radios, sombras y comportamiento responsive) para la transición de la interfaz.
 

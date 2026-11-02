@@ -126,9 +126,9 @@ export default function FieldCard({
 
         <Button
           variant="ghost"
-          size="icon"
+          size="icon-sm"
           onClick={(e) => { e.stopPropagation(); onDelete() }}
-          className="size-8 rounded-md text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
         >
           <Trash2 className="size-4" />
         </Button>
