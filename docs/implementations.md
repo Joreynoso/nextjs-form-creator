@@ -577,5 +577,68 @@ En la primera visita a `/dashboard` el texto "Cargando formularios..." aparecía
 - `npm run build`: Compilación exitosa; 13/13 páginas generadas
 - Flujo esperado: primera visita muestra una sola vez la secuencia completa de textos durante 3700 ms; los datos se resuelven en paralelo
 
+---
+
+## Implementación 22 - Rediseño del Login con panel 30/70 y carrusel
+
+**Fecha**: 2026-11-05
+**Referencia**: `docs/estructure-login-register.md`, `docs/design-system.md`
+**Archivos modificados**: 9 (`app/(auth)/sign-in/[[...sign-in]]/page.tsx` movido, `components/Auth/LoginPage.tsx`, `LoginForm.tsx`, `AuthCarousel.tsx`, `BrandIcons.tsx` y `SsoCallback.tsx` nuevos, `app/(dashboard)/sign-in/[[...sign-in]]/page.tsx` eliminado, `AGENTS.md`, `docs/implementations.md`)
+
+### Problema
+
+El login usaba el componente preconstruido de Clerk dentro del layout del dashboard, por lo que no podía ocupar el viewport completo ni seguir la estructura visual definida para autenticación (formulario al 30% y carrusel informativo al 70%).
+
+### Solución
+
+1. **Ruta dedicada**: El login se movió al grupo de rutas `(auth)`, fuera del layout con navbar y footer. La ruta catch-all se conserva para que Clerk siga resolviendo `/sign-in` y `/sign-in/sso-callback`.
+2. **`components/Auth/LoginForm.tsx`**: Formulario propio con el hook `useSignIn` de Clerk. Incluye acceso con Google, email y contraseña, opción expandible de Enterprise SSO, estados de carga/error y redirección a `/dashboard`. Se añadió el contenedor `#clerk-captcha` requerido por los flujos personalizados.
+3. **`components/Auth/AuthCarousel.tsx`**: Panel derecho con cabecera, tres diapositivas wireframe (constructor visual, asistente IA y analítica), transición horizontal, controles anterior/siguiente, indicadores de posición, autoplay y pausa al pasar el cursor. En móvil se oculta.
+4. **`components/Auth/LoginPage.tsx`**: Distribución 30/70 a pantalla completa (`h-dvh`), logo arriba a la izquierda y formulario centrado verticalmente.
+5. **`components/Auth/SsoCallback.tsx`**: Estado de carga y `AuthenticateWithRedirectCallback` para completar los flujos OAuth/SSO.
+6. **`AGENTS.md`**: Se agregó la referencia a `docs/estructure-login-register.md`.
+
+### Verificación
+
+- `npx tsc --noEmit`: Sin errores
+- `npx eslint` sobre `components/Auth` y `app/(auth)`: Sin errores ni warnings
+- `npm run build`: Compilación exitosa; 13/13 páginas generadas
+- `GET /sign-in`: 200 OK; contiene el título "Log in", el acceso con Google, la opción SSO y el carrusel
+
+---
+
+## Implementación 23 - Login 40/60 con Clerk prebuilt y apariencia del design system
+
+**Fecha**: 2026-11-05
+**Referencia**: `docs/estructure-login-register.md`, `docs/design-system.md`
+**Archivos modificados**: 8 (`components/Auth/AuthSignIn.tsx` y `lib/clerk-auth-appearance.ts` nuevos; `components/Auth/LoginPage.tsx` y `AuthCarousel.tsx` actualizados; `app/(auth)/sign-in/[[...sign-in]]/page.tsx` simplificado; `LoginForm.tsx`, `BrandIcons.tsx` y `SsoCallback.tsx` eliminados)
+
+### Problema
+
+El formulario personalizado con `useSignIn` no cubría todas las modalidades del `<SignIn />` preconstruido de Clerk (MFA, recuperación de contraseña, SSO empresarial y flujos adicionales). Además, la distribución 30/70 dejaba poco espacio al formulario y el botón Microsoft se mostraba aunque el proveedor no era el foco del nuevo UI.
+
+### Solución
+
+1. **`components/Auth/AuthSignIn.tsx`**: Renderiza el `<SignIn />` preconstruido con `signUpUrl="/sign-up"` y `fallbackRedirectUrl="/dashboard"`, conservando el 100% de las modalidades y la localización `esES` del `ClerkProvider`.
+2. **`lib/clerk-auth-appearance.ts`**: Apariencia específica del panel con tokens del design system: card transparente, header con `text-heading-2`, botones sociales y primario tipo pill, inputs de 44px, enlaces brand blue y alertas con `brand-red`.
+3. **`components/Auth/LoginPage.tsx`**: Distribución 40% formulario / 60% carrusel, logo arriba a la izquierda y formulario centrado verticalmente.
+4. **`components/Auth/AuthCarousel.tsx`**: Ancho al 60%, mayor contenedor (`max-w-4xl`), textos en español y controles accesibles.
+5. **Limpieza**: Se eliminaron `LoginForm.tsx`, `BrandIcons.tsx` y `SsoCallback.tsx`; Clerk gestiona internamente las subrutas del catch-all.
+6. **Docs**: `docs/estructure-login-register.md` actualizado a 40/60 y con la nota del componente preconstruido.
+
+### Verificación
+
+- `npx tsc --noEmit`: Sin errores
+- `npx eslint` sobre `components/Auth`, `lib/clerk-auth-appearance.ts` y `app/(auth)`: Sin errores ni warnings
+- `npm run build`: Compilación exitosa; 13/13 páginas generadas
+- `GET /sign-in`: 200 OK; carrusel y paneles 40/60 presentes en el HTML; el formulario prebuilt se hidrata en el cliente
+
+### Corrección posterior: contraste en hover y altura de inputs
+
+- **Hover de botones sociales**: `hover:bg-accent!` resolvía el `--accent` interno de Clerk a `#111111`, dejando texto oscuro sobre fondo oscuro en light mode. Se reemplazó por `hover:bg-surface!`, `hover:text-ink!` y `hover:border-hairline-strong!`. El botón primario usa `hover:bg-charcoal!` con `hover:text-primary-foreground!`; el enlace inferior usa `hover:text-blue-pressed!` y `hover:opacity-100!`.
+- **Altura de inputs**: Clerk aplica `max-height: 2.25rem` (36px) a `.cl-formFieldInput`, lo que limitaba el `h-[44px]!`. Se agregó `max-h-[44px]!` a `formFieldInput` y `otpCodeFieldInput`.
+- **Verificación CDP (light/dark)**: botones sociales con hover `#f7f7f5` / `#171717` y texto `#1a1a1a` / `#f5f5f5`; primario `#2b2b2b` / `#e5e5e5`; enlace `#2f4bdb` / `#5c78f0`; input con altura real y `max-height` de 44px. `npx tsc --noEmit`, eslint y `npm run build` sin errores.
+
+
 
 
